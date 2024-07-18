@@ -1,0 +1,89 @@
+import java.util.*;
+class Solution {
+    static Map<String,Integer> map = new HashMap<>();
+    static Map<Integer,String> map2 = new HashMap<>();
+    static ArrayList<Integer>[] arr = new ArrayList[10005];
+    static boolean[][] vis = new boolean[10001][10001];
+    static String[] route = new String[10005];
+    static int[] city = new int[10001];
+    static ArrayList<String> alpha = new ArrayList<>();
+    static Set<String> duple = new HashSet<>();
+    static boolean fin = false;
+    static String[] answer;
+    static int totsize = 0;
+    
+    public static void solve(int cur, int num, int tot){
+        if(fin) return;
+        route[tot-1] = map2.get(cur);
+        if(num == alpha.size() && tot == totsize){
+            answer = new String[tot];
+            for(int i = 0; i < tot; i++){
+                answer[i] = route[i];
+            }
+            fin = true;
+            return;
+        }
+        
+        for(int i = 0; i < arr[cur].size(); i++){
+            int nxt = arr[cur].get(i);
+            if(vis[cur][i]) continue;
+            vis[cur][i] = true;
+            if(city[nxt] == 0){
+                city[nxt] += 1;
+                solve(nxt,num+1,tot+1);
+            }
+            else{
+                city[nxt] += 1;
+                solve(nxt,num,tot+1);
+            }
+            vis[cur][i] = false;
+            city[nxt] -=1;
+        }
+        
+    }
+    
+    public String[] solution(String[][] tickets) {
+        int first = 0;
+        int cnt = 1;
+        totsize = tickets.length + 1;
+        
+        for(int i = 0; i < 10005; i++){
+            arr[i] = new ArrayList<>();
+        }
+        
+        for(int i = 0; i < tickets.length; i++){
+            String tmp1 = tickets[i][0];
+            String tmp2 = tickets[i][1];
+            if(!duple.contains(tmp1)){
+                duple.add(tmp1);
+                alpha.add(tmp1);
+            }
+            if(!duple.contains(tmp2)){
+                duple.add(tmp2);
+                alpha.add(tmp2);
+            }
+        }
+        
+        Collections.sort(alpha);
+        for(int i = 0; i < alpha.size(); i++){
+            map.put(alpha.get(i),i+1);
+            map2.put(i+1,alpha.get(i));
+        }
+        
+        for(int i = 0; i < tickets.length; i++){
+            int st = map.get(tickets[i][0]);
+            int ed = map.get(tickets[i][1]);
+            arr[st].add(ed);
+        }
+        
+        for(int i = 0; i <= alpha.size(); i++){
+            Collections.sort(arr[i]);
+        }
+        
+        first = map.get("ICN");
+        city[first] = 1;
+        solve(first,1,1);
+        
+        return answer;
+    }
+}

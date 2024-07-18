@@ -1,0 +1,81 @@
+import java.util.*;
+
+class Solution {
+    public int[] solution(int[][] edges) {
+        int[] answer = new int[4];
+        int donut = 0;
+        int line = 0;
+        int fal = 0;
+        int len = edges.length;
+        int start = -1;
+        int mx = 0;
+        ArrayList<Integer>[] graph = new ArrayList[1000005];
+        int[] basepoint = new int[1000005];
+        int[] startpoint = new int[1000005];
+        for(int i = 0; i < 1000005; i++){
+            graph[i] = new ArrayList<>();
+        }
+        for(int i = 0; i < len; i++){
+            int st = edges[i][0];
+            int ed = edges[i][1];
+            mx = Math.max(mx,st);
+            mx = Math.max(mx,ed);
+            basepoint[st] += 1;
+            startpoint[ed] += 1;
+            graph[st].add(ed);
+        }
+        
+        // 시작점을 찾아야함.
+        // 시작점 : 시작점을 향하는 간선이 없음
+        for(int i = 1; i <= mx; i++){
+            if(basepoint[i] >= 2){
+                if(startpoint[i] == 0){
+                    start = i;
+                    break;
+                }
+            }
+        }
+        
+        // 막대그래프 : 재방문 절대하지않음
+        // 8자: 양갈래로 퍼져나가는 경우있음, 재방문됨
+        // 도넛: 무조건 한방향, 재방문됨
+        for(int idx : graph[start]){
+            boolean rezero = false; 
+            boolean multi = false;
+            
+            Queue<Integer> q = new ArrayDeque<>();
+            q.offer(idx);
+            boolean [] vis = new boolean[mx+1];
+            vis[idx] = true;
+            while(!q.isEmpty()){
+                int cur = q.peek();
+                q.poll();
+                for(int nxt : graph[cur]){
+                    if(graph[cur].size() > 1) multi = true;
+                    
+                    if(vis[nxt]){
+                        rezero = true;
+                    }
+                    else{
+                        vis[nxt] = true;
+                        q.offer(nxt);
+                    }
+                }
+            }
+            
+            if(!rezero) line++;
+            else{
+                if(!multi) donut++;
+                else fal++;
+            }
+        }
+        
+        answer[0] = start;
+        answer[1] = donut;
+        answer[2] = line;
+        answer[3] = fal;
+        
+        
+        return answer;
+    }
+}

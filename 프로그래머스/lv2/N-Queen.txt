@@ -1,0 +1,39 @@
+class Solution {
+    static int answer = 0;
+    static boolean[] ck1;
+    static boolean[] ck2;
+    static boolean[] ck3;
+    
+    public static void solve(int cur, int mx){
+        if(cur == mx){
+            answer++;
+            return;
+        }
+        
+        for(int i = 0; i < mx; i++){
+            int sum = cur + i;
+            int diff = (cur - i) + mx;
+            
+            if(ck1[i]) continue;
+            if(ck2[sum]) continue;
+            if(ck3[diff]) continue;
+            ck1[i] = true;
+            ck2[sum] = true;
+            ck3[diff] = true;
+            solve(cur+1, mx);
+            ck1[i] = false;
+            ck2[sum] = false;
+            ck3[diff] = false;
+            
+        }
+        
+    }
+    
+    public int solution(int n) {
+        ck1 = new boolean[n];
+        ck2 = new boolean[2*n+1];
+        ck3 = new boolean[2*n+1];
+        solve(0,n);
+        return answer;
+    }
+}
