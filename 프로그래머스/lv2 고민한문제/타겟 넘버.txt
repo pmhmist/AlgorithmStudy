@@ -1,0 +1,26 @@
+class Solution {
+    
+    static boolean[] vis;
+    static int total;
+    static int answer = 0;
+    static int goal;
+    
+    public static void solve(int[] board, int cur, int sum){
+        if(cur == total){
+            if(sum == goal) answer++;
+            return;
+        }
+        
+        solve(board,cur+1,sum+board[cur]);
+        solve(board,cur+1,sum-board[cur]);
+        
+    }
+    
+    public int solution(int[] numbers, int target) {
+        vis = new boolean[numbers.length];
+        total = numbers.length;
+        goal = target;
+        solve(numbers,0,0);
+        return answer;
+    }
+}

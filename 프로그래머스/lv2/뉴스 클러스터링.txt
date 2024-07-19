@@ -1,0 +1,72 @@
+import java.util.*;
+class Solution {
+    public int solution(String str1, String str2) {
+        double val = 65536;
+        int answer = 0;
+        str1 = str1.toLowerCase();
+        str2 = str2.toLowerCase();
+        StringBuilder sb = new StringBuilder("AB");
+        Map<String,Integer> map1 = new HashMap<>();
+        Map<String,Integer> map2 = new HashMap<>();
+        Set<String> s = new HashSet<>();
+        
+        for(int i = 0; i < str1.length()-1; i++){
+            if(str1.charAt(i) - 'a' < 0 || str1.charAt(i+1) - 'a' < 0) continue;
+            if(str1.charAt(i) - 'z' > 0 || str1.charAt(i+1) - 'z' > 0) continue;
+            sb.setCharAt(0,str1.charAt(i));
+            sb.setCharAt(1,str1.charAt(i+1));
+            String tmp = sb.toString();
+            if(map1.containsKey(tmp)){
+                int ck = map1.get(tmp) + 1;
+                map1.put(tmp,ck);
+            }
+            else{
+                s.add(tmp);
+                map1.put(tmp,1);
+            }
+            
+        }
+        
+        for(int i = 0; i < str2.length()-1; i++){
+            if(str2.charAt(i) - 'a' < 0 || str2.charAt(i+1) - 'a' < 0) continue;
+            if(str2.charAt(i) - 'z' > 0 || str2.charAt(i+1) - 'z' > 0) continue;
+            sb.setCharAt(0,str2.charAt(i));
+            sb.setCharAt(1,str2.charAt(i+1));
+            String tmp = sb.toString();
+            if(map2.containsKey(tmp)){
+                int ck = map2.get(tmp) + 1;
+                map2.put(tmp,ck);
+            }
+            else{
+                s.add(tmp);
+                map2.put(tmp,1);
+            }
+        }
+        
+        double duple = 0; // 교집합
+        double hap = 0; // 합집합
+        
+        for(String key : s){
+            if(map1.containsKey(key) && map2.containsKey(key)){
+                int ck1 = map1.get(key);
+                int ck2 = map2.get(key);
+                duple += Math.min(ck1,ck2);
+                hap += Math.max(ck1,ck2);
+            }
+            else{
+                if(map1.containsKey(key)){
+                    hap += map1.get(key);
+                }
+                else{
+                    hap += map2.get(key);
+                }
+            }
+        }
+        
+        if(hap == 0) answer = (int)val;
+        else{
+            answer = (int)Math.floor((duple/hap)*val);
+        }
+        return answer;
+    }
+}

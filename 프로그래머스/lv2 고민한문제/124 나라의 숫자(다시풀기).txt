@@ -1,0 +1,22 @@
+import java.util.*;
+class Solution {
+    public String solution(int n) {
+        StringBuilder answer = new StringBuilder();
+        
+        while(n > 0){
+            int ck = n%3;
+            if(ck == 0){
+//진수변환시에 나머지가 0으로 떨어지는 경우가 있으면 몫을 하나 낮추어서 나머지가 3이 되도록 
+                answer.insert(0,4);
+                n = n/3 - 1;
+            }
+            else{
+                //왼쪽부터 채워나가야함.
+                answer.insert(0,Integer.toString(ck));
+                n = n/3;
+            }
+        }
+        
+        return answer.toString();
+    }
+}

@@ -1,0 +1,47 @@
+import java.util.*;
+class Solution {
+    
+    static int[] dx = {-1,0,1,0};
+    static int[] dy = {0,1,0,-1};
+    static int[][] vis;
+    
+    public static class Pair{
+        int x;
+        int y;
+        
+        Pair(int x,int y){
+            this.x = x;
+            this.y = y;
+        }
+    }
+    
+    public int solution(int[][] maps) {
+        int answer = 0;
+        int n = maps.length;
+        int m = maps[0].length;
+        vis = new int[n][m];
+        Queue<Pair> q = new ArrayDeque<>();
+        q.offer(new Pair(0,0));
+        vis[0][0] = 1;
+        while(!q.isEmpty()){
+            int x = q.peek().x;
+            int y = q.peek().y;
+            q.poll();
+            for(int dir = 0; dir < 4; dir++){
+                int nx = x + dx[dir];
+                int ny = y + dy[dir];
+                if(nx < 0 || nx >= n || ny < 0 || ny >= m) continue;
+                if(vis[nx][ny] != 0) continue;
+                if(maps[nx][ny] == 0) continue;
+                vis[nx][ny] = vis[x][y] + 1;
+                q.offer(new Pair(nx,ny));
+            }
+        }
+        
+        if(vis[n-1][m-1] == 0) answer = -1;
+        else answer = vis[n-1][m-1];
+        
+        
+        return answer;
+    }
+}

@@ -1,0 +1,98 @@
+class Solution {
+    public String solution(String m, String[] musicinfos) {
+        String answer = "(None)";
+        int time = -1;
+        boolean[] gaza;
+        int len = m.length();
+        for(int i = 0; i < musicinfos.length; i++){
+            gaza = new boolean[len];
+            int curtime = 0;
+            String[] ck = musicinfos[i].split(",");
+            String[] start = ck[0].split(":");
+            String[] end = ck[1].split(":");
+            String name = ck[2];
+            String play = ck[3];
+            
+            int sh = Integer.valueOf(start[0]);
+            int sm = Integer.valueOf(start[1]);
+            int eh = Integer.valueOf(end[0]);
+            int em = Integer.valueOf(end[1]);
+            
+            // 음악 플레이시간 계산
+            if(sh == eh){
+                curtime = em - sm;
+            }
+            else{
+                while(true){
+                    sh = (sh+1);
+                    curtime += 60;
+                    if(sh == eh) break;
+                }
+                
+                if(sm < em){
+                    curtime += em - sm;
+                }
+                else{
+                    int diff = sm - em;
+                    curtime -= diff;
+                }
+            }
+            
+            int mlen = m.length();
+            int plen = play.length();
+            boolean judge = false;
+            int basetime = 0;
+            for(int i2 = 0; i2 < plen; i2++){
+                basetime += 1;
+                if(play.charAt(i2) == '#'){ // #도 한큐에 같이 눌러야함.
+                    basetime -= 1;
+                    continue;
+                }
+                if(basetime > curtime) break;
+                if(judge) break;
+                if(m.charAt(0) == play.charAt(i2)){
+                    int idx1 = 0;
+                    int idx2 = i2;
+                    boolean right = false;
+                    int tmptime = basetime;
+                    while(true){
+                        if(m.charAt(idx1) != play.charAt(idx2)){
+                            break;
+                        }
+                        else{                            
+                            idx1 = idx1 + 1;
+                            idx2 = (idx2+1)%plen;
+                            
+                            if(play.charAt(idx2) == '#'){
+                                if(idx1 >= mlen) break;
+                                if(m.charAt(idx1) != '#') break;
+                                idx1 = idx1 + 1;
+                                idx2 = (idx2+1)%plen;
+                            }
+                            
+                            if(idx1 == mlen){
+                                right = true;
+                                break;
+                            }
+                        }
+                    }
+                    if(right) judge = true;
+                    tmptime++;
+                    if(tmptime > curtime) break;
+                }
+            }
+            
+            // 플레이한 시간이 길다면 갱신.
+            if(judge){
+                if(time < curtime){
+                    time = curtime;
+                    answer = name;
+                }
+            }
+            
+            
+        }
+        
+        return answer;
+    }
+}

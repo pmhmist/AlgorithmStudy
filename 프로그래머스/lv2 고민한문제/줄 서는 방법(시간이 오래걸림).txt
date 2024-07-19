@@ -1,0 +1,46 @@
+class Solution {
+    
+    public int[] solution(int n, long k) {
+        int[] answer = new int[n];
+        int[] arr = new int[n];
+        for(int i = 0; i < n; i++){
+            arr[i] = i+1;
+        }
+        boolean[] vis = new boolean[n];
+        for(int i = n-1; i >= 1; i--){
+            if(k == 0) break;
+            int idx = 0;
+            while(vis[idx]){
+                idx++;
+            }
+            
+            long tmp = 1;
+            for(int j = 1; j <= i; j++){
+                tmp = tmp*j;
+            }
+            
+            if(k > tmp){
+                while(true){
+                    k = k - tmp;
+                    idx++;
+                    while(vis[idx]){
+                        idx++;
+                    }
+                    if(k <= tmp) break;
+                }
+            }
+            
+            answer[n-1 - i] = arr[idx];
+            vis[idx] = true;
+        }
+        
+        for(int i = 0; i < n; i++){
+            if(!vis[i]){
+                answer[n-1] = arr[i];
+                break;
+            }
+        }
+        
+        return answer;
+    }
+}
