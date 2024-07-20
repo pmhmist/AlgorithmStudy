@@ -1,0 +1,33 @@
+import java.util.*;
+class Solution {
+    public long solution(int n, int[] works) {
+        long answer = 0;
+        int len = works.length;
+        PriorityQueue<Integer> pq = new PriorityQueue<>(Collections.reverseOrder());
+        for(int i = 0; i < len; i++){
+            pq.offer(works[i]);
+        }
+        
+        boolean zero = false;
+        for(int i = 0; i < n; i++){
+            int cur = pq.peek();
+            if (cur == 0){
+                zero = true;
+                break;
+            }
+            pq.poll();
+            pq.offer(cur-1);
+        }
+        
+        if(!zero){
+            while(!pq.isEmpty()){
+                answer += pq.peek() * pq.peek();
+                pq.poll();
+            }
+            
+        }
+        
+        
+        return answer;
+    }
+}
