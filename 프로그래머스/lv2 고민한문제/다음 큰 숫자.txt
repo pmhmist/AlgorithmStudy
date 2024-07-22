@@ -1,0 +1,36 @@
+import java.util.*;
+class Solution {
+    
+    public static int solve(int cur){
+        int ck = 0;
+        while(true){
+            if(cur%2 == 1){
+                ck++;
+            }
+            cur = cur/2;
+            if(cur == 1){
+                ck++;
+                break;
+            }
+        }
+        
+        return ck;
+    }
+    
+    public int solution(int n) {
+        int answer = 0;
+        int cnt = solve(n);
+        
+        while(true){
+            n++;
+            int cnt2 = solve(n);
+            if(cnt == cnt2){
+                answer = n;
+                break;
+            }
+        }
+        
+
+        return answer;
+    }
+}

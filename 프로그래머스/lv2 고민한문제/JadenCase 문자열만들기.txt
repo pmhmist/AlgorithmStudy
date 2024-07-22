@@ -1,0 +1,35 @@
+class Solution {
+    public String solution(String s) {
+        s = s.toLowerCase();
+        StringBuilder sb = new StringBuilder(s);
+        boolean rezero = true;
+        for(int i = 0 ; i < sb.length(); i++){
+            if(sb.charAt(i) == ' '){
+                rezero = true;
+                continue;
+            } 
+            
+            if(rezero){
+                char ck = sb.charAt(i);
+                ck = Character.toUpperCase(ck);
+                sb.setCharAt(i,ck);
+                rezero = false;
+            }
+            else{
+                continue;
+            }
+        }
+        
+        
+        String answer = sb.toString();
+        
+        
+        return answer;
+    }
+}
+
+=====================
+Charactet.toUpperCase(ck);
+sb.setCharAt()
+StringBuilder => String 으로 변환하고
+sb.setCharAt(idx) 사용

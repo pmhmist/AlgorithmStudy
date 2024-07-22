@@ -1,0 +1,71 @@
+import java.util.*;
+class Solution {
+    
+    public static char[] base = {'A','C','F','J','M','N','R','T'};
+    public static char[] arr;
+    public static boolean[] vis = new boolean[8];
+    public static int answer = 0;
+    
+    public static void solve(int cur, String[] ck){
+        
+        if(cur == 8){
+            int len = ck.length;
+            boolean judge = true;
+            for(int i = 0; i < len; i++){
+                char tmpx = ck[i].charAt(0);
+                char tmpy = ck[i].charAt(2);
+                int x = 0;
+                int y = 0;
+                for(int i2 = 0; i2 < 8; i2++){
+                    if(tmpx == arr[i2]){
+                        x = i2;
+                        break;
+                    }
+                }
+                
+                for(int i2 = 0; i2 < 8; i2++){
+                    if(tmpy == arr[i2]){
+                        y = i2;
+                        break;
+                    }
+                }
+               
+                int diff1 = Math.abs(x-y)-1;
+                int diff2 = ck[i].charAt(4) - '0';
+               
+                
+                if(ck[i].charAt(3) == '='){
+                    if(diff1 != diff2) judge = false;
+                }
+                else if(ck[i].charAt(3) == '<'){
+                    if(diff1 >= diff2) judge = false;
+                }
+                else if(ck[i].charAt(3) == '>'){
+                    if(diff1 <= diff2) judge = false;
+                }
+                if(!judge) break;
+                
+            }
+            if(judge) answer++;
+            return;
+        }
+        
+        for(int i = 0; i < 8; i++){
+            if(vis[i]) continue;
+            vis[i] = true;
+            arr[cur] = base[i];
+            solve(cur+1,ck);
+            vis[i] = false;
+        }
+    }
+    
+    public int solution(int n, String[] data) {
+        // 조건의 개수 = n
+        // 전역으로 설정한변수 -> solution 함수에서 초기화 한번 해주기
+        arr = new char[8];
+        answer = 0;
+        solve(0,data);
+        
+        return answer;
+    }
+}
