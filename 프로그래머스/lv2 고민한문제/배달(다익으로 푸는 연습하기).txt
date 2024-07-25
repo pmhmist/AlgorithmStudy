@@ -1,0 +1,83 @@
+import java.util.*;
+class Solution {
+    
+    public static class Pair{
+        int x;
+        int y;
+        
+        Pair(int x, int y){
+            this.x = x;
+            this.y = y;
+        }
+    }
+    
+    public int solution(int N, int[][] road, int K) {
+        int answer = 0;
+        int[][] cost = new int[N+1][N+1];
+        int[][] vis = new int[N+1][N+1];
+        ArrayList<Integer>[] arr = new ArrayList[N+1];
+        
+        for(int i = 0; i <= N; i++){
+            arr[i] = new ArrayList<>();
+        }
+        
+        for(int i = 0; i <= N; i++){
+            for(int j = 0; j <= N; j++){
+                vis[i][j] = -1;
+            }
+        }
+        
+        for(int i = 0; i < road.length; i++){
+            int x = road[i][0];
+            int y = road[i][1];
+            int w = road[i][2];
+            
+            if(cost[x][y] == 0){
+                cost[x][y] = w;
+                cost[y][x] = w;
+                arr[x].add(y);
+                arr[y].add(x);
+                
+            }
+            else{
+                if(cost[x][y] > w){
+                    cost[x][y] = w;
+                    cost[y][x] = w;
+                }
+            }
+        }
+        
+        Queue<Pair> q = new ArrayDeque<>();
+        q.offer(new Pair(1,0));
+        while(!q.isEmpty()){
+            int cur = q.peek().x;
+            int val = q.peek().y;
+            q.poll();
+            for(int nxt : arr[cur]){
+                if(val + cost[cur][nxt] > K) continue;
+                if(vis[nxt][cur] == -1){
+                    vis[nxt][cur] = val +  cost[cur][nxt];
+                    q.offer(new Pair(nxt,val+cost[cur][nxt]));
+                }
+                else{
+                    if(vis[nxt][cur] > val + cost[cur][nxt]){
+                        vis[nxt][cur] = val +  cost[cur][nxt];
+                        q.offer(new Pair(nxt,val+cost[cur][nxt]));
+                    }
+                }
+            }
+        }
+        
+        Set<Integer> s = new HashSet<>();
+        for(int i = 1; i <= N; i++){
+            for(int j = 1; j <= N; j++){
+                if(vis[i][j] != -1){
+                    s.add(i);
+                    s.add(j);
+                }
+            }
+        }
+        answer = s.size();
+        return answer;
+    }
+}
