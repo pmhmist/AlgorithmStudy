@@ -1,0 +1,48 @@
+class Solution
+{
+    public int solution(int n, int a, int b)
+    {
+        int sz = 1;
+        int idx = 0;
+        while(true){
+            sz = sz*2;
+            idx++;
+            if(sz == n) break;
+        }
+        int answer = idx;
+        
+        int left = 1;
+        int right = n;
+        while(true){
+            int mid = (left + right)/2;
+            if(a <= mid && b <= mid){
+                answer--;
+                right = mid;
+            }
+            else if(a > mid && b > mid){
+                answer--;
+                left = mid;
+            }
+            else{
+                break;
+            }
+        }
+        
+        
+
+        return answer;
+    }
+}
+
+=======================
+쉽게푸는법
+이 문제는 대진표의 순서를 구하는 공식만 알아낸다면 정말 간단하게 풀 수 있습니다.
+대진표의 순서는 다음 그림과 같이 그 라운드의 우승자가 다음 라운드로 진출하게 되는데,
+1, 2번 참가자 중 우승자는 그 다음 라운드의 1번
+3, 4번 참가자 중 우승자는 그 다음 라운드의 2번
+5, 6번 참가자 중 우승자는 그 다음 라운드의 3번
+7, 8번 참가자 중 우승자는 그 다음 라운드의 4번
+과 같이 번호가 변하게 됩니다.
+ 
+이와 같이 변하는 번호의 규칙을 찾아보면 (참가자번호 / 2) + (참가자번호  % 2)인 것을 알 수 있습니다.
+이렇게 그 다음 라운드로 넘어가면서 a의 값과 b의 값이 일치할 때 까지 반복문을 돌린다면 같은 순서로 대진할 때 반복문은 종료되며 두 참가자가 만나는 라운드를 알 수 있습니다.
