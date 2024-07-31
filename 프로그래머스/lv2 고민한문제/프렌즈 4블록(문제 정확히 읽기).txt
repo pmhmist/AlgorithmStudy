@@ -1,0 +1,69 @@
+import java.util.*;
+class Solution {
+    public int solution(int m, int n, String[] board) {
+        int answer = 0;
+        char[][] board2 = new char[m][n];
+            
+        for(int i = 0; i < m; i++){
+            for(int j = 0; j < n; j++){
+                board2[i][j] = board[i].charAt(j);
+            }
+        }
+        
+        while(true){
+            boolean stop = true;
+            boolean[][] gaza = new boolean[m][n];
+            
+            for(int i = 0; i < m; i++){
+                for(int j = 0; j < n; j++){
+                    char st = board2[i][j];
+                    if(st == '!') continue;
+                    if(i+1 >= m) continue;
+                    if(j+1 >= n) continue;
+                    boolean bomb = true;
+                    if(board2[i][j+1] != st) bomb = false;
+                    if(board2[i+1][j] != st) bomb = false;
+                    if(board2[i+1][j+1] != st) bomb = false;
+                    if(bomb){
+                        stop = false;
+                        gaza[i][j] = true;
+                        gaza[i][j+1] = true;
+                        gaza[i+1][j] = true;
+                        gaza[i+1][j+1] = true;
+                    }
+                }
+            }
+            
+            for(int i = 0; i < m; i++){
+                for(int j = 0; j < n; j++){
+                    if(gaza[i][j]){
+                        answer++;
+                        board2[i][j] = '!';
+                    }
+                }
+            }
+            
+            for(int i = 0; i < n; i++){
+                Queue<Integer> q = new ArrayDeque<>();
+                for(int j = m-1; j >= 0; j--){
+                    if(board2[j][i] == '!'){
+                        q.offer(j);
+                    }
+                    else{
+                        if(!q.isEmpty()){
+                            int nxt = q.peek();
+                            board2[nxt][i] = board2[j][i];
+                            board2[j][i] = '!';
+                            q.poll();
+                            q.offer(j);
+                        }
+                    }
+                }
+            }
+            
+            if(stop) break;
+        }
+        
+        return answer;
+    }
+}

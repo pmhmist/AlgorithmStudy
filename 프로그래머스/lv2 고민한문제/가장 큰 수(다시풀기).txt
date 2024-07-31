@@ -1,0 +1,40 @@
+import java.util.*;
+class Solution {
+    public String solution(int[] numbers) {
+        String answer = "";
+        String[] num = new String[numbers.length];
+        
+        for(int i = 0; i < numbers.length; i++){
+            num[i] = String.valueOf(numbers[i]);
+        }
+        
+        Arrays.sort(num,(o1,o2) -> (o2+o1).compareTo(o1+o2));
+        
+        if(num[0].equals("0")){
+            answer = "0";
+        }
+        else{
+            for(int i = 0; i < numbers.length; i++){
+                answer += num[i];
+            }
+        }
+        
+        return answer;
+    }
+}
+======================
+Arrays.sort 해설
+(o2 + o1).compareTo(o1 + o2):
+설명: 두 문자열 o1과 o2를 연결하여 o2 + o1과 o1 + o2를 만듭니다. 그리고 이를 비교하여 정렬합니다.
+동작 방식:
+만약 o2 + o1이 o1 + o2보다 크면, o2가 o1보다 앞에 오게 됩니다.
+예를 들어, o1이 "3"이고 o2가 "30"이라면, o2 + o1은 "303"이 되고, o1 + o2는 "330"이 됩니다. "330"이 "303"보다 크므로 "3"이 "30"보다 앞에 오게 됩니다.
+이 비교 방법은 가장 큰 숫자를 만들기 위해 큰 값이 앞에 오도록 정렬합니다.
+(o1 + o2).compareTo(o2 + o1):
+설명: 두 문자열 o1과 o2를 연결하여 o1 + o2와 o2 + o1을 만듭니다. 그리고 이를 비교하여 정렬합니다.
+동작 방식:
+만약 o1 + o2가 o2 + o1보다 크면, o1이 o2보다 앞에 오게 됩니다.
+예를 들어, o1이 "3"이고 o2가 "30"이라면, o1 + o2는 "330"이 되고, o2 + o1은 "303"이 됩니다. "330"이 "303"보다 크므로 "3"이 "30"보다 앞에 오게 됩니다.
+이 비교 방법은 가장 작은 숫자를 만들기 위해 작은 값이 앞에 오도록 정렬할 때 사용될 수 있습니다.
+
+
