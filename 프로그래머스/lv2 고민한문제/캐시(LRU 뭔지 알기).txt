@@ -1,0 +1,59 @@
+import java.util.*;
+
+class Solution {
+    public int solution(int cacheSize, String[] cities) {
+        
+        int answer = 0;
+        Queue<String> q1 = new ArrayDeque<>();
+        Queue<String> q2 = new ArrayDeque<>(); 
+        
+        for(int i = 0; i < cities.length; i++){
+            boolean judge = false;
+            boolean save = false;
+            String sv = "";
+            cities[i] = cities[i].toLowerCase();
+            
+            while(!q1.isEmpty()){
+                String cur = q1.peek();
+                if(cur.equals(cities[i])){
+                    judge = true;
+                    save = true;
+                    sv = cur;
+                }
+                else{
+                    q2.offer(cur);
+                }
+                q1.poll();
+            }
+            
+            while(!q2.isEmpty()){
+                String cur = q2.peek();
+                q1.offer(cur);
+                q2.poll();
+            }
+            
+            if(judge) answer += 1;
+            else answer += 5;
+            
+            if(save){
+                q1.offer(sv);
+            }
+            else{
+                q1.offer(cities[i]);
+                if(q1.size() > cacheSize) q1.poll();   
+            }
+        }
+        
+        
+        
+        return answer;
+    }
+}
+
+====================
+
+LRU : 가장 오랫동안 참조되지 않은 페이지를 교체
+-> 캐시 hit이 일어나면 나중에 지워지게 끔 맨 뒤로 이동
+-> 캐시 miss라면 miss한 내용은 맨 뒤에 넣고 버퍼가 가득 찼다면 앞은 삭제
+
+또한 문제 조건의 대소문자 구분하지 않음을 유의 -> algorithm 헤더의 transform 함수 사용

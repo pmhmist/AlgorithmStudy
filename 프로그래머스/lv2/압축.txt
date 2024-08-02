@@ -1,0 +1,55 @@
+import java.util.*;
+
+class Solution {
+    public int[] solution(String msg) {
+        Map<String,Integer> map = new HashMap<>();
+        
+        String[] base = {"A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R",
+                         "S","T","U","V","W","X","Y","Z"};
+        for(int i = 1; i <= 26; i++){
+            map.put(base[i-1],i);
+        }
+        
+        int idx = 27;
+        boolean[] vis = new boolean[msg.length()];
+        Queue<Integer> q = new ArrayDeque<>();
+        
+        for(int i = 0; i < msg.length(); i++){
+            if(vis[i]) continue;
+            String tmp = "";
+            String prev = "";
+            for(int j = i; j < msg.length(); j++){
+                tmp += msg.charAt(j);
+                if(!map.containsKey(tmp)){
+                    map.put(tmp,idx);
+                    idx++;
+                    q.offer(map.get(prev));
+                    break;
+                }
+                else{
+                    prev = tmp;
+                    vis[j] = true;
+                    if(j == msg.length() - 1){
+                        q.offer(map.get(prev));
+                    }
+                }
+            }
+        }
+        int[] answer = new int[q.size()];
+        int cur = 0;
+        while(!q.isEmpty()){
+            answer[cur] = q.peek();
+            cur++;
+            q.poll();
+        }
+        
+        
+        return answer;
+    }
+}
+
+=========================
+        for(int i = 1; i <= 26; i++){
+            map.put(String.valueOf((char)('A'-1+i)),i);
+        }
+        
