@@ -1,0 +1,74 @@
+// String 정렬하는법 정확히 파악하기
+import java.util.*;
+class Solution {
+    
+    public static class File implements Comparable<File>{
+        String name;
+        String head;
+        int number;
+        int order;
+        
+        File(String name, String head, int number, int order){
+            this.name = name;
+            this.head = head;
+            this.number = number;
+            this.order = order;
+        }
+        
+        @Override
+        public int compareTo(File f){
+            if(this.head.equals(f.head)){
+                if(this.number == f.number){
+                    return this.order - f.order;
+                }
+                else{
+                    return this.number - f.number;
+                }
+            }
+            else{
+                return this.head.compareTo(f.head);
+            }
+        }
+        
+    }
+    
+    public String[] solution(String[] files) {
+        String[] answer = new String[files.length];
+        File[] arr = new File[files.length];
+        
+        for(int num = 0; num < files.length; num++){
+            String gaza = files[num];
+            String base = files[num].toLowerCase();
+            String head = "";
+            int number = 0;
+            String tmp = "";
+            boolean judge = false;
+            for(int i = 0; i < base.length(); i++){
+                tmp += base.charAt(i);
+                if(base.charAt(i+1) - '0' >= 0 && base.charAt(i+1) - '0' <= 9){
+                    judge = true;
+                    head = tmp;
+                    //System.out.println(head);
+                    tmp = "";
+                    for(int j = i+1; j < i+6; j++){
+                        if(j >= base.length()) break;
+                        if(base.charAt(j) - '0' < 0 || base.charAt(j) - '0' > 9) break;
+                        tmp += base.charAt(j);
+                    }
+                    number = Integer.valueOf(tmp);
+                    //System.out.println(number);
+                }
+                
+                if(judge) break;
+            }
+            arr[num] = new File(gaza,head,number,num);
+        }
+        Arrays.sort(arr);
+        
+        for(int i = 0; i < files.length; i++){
+            answer[i] = arr[i].name;
+        }
+        
+        return answer;
+    }
+}
