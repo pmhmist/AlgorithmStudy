@@ -1,0 +1,31 @@
+import java.util.*;
+class Solution {
+    static int sz;
+    static int answer;
+    
+    
+    public int solution(String[][] clothes) {
+        answer = 0;
+        
+        Map<String,Integer> map = new HashMap<>();
+        for(int i = 0; i < clothes.length; i++){
+            String tmp1 = clothes[i][0];
+            String tmp2 = clothes[i][1];
+            
+            if(map.containsKey(tmp2)){
+                map.put(tmp2,map.get(tmp2) + 1);
+            }
+            else{
+                map.put(tmp2,1);
+            }
+        }
+        
+        answer = 1;
+        for(String nxt : map.keySet()){
+            answer *= (map.get(nxt)+1);
+        }
+        answer--;
+        
+        return answer;
+    }
+}

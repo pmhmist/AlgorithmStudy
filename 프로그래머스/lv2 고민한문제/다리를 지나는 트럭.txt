@@ -1,0 +1,62 @@
+import java.util.*;
+class Solution {
+    
+    public static class Pair implements Comparable<Pair>{
+        int x;
+        int y;
+        
+        Pair(int x, int y){
+            this.x = x;
+            this.y = y;
+        }
+        
+        @Override
+        public int compareTo(Pair p){
+            return p.y - this.y;
+        }
+        
+    }
+    
+    public int solution(int bridge_length, int weight, int[] truck_weights) {
+        int answer = 0;
+        int sum = 0;
+        int idx = 0;
+        PriorityQueue<Pair> pq = new PriorityQueue<>();
+        Queue<Pair> q = new ArrayDeque<>();
+        
+        while(true){
+
+            while(!pq.isEmpty()){
+                Pair cur = pq.peek();
+                pq.poll();
+                cur.y += 1;
+                if(cur.y <= bridge_length){
+                    q.offer(cur);
+                }
+                else{
+                    sum -= cur.x;
+                }
+            }
+
+            while(!q.isEmpty()){
+                pq.offer(q.peek());
+                q.poll();
+            }
+
+            if(idx < truck_weights.length){
+                int nxt = truck_weights[idx];
+                if(sum + nxt <= weight){
+                    pq.offer(new Pair(nxt,1));
+                    sum += nxt;
+                    idx++;
+                }
+            }
+
+            answer++;
+            if(pq.isEmpty()) break;
+        }
+        
+        
+        return answer;
+    }
+}
