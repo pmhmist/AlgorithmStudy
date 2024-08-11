@@ -1,0 +1,48 @@
+import java.util.*;
+
+class Solution {
+    
+    public static class Pair{
+        int x;
+        int y;
+
+        Pair(int x, int y){
+            this.x = x;
+            this.y = y;
+        }
+    }
+    
+    public int solution(int[] priorities, int location) {
+        int answer = 0;
+        int len = priorities.length;
+        int[] arr = new int[len];
+        for(int i = 0; i < len; i++){
+            arr[i] = priorities[i];
+        }
+        Arrays.sort(arr);
+        int idx = len-1;
+        Queue<Pair>q = new ArrayDeque<>();
+        for(int i = 0; i < len; i++){
+            q.offer(new Pair(priorities[i],i));
+        }
+        
+        answer = 1;
+        while(!q.isEmpty()){
+            Pair cur = q.peek();
+            int ck = arr[idx];
+            q.poll();
+            if(cur.x == ck){
+                if(cur.y == location) break;
+                else{
+                    answer++;
+                    idx--;
+                }
+            }
+            else{
+                q.offer(cur);
+            }
+        }
+        
+        return answer;
+    }
+}
