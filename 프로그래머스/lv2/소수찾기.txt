@@ -1,0 +1,63 @@
+import java.util.*;
+
+class Solution {
+    static String base;
+    static char[] arr;
+    static boolean[] vis;
+    static Set<Integer> s;
+    static StringBuilder sb;
+    static int ans;
+    
+    public static void solve(int cur, int ed){
+        if(cur == ed){
+            sb = new StringBuilder();
+            for(int i = 0; i < ed; i++){
+                sb.append(arr[i]);
+            }
+            String tmp = sb.toString();
+            int ck = Integer.valueOf(tmp);
+            boolean judge = true;
+            if(ck == 0 || ck == 1) judge = false;
+            for(int i = 2; i*i <= ck; i++){
+                if(ck%i == 0){
+                    judge = false;
+                } 
+                if(!judge) break;
+            }
+            
+            if(s.contains(ck)){
+                judge = false;
+            }
+            else{
+                s.add(ck);
+            }
+            
+            if(judge) ans++;
+            return;
+        }
+        
+        for(int i = 0; i < base.length(); i++){
+            if(vis[i]) continue;
+            vis[i] = true;
+            arr[cur] = base.charAt(i);
+            solve(cur+1,ed);
+            vis[i] = false;
+        }
+    }
+    
+    public int solution(String numbers) {
+        int answer = 0;
+        ans = 0;
+        base = numbers;
+        vis = new boolean[numbers.length()];
+        s = new HashSet<>();
+        
+        for(int i = 1; i <= numbers.length(); i++){
+            arr = new char[i];
+            solve(0,i);
+        }
+        
+        answer = ans;
+        return answer;
+    }
+}
