@@ -1,0 +1,25 @@
+class Solution {
+    public int[] solution(int brown, int yellow) {
+        int[] answer = new int[2];
+        int sum = brown + yellow;
+        boolean stop = false;
+        for(int i = 2; i <= (int)Math.sqrt(sum); i++){
+            if(stop) break;
+            if(sum%i == 0){
+                int j = sum/i;
+                int ck = (i+j)*2 - 4;
+                if((sum-ck) == yellow){
+                    answer[0] = Math.max(i,j);
+                    answer[1] = Math.min(i,j);
+                }
+                
+            }
+            
+            
+        }
+        
+        
+        
+        return answer;
+    }
+}

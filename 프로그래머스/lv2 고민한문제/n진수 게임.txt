@@ -1,0 +1,43 @@
+import java.util.*;
+
+class Solution {
+    public String solution(int n, int t, int m, int p) {
+        String base = "";
+        Map<Integer,Character> map  = new HashMap<>();
+        char[] arr = {'A','B','C','D','E','F'};
+        
+        for(int i = 0; i <= 100000; i++){
+            if(base.length() >= m*t) break;
+            if(i == 0) base += '0';
+            else{
+                int point = i;
+                Stack<Integer> s = new Stack<>();
+                while(point != 0){   
+                    s.push(point%n);
+                    point = point/n;
+                }
+                while(!s.isEmpty()){
+                    int cur = s.peek();
+                    if(cur >= 10){
+                        base += arr[cur-10];
+                    }
+                    else{
+                        base += String.valueOf(cur);
+                    }
+                    s.pop();
+                }
+            }    
+        }
+        
+        String answer = "";
+        int ck = p % m;
+        for(int i = 1; i <= base.length(); i++){
+            if(i % m == ck){
+                answer += base.charAt(i-1);
+            }
+            if(answer.length() == t) break;
+        }
+        
+        return answer;
+    }
+}
