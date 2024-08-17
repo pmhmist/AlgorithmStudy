@@ -1,0 +1,45 @@
+import java.util.*;
+
+class Solution {
+    public String[] solution(String[] record){
+        int len = record.length;
+        Map<String,String> map = new HashMap<>();
+        ArrayList<String> arr = new ArrayList<>();
+        ArrayList<String> arr2 = new ArrayList<>();
+        
+        for(int i = 0; i < len; i++){
+            String cur = record[i];
+            StringTokenizer st = new StringTokenizer(cur);
+            String order = st.nextToken();
+            if(order.equals("Enter")){
+                String id = st.nextToken();
+                String name = st.nextToken();
+                map.put(id,name);
+                arr.add(id);
+                arr2.add("E");
+            }
+            else if(order.equals("Leave")){
+                String id = st.nextToken();
+                arr.add(id);
+                arr2.add("L");
+            }
+            else{
+                String id = st.nextToken();
+                String name = st.nextToken();
+                map.put(id,name);
+            }
+        }
+        
+        String[] answer = new String[arr.size()];
+        for(int i = 0; i < answer.length; i++){
+            if(arr2.get(i).equals("E")){
+                answer[i] = map.get(arr.get(i)) + "님이 들어왔습니다.";
+            }
+            else{
+                answer[i] = map.get(arr.get(i)) + "님이 나갔습니다.";
+            }
+        }
+        
+        return answer;
+    }
+}
