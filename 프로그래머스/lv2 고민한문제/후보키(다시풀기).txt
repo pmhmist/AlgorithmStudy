@@ -1,0 +1,90 @@
+import java.util.*;
+
+class Solution {
+    static boolean[] vis;
+    static ArrayList<String> duple;
+    static int[] arr;
+    static int n;
+    static int m;
+    static int total;
+    
+    public static void solve(int cur, String[][] relation, int num, int end){
+        if(num == end){
+            Set<String> s = new HashSet<>();
+            boolean ck = true;
+            StringBuilder sb = new StringBuilder();
+            for(int i = 0; i < end; i++){
+                sb.append(arr[i]);
+            }
+            
+            boolean stop = false;
+            String tmp = sb.toString();
+            for(String nxt : duple){
+                int cnt = 0;
+                for(int i = 0; i < tmp.length(); i++){
+                    for(int j = 0; j < nxt.length(); j++){
+                        if(tmp.charAt(i) == nxt.charAt(j)){
+                            cnt++;
+                            break;
+                        }
+                    }
+                }
+                if(cnt == nxt.length()){
+                    stop = true;
+                    break;
+                }
+            }
+            
+            if(stop) return;
+            
+            for(int i = 0; i < n; i++){
+                sb = new StringBuilder();
+                for(int j = 0; j < end; j++){
+                    sb.append(relation[i][arr[j]]);
+                }
+                String point = sb.toString();
+                if(s.contains(point)){
+                    ck = false;
+                    break;
+                }
+                else{
+                    s.add(point);
+                }
+            }
+            
+            if(ck){
+                total++;
+                duple.add(tmp);
+            }
+            
+            return;
+        }
+        
+        for(int i = cur; i < m; i++){
+            if(vis[i]) continue;
+            vis[i] = true;
+            arr[num] = i;
+            solve(i+1,relation,num+1,end);
+            vis[i] = false;
+        }
+        
+    }
+    
+    public int solution(String[][] relation) {
+        int answer = 0;
+        total = 0;
+        
+        n = relation.length;
+        m = relation[0].length;
+        
+        vis = new boolean[m];
+        arr = new int[m];
+        duple = new ArrayList<>();
+        
+        for(int i = 1; i <= m; i++){
+            solve(0, relation, 0, i);
+        }
+        answer = total;
+        return answer;
+    }
+}

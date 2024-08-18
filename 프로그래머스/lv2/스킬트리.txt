@@ -1,0 +1,39 @@
+import java.util.*;
+
+class Solution {
+    public int solution(String skill, String[] skill_trees) {
+        int answer = 0;
+        
+        int point = 0;
+        Map<Character,Integer> map = new HashMap<>();
+        for(int i = 0; i < skill.length(); i++){
+            char tmp = skill.charAt(i);
+            map.put(tmp,point);
+            point++;
+        }
+        
+        for(int i = 0; i < skill_trees.length; i++){
+            String cur = skill_trees[i];
+            boolean judge = true;
+            point = 0;
+            for(int j = 0; j < cur.length(); j++){
+                char tmp = cur.charAt(j);
+                if(map.containsKey(tmp)){
+                    if(point == map.get(tmp)){
+                        point++;
+                    }
+                    else{
+                        judge = false;
+                        break;
+                    }
+                }
+                
+            }
+            
+            if(judge) answer++;
+            
+        }
+        
+        return answer;
+    }
+}
