@@ -1,0 +1,55 @@
+import java.util.*;
+
+class Solution {
+    public int solution(String s) {
+        int answer = s.length();
+        
+        for(int len = 1; len <= s.length()/2; len++){
+            int st = 0;
+            int ed = 0;
+            int point = 0;
+            int tmppoint = 0;
+            StringBuilder tmp = new StringBuilder();
+            Map<String,Integer> map = new HashMap<>();
+            String prev = "!";
+            while(true){
+                if(ed >= s.length()) break;
+                
+                if(ed - st < len){
+                    tmp.append(s.charAt(ed));
+                    ed++;
+                    if(ed - st == len){
+                        st = ed;
+                        String ck = tmp.toString();
+                        if(prev.equals(ck)){
+                            map.put(ck,map.get(ck)+1);
+                            prev = ck;
+                            int cal = map.get(prev);
+                            int callen = len+1;
+                            while(true){
+                                cal = cal/10;
+                                if(cal == 0) break;
+                                callen++;
+                            }
+                            cal = map.get(prev);
+                            int judge = cal*len - (callen);
+                            if(judge > 0) tmppoint = judge;
+                        }
+                        else{
+                            point += tmppoint;
+                            tmppoint = 0;
+                            map.put(ck,1);
+                            prev = ck;
+                        }
+                        tmp = new StringBuilder();
+                    }
+                }
+                
+            }
+            point += tmppoint;
+            answer = Math.min(answer,s.length()-point);
+        }
+        
+        return answer;
+    }
+}
