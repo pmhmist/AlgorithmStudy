@@ -1,0 +1,16 @@
+class Solution {
+    
+    public int gcd(int a, int b){
+        if(b == 0) return a; 
+        return gcd(b,a%b);
+    }
+    
+    public long solution(int w, int h) {
+        long answer = 1;
+         // 대각선이 지나는 단위 정사각형 공식 사용
+        answer = (long)w*h - (w + h - gcd(w,h));   
+        
+        return answer;
+    }
+}
+

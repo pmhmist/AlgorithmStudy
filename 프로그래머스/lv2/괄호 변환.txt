@@ -1,0 +1,74 @@
+import java.util.*;
+
+class Solution {
+    static String ans = "";
+    
+    public static void solve(String p,int st, int ed){
+        StringBuilder sam1 = new StringBuilder();
+        StringBuilder sam2 = new StringBuilder();
+        sam1 = new StringBuilder();
+        sam2 = new StringBuilder();
+        int left = 0;
+        int right = 0;
+        int mid = 0;
+        for(int i = st; i <= ed; i++){    
+            if(p.charAt(i) == '('){
+                left++;
+            }
+            else{
+                right++;
+            }
+            sam1.append(p.charAt(i));
+            if(left == right){
+                mid = i+1;
+                break;
+            }
+        }
+        
+        Stack<Character> s = new Stack<>();
+        boolean judge = true;
+        for(int i = 0; i < sam1.length(); i++){
+            if(sam1.charAt(i) == '('){
+                s.push('(');
+            }
+            else{
+                if(s.isEmpty()){
+                    judge = false;
+                    break;
+                }
+                else{
+                    s.pop();
+                }
+            }
+        }
+
+        if(!s.isEmpty()) judge = false;
+        if(judge){
+            ans += sam1.toString();
+            if(mid <= ed){
+                solve(p,mid,ed);   
+            }
+        }
+        else{
+            ans += '(';
+            if(mid <= ed){
+                solve(p,mid,ed);   
+            }
+            ans+= ')';
+            for(int i = 0; i < sam1.length(); i++){
+                if (i == 0 ) continue;
+                if (i == sam1.length() -1) continue;
+                
+                if(sam1.charAt(i) == '(') ans += ')';
+                else ans += '(';
+            }
+        }
+        
+    }
+    
+    public String solution(String p) {
+        solve(p,0,p.length()-1);
+        String answer = ans;
+        return answer;
+    }
+}
