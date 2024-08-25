@@ -1,0 +1,34 @@
+import java.util.*;
+
+class Solution {
+    public int[] solution(String s) {
+        s = s.substring(2,s.length()-2);
+        s = s.replace("{","!");
+        s = s.replace("}","!");
+        String[] arr = s.split("!");
+        Arrays.sort(arr, new Comparator<String>(){
+            @Override
+            public int compare(String o1, String o2){
+                return o1.length() - o2.length();
+            }
+            
+        });
+        ArrayList<Integer> ans = new ArrayList<>();
+        for(int i = 0; i < arr.length; i++){
+            String[] num = arr[i].split(",");
+            for(int j = 0; j < num.length; j++){
+                int tmp = Integer.valueOf(num[j]);
+                if(!ans.contains(tmp)){
+                    ans.add(tmp);
+                }
+            }
+        }
+        
+        int[] answer = new int[ans.size()];
+        for(int i = 0; i < ans.size(); i++){
+            answer[i] = ans.get(i);
+        }
+        
+        return answer;
+    }
+}
