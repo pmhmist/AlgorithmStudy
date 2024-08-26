@@ -1,0 +1,97 @@
+import java.util.*;
+
+class Solution {
+    
+    static int[] arr = new int[3];
+    static boolean[] vis = new boolean[3];
+    static long ans = 0;
+    
+    public static void solve(int cur, String sam){
+        if(cur == 3){
+            ArrayList<Long> num = new ArrayList<>();
+            ArrayList<Character> oper = new ArrayList<>();
+            
+            StringBuilder tmp = new StringBuilder();
+            for(int i = 0; i < sam.length(); i++){
+                if(sam.charAt(i) == '*' || sam.charAt(i) == '+' || sam.charAt(i) == '-'){
+                    oper.add(sam.charAt(i));
+                    num.add(Long.valueOf(tmp.toString()));
+                    tmp = new StringBuilder();
+                }
+                else{
+                    tmp.append(sam.charAt(i));
+                }
+            }
+            num.add(Long.valueOf(tmp.toString()));
+            
+            for(int turn = 0; turn < 3; turn++){
+                int ck = arr[turn];
+                if(ck == 0){
+                    for(int i = 0; i < oper.size(); i++){
+                        if(oper.get(i) == '+'){
+                            long idx1 = num.get(i);
+                            long idx2 = num.get(i+1);
+                            long cal = idx1 + idx2;
+                            
+                            num.remove(i+1);
+                            num.remove(i);
+                            oper.remove(i);
+                            num.add(i,cal);
+                            i--;
+                        }
+                    }
+                }
+                else if(ck == 1){
+                    for(int i = 0; i < oper.size(); i++){
+                        if(oper.get(i) == '-'){
+                            long idx1 = num.get(i);
+                            long idx2 = num.get(i+1);
+                            long cal = idx1 - idx2;
+                            
+                            num.remove(i+1);
+                            num.remove(i);
+                            oper.remove(i);
+                            num.add(i,cal);
+                            i--;
+                        }
+                    }
+                }
+                else{
+                    for(int i = 0; i < oper.size(); i++){
+                        if(oper.get(i) == '*'){
+                            long idx1 = num.get(i);
+                            long idx2 = num.get(i+1);
+                            long cal = idx1 * idx2;
+                            
+                            num.remove(i+1);
+                            num.remove(i);
+                            oper.remove(i);
+                            num.add(i,cal);
+                            i--;
+                        }
+                    }
+                }
+            }
+            
+            ans = Math.max(ans,Math.abs(num.get(0)));
+            
+            return;
+        }
+        
+        for(int i = 0; i < 3; i++){
+            if(vis[i]) continue;
+            arr[cur] = i;
+            vis[i] = true;
+            solve(cur+1,sam);
+            vis[i] = false;
+        }
+        
+    }
+    
+    public long solution(String expression) {
+        long answer = 0;
+        solve(0,expression);
+        answer = ans;
+        return answer;
+    }
+}
