@@ -1,0 +1,145 @@
+import java.util.*;
+
+class Solution {
+    
+    static Map<String,Integer> map;
+    static int mapnum;
+    static ArrayList<Integer>[] score;
+    static int cnt;
+    
+    public static void solve(int cur, int val, String[] base, StringBuilder sb){
+        if(cur == 4){
+            String key = sb.toString();
+            if(map.containsKey(key)){
+                int num = map.get(key);
+                int left = 0;
+                int right = score[num].size();
+                
+                while(left < right){
+                    int mid = (left + right)/2;
+                    if(score[num].get(mid) >= val){
+                         right = mid;
+                    }
+                    else{
+                        left = mid+1;
+                    }
+                }
+                
+                cnt += score[num].size() - right;
+                
+            }
+            return;
+        }
+        
+        int idx = cur*2;
+        if(idx == 0){
+            if(base[idx].equals("-")){
+                StringBuilder tmp1 = new StringBuilder(sb);
+                StringBuilder tmp2 = new StringBuilder(sb);
+                StringBuilder tmp3 = new StringBuilder(sb);
+                tmp1.append("cpp");
+                tmp2.append("java");
+                tmp3.append("python");
+                solve(cur+1,val,base,tmp1);
+                solve(cur+1,val,base,tmp2);
+                solve(cur+1,val,base,tmp3);
+            }
+            else{
+                sb.append(base[idx]);
+                solve(cur+1,val,base,sb);
+            }
+        }
+        else if(idx == 2){
+            if(base[idx].equals("-")){
+                StringBuilder tmp1 = new StringBuilder(sb);
+                StringBuilder tmp2 = new StringBuilder(sb);
+                tmp1.append("backend");
+                tmp2.append("frontend");
+                solve(cur+1,val,base,tmp1);
+                solve(cur+1,val,base,tmp2);
+            }
+            else{
+                sb.append(base[idx]);
+                solve(cur+1,val,base,sb);
+            }
+        }
+        else if(idx == 4){
+            if(base[idx].equals("-")){
+                StringBuilder tmp1 = new StringBuilder(sb);
+                StringBuilder tmp2 = new StringBuilder(sb);
+                tmp1.append("junior");
+                tmp2.append("senior");
+                solve(cur+1,val,base,tmp1);
+                solve(cur+1,val,base,tmp2);
+            }
+            else{
+                sb.append(base[idx]);
+                solve(cur+1,val,base,sb);
+            }
+        }
+        else if(idx == 6){
+            if(base[idx].equals("-")){
+                StringBuilder tmp1 = new StringBuilder(sb);
+                StringBuilder tmp2 = new StringBuilder(sb);
+                tmp1.append("chicken");
+                tmp2.append("pizza");
+                solve(cur+1,val,base,tmp1);
+                solve(cur+1,val,base,tmp2);
+            }
+            else{
+                sb.append(base[idx]);
+                solve(cur+1,val,base,sb);
+            }
+        }
+    }
+    
+    // info 길이 : 50000, query 길이: 100000
+    public int[] solution(String[] info, String[] query) {
+        ArrayList<Integer> ans = new ArrayList<>();
+        map = new HashMap<>();
+        mapnum = 0;
+        score = new ArrayList[100];
+        for(int i = 0; i < 100; i++){
+            score[i] = new ArrayList<>();
+        }
+        
+        for(int i = 0; i < info.length; i++){
+            String[] base = info[i].split(" ");
+            StringBuilder sb = new StringBuilder();
+            for(int j = 0; j < base.length-1; j++){
+                sb.append(base[j]);
+            }
+            String key = sb.toString();
+            int val = Integer.valueOf(base[4]);
+            if(map.containsKey(key)){
+                int idx = map.get(key);
+                score[idx].add(val);
+            }
+            else{
+                map.put(key,mapnum);
+                mapnum++;
+                int idx = map.get(key);
+                score[idx].add(val);
+            }
+        }
+        for(int i = 0; i < mapnum; i++){
+            Collections.sort(score[i]);
+        }
+        
+        for(int i = 0; i < query.length; i++){
+            String[] base = query[i].split(" ");
+            StringBuilder sb = new StringBuilder();            
+            int val = Integer.valueOf(base[7]);
+            cnt = 0;
+            solve(0,val,base,sb);
+            ans.add(cnt);
+        }
+        
+        int[] answer = new int[ans.size()];
+        for(int i = 0; i < answer.length; i++){
+            answer[i] = ans.get(i);
+        }
+        
+        return answer;
+    }
+}

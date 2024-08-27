@@ -1,0 +1,33 @@
+import java.util.*;
+
+class Solution {
+    public int[] solution(String s) {
+        ArrayList<Integer> arr = new ArrayList<>();
+        int cnt = 0;
+        int num = 0;
+        while(true){
+            if(s.equals("1")) break;
+            num++;
+            StringBuilder sb = new StringBuilder(s);
+            for(int i = sb.length()-1; i >= 0; i--){
+                if(sb.charAt(i) == '0'){
+                    sb.deleteCharAt(i);
+                    cnt++;
+                }
+            }
+            arr.add(cnt);
+            int len = sb.length();
+            sb = new StringBuilder();
+            while(len != 0){
+                int tmp = len%2;
+                sb.append(tmp);
+                len = len/2;
+            }
+            s = sb.reverse().toString();
+        }
+        int[] answer = new int[2];
+        answer[0] = num;
+        answer[1] = cnt;
+        return answer;
+    }
+}

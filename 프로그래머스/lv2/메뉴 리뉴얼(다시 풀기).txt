@@ -1,0 +1,73 @@
+import java.util.*;
+
+class Solution {
+    static Map<String,Integer> map;
+    static int[] ck;
+    static int mx;
+    
+    public static void solve(int cur,int depth,int sz, int ed, String sam){
+        if(depth == ed){
+            StringBuilder sb = new StringBuilder();
+            for(int i = 0; i < ed; i++){
+                sb.append(sam.charAt(ck[i]));
+            }
+            String tmp = sb.toString();
+            
+            if(map.containsKey(tmp)){
+                map.put(tmp,map.get(tmp)+1);
+                mx = Math.max(mx,map.get(tmp));
+            }
+            else{
+                map.put(tmp,1);
+                mx = Math.max(mx,map.get(tmp));
+            }
+            
+            return;
+        }
+        
+        for(int i = cur; i < sz; i++){
+            ck[depth] = i;
+            solve(i+1,depth+1,sz,ed,sam);
+        }
+        
+    }
+    
+    public String[] solution(String[] orders, int[] course) {
+        ArrayList<String> arr = new ArrayList<>();
+        
+        for(int i = 0; i < orders.length; i++){
+           char[] go = orders[i].toCharArray();
+           Arrays.sort(go);
+           orders[i] = new String(go);        
+        }
+        
+        for(int i = 0; i < course.length; i++){
+            int len = course[i];
+            map = new HashMap<>();
+            mx = 0;
+            for(int j = 0; j < orders.length; j++){
+                ck = new int[orders[j].length()];
+                if(orders[j].length() < len) continue;
+                else{
+                    solve(0,0,orders[j].length(),len,orders[j]);
+                }
+            }
+            if(mx >= 2){
+                for(String key: map.keySet()){
+                    if(map.get(key) == mx){
+                        arr.add(key);
+                    }
+                }
+            }
+            
+        }
+        
+        Collections.sort(arr);
+        String[] answer = new String[arr.size()];
+        for(int i = 0; i < arr.size(); i++){
+            answer[i] = arr.get(i);
+        }
+        
+        return answer;
+    }
+}

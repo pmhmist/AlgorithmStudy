@@ -1,0 +1,57 @@
+import java.util.*;
+
+class Solution {
+    static int[][] board;
+    static StringBuilder sb;
+    
+    public static void solve(int x, int y, int size){
+        int base = board[x][y];
+        boolean judge = true;
+        for(int i = x; i < x+size; i++){
+            for(int j = y; j < y+size; j++){
+                if(base != board[i][j]){
+                    judge = false;
+                    break;
+                }
+            }
+            if(!judge) break;
+        }
+        
+        int sz = size/2;
+        if(judge){
+            sb.append(base);
+        }
+        else{
+            solve(x,y,sz);
+            solve(x,y+sz,sz);
+            solve(x+sz,y,sz);
+            solve(x+sz,y+sz,sz);
+        }
+    }
+    
+    public int[] solution(int[][] arr) {
+        int[] answer = new int[2];
+        sb = new StringBuilder();
+        int len = arr[0].length;
+        board = new int[len][len];
+        
+        for(int i = 0; i < len; i++){
+            for(int j = 0; j < len; j++){
+                board[i][j] = arr[i][j];
+            }
+        }
+        
+        solve(0,0,len);
+        System.out.println(sb);
+        for(int i = 0; i < sb.length(); i++){
+            if(sb.charAt(i) == '0'){
+                answer[0]++;
+            }
+            else{
+                answer[1]++;
+            }
+        }
+        
+        return answer;
+    }
+}
