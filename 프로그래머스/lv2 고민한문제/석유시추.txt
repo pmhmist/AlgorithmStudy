@@ -1,0 +1,62 @@
+import java.util.*;
+
+class Solution {
+    
+    static int[] dx = {-1,0,1,0};
+    static int[] dy = {0,1,0,-1};
+    
+    public static class Pair{
+        int x;
+        int y;
+        Pair(int x, int y){
+            this.x = x;
+            this.y = y;
+        }
+    }
+    
+    public int solution(int[][] land) {
+        int answer = 0;
+        int mapnum = 2;
+        int n = land.length;
+        int m = land[0].length;
+        int[] cal = new int[m];
+        
+        for(int i = 0; i < n; i++){
+            for(int j = 0; j < m; j++){
+                if(land[i][j] == 1){
+                    Queue<Pair> q = new ArrayDeque<>();
+                    ArrayList<Integer> point = new ArrayList<>();
+                    boolean[] plus = new boolean[m];
+                    q.offer(new Pair(i,j));
+                    int cnt = 0;
+                    while(!q.isEmpty()){
+                        int x = q.peek().x;
+                        int y = q.peek().y;
+                        q.poll();
+                        land[x][y] = mapnum;
+                        if(!plus[y]){
+                            point.add(y);
+                        }
+                        plus[y] = true;
+                        cnt++;
+                        for(int dir = 0; dir < 4; dir++){
+                            int nx = x + dx[dir];
+                            int ny = y + dy[dir];
+                            if(nx < 0 || nx >= n || ny < 0 || ny >= m) continue;
+                            if(land[nx][ny] != 1) continue;
+                            land[nx][ny] = mapnum;
+                            q.offer(new Pair(nx,ny));
+                        }
+                    }
+                    for(int nxt : point){
+                        cal[nxt] += cnt;
+                        if(answer < cal[nxt]) answer = cal[nxt];
+                    }
+                    mapnum++;
+                }
+            }
+        }
+        
+        return answer;
+    }
+}
