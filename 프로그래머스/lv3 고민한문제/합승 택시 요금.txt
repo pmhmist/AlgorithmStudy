@@ -1,0 +1,99 @@
+import java.util.*;
+
+class Solution {
+    
+    public static class Node implements Comparable<Node>{
+        int x;
+        int cost;
+        Node(int x, int cost){
+            this.x = x;
+            this.cost = cost;
+        }
+        
+        @Override
+        public int compareTo(Node o){
+            return this.cost - o.cost;
+        }
+    }
+    
+    public int solution(int n, int st, int goal1, int goal2, int[][] fares) {
+        int answer = 0;
+        
+        ArrayList<Node>[] board = new ArrayList[n+1];
+        for(int i = 0; i <= n; i++){
+            board[i] = new ArrayList<>();
+        }
+        
+        for(int i = 0; i < fares.length; i++){
+            int x = fares[i][0];
+            int y = fares[i][1];
+            int cost = fares[i][2];
+            board[x].add(new Node(y,cost));
+            board[y].add(new Node(x,cost));
+        } 
+        
+        int[] dist = new int[n+1];
+        int[] dist2 = new int[n+1];
+        int[] dist3 = new int[n+1];
+        
+        Arrays.fill(dist,Integer.MAX_VALUE);
+        Arrays.fill(dist2,Integer.MAX_VALUE);
+        Arrays.fill(dist3,Integer.MAX_VALUE);
+        
+        PriorityQueue<Node> pq = new PriorityQueue<>();
+        pq.add(new Node(st,0));
+        dist[st] = 0;
+        while(!pq.isEmpty()){
+            Node cur = pq.peek();
+            int x = cur.x;
+            int curcost = cur.cost;
+            pq.poll();
+            for(Node nxt : board[x]){
+                if(dist[nxt.x] > curcost + nxt.cost){
+                    dist[nxt.x] = curcost + nxt.cost;
+                    pq.offer(new Node(nxt.x,dist[nxt.x]));
+                }
+                
+            }
+        }
+        
+        pq.add(new Node(goal1,0));
+        dist2[goal1] = 0;
+        while(!pq.isEmpty()){
+            Node cur = pq.peek();
+            int x = cur.x;
+            int curcost = cur.cost;
+            pq.poll();
+            for(Node nxt : board[x]){
+                if(dist2[nxt.x] > curcost + nxt.cost){
+                    dist2[nxt.x] = curcost + nxt.cost;
+                    pq.offer(new Node(nxt.x,dist2[nxt.x]));
+                }
+                
+            }
+        }
+        
+        pq.add(new Node(goal2,0));
+        dist3[goal2] = 0;
+        while(!pq.isEmpty()){
+            Node cur = pq.peek();
+            int x = cur.x;
+            int curcost = cur.cost;
+            pq.poll();
+            for(Node nxt : board[x]){
+                if(dist3[nxt.x] > curcost + nxt.cost){
+                    dist3[nxt.x] = curcost + nxt.cost;
+                    pq.offer(new Node(nxt.x,dist3[nxt.x]));
+                }
+                
+            }
+        }
+        answer = Integer.MAX_VALUE;
+        for(int i = 1; i <= n; i++){
+            int point = dist[i] + dist2[i] + dist3[i];
+            if(answer>point) answer = point;
+        }
+        
+        return answer;
+    }
+}

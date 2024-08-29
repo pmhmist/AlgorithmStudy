@@ -1,0 +1,47 @@
+class Solution {
+    static int ans;
+    static int size;
+    static int[][] arr;
+    static boolean[] vis;
+    
+    public static void solve(int cur,int energy){
+        if(ans < cur) ans = cur;
+        if(cur == size){
+            return;
+        }
+        
+        for(int i = 0; i < size; i++){
+            if(vis[i]) continue;
+            int x = arr[i][0];
+            int y = arr[i][1];
+            
+            if(energy < x) continue;
+            vis[i] = true;
+            energy -= y;
+            solve(cur+1,energy);
+            vis[i] = false;
+            energy += y;
+        }
+        
+        
+    }
+    
+    public int solution(int k, int[][] df) {
+        int answer = 0;
+        size = df.length;
+        arr = new int[size][2];
+        vis = new boolean[size];
+        ans = 0;
+        
+        for(int i = 0; i < size; i++){
+            for(int j = 0; j < 2; j++){
+                arr[i][j] = df[i][j];
+            }
+        }
+        
+        solve(0,k);
+        answer = ans;
+        
+        return answer;
+    }
+}

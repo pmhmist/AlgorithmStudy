@@ -1,0 +1,75 @@
+import java.util.*;
+class Solution {
+    
+    public static class Pair{
+        int x;
+        int y;
+        
+        Pair(int x,int y){
+            this.x = x;
+            this.y = y;
+        }
+    }
+    
+    public String[] solution(int[][] line) {
+        ArrayList<Pair> point = new ArrayList<>();
+        int minx = Integer.MAX_VALUE;
+        int miny = Integer.MAX_VALUE;
+        int mx = Integer.MIN_VALUE;
+        int my = Integer.MIN_VALUE;
+        
+        int n = line.length;
+        for(int i = 0; i < n; i++){
+            long a = (long)line[i][0];
+            long b = (long)line[i][1];
+            long e = (long)line[i][2];
+            for(int j = i+1; j < n; j++){
+                long c = (long)line[j][0];
+                long d = (long)line[j][1];
+                long f = (long)line[j][2];
+                
+                long val1 = b*f - e*d;
+                long val2 = a*d - b*c;
+                if(val2 == 0) continue;
+                if(val1 % val2 != 0) continue;
+                int nx = (int)(val1 / val2);
+                
+                val1 = e*c - a*f;
+                val2 = a*d - b*c;
+                if(val2 == 0) continue;
+                if(val1 % val2 != 0) continue;
+                int ny = (int)(val1 / val2);
+                point.add(new Pair(nx,ny));
+                
+                if(minx > nx) minx = nx;
+                if(miny > ny) miny = ny;
+                if(mx < nx) mx = nx;
+                if(my < ny) my = ny;
+            }
+        }
+        
+        int fx = mx - minx + 1;
+        int fy = my - miny + 1;
+        String[] answer = new String[fy];
+        
+        for(int i = 0; i < fy; i++){
+            StringBuilder sb = new StringBuilder();
+            for(int j = 0; j < fx; j++){
+                sb.append(".");
+            }
+            answer[i] = sb.toString();
+        }
+        
+        for(int i = 0; i < point.size(); i++){
+            int x = point.get(i).x;
+            int y = point.get(i).y;
+            x = x - minx;
+            y = y - miny;
+            StringBuilder sb = new StringBuilder(answer[fy-1-y]);
+            sb.setCharAt(x,'*');
+            answer[fy-1-y] = sb.toString();
+        }
+        
+        return answer;
+    }
+}
