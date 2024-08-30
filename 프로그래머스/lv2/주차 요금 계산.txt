@@ -1,0 +1,111 @@
+import java.util.*;
+
+class Solution {
+    
+    public static class Pair implements Comparable<Pair>{
+        int x;
+        int y;
+        
+        Pair(int x, int y){
+            this.x = x;
+            this.y = y;
+        }
+        
+        @Override
+        public int compareTo(Pair p){
+            return this.x - p.x;
+        }
+        
+    }
+    
+    public int[] solution(int[] fees, String[] records) {
+        int basetime = fees[0];
+        int baseprice = fees[1];
+        int caltime = fees[2];
+        int calprice = fees[3];
+        
+        Map<String,String> map1 = new HashMap<>();
+        Map<Integer,Integer> map2 = new HashMap<>();
+        
+        for(int i = 0; i < records.length; i++){
+            String[] sam = records[i].split(" ");
+            String time = sam[0];
+            String num = sam[1];
+            String state = sam[2];
+            if(state.equals("IN")){
+                map1.put(num,time);
+            }
+            else{
+                String[] ck1 = map1.get(num).split(":");
+                String[] ck2 = time.split(":");
+                int x1 = Integer.valueOf(ck1[0]);
+                int y1 = Integer.valueOf(ck1[1]);
+                int x2 = Integer.valueOf(ck2[0]);
+                int y2 = Integer.valueOf(ck2[1]);
+                int cnt = 0;
+                if(y1 <= y2){
+                    cnt += (x2 - x1)*60 + (y2-y1);
+                }
+                else{
+                    cnt += (x2 - x1)*60 - (y1-y2);
+                }
+                int key = Integer.valueOf(num);
+                
+                if(map2.containsKey(key)){
+                    map2.put(key,map2.get(key) + cnt);
+                }
+                else{
+                    map2.put(key,cnt);
+                }
+                
+                map1.remove(num);
+            }
+        }
+        
+        for(String i : map1.keySet()){
+            String[] ck1 = map1.get(i).split(":");
+            int x1 = Integer.valueOf(ck1[0]);
+            int y1 = Integer.valueOf(ck1[1]);
+            int x2 = 23;
+            int y2 = 59;
+            
+            int cnt = 0;
+            if(y1 <= y2){
+                cnt += (x2 - x1)*60 + (y2-y1);
+            }
+            else{
+                cnt += (x2 - x1)*60 - (y1-y2);
+            }
+            
+            int key = Integer.valueOf(i);
+
+            if(map2.containsKey(key)){
+                map2.put(key,map2.get(key) + cnt);
+            }
+            else{
+                map2.put(key,cnt);
+            }
+        }
+        
+        ArrayList<Pair> arr = new ArrayList<>();
+        for(int i : map2.keySet()){
+            int point = map2.get(i);
+            if(point <= basetime){
+                arr.add(new Pair(i,baseprice));
+            }
+            else{
+                int mid = (point-basetime)/caltime;
+                if((point-basetime)%caltime != 0) mid++;
+                int val = baseprice + mid * calprice;
+                arr.add(new Pair(i,val));
+            }
+        }
+        
+        Collections.sort(arr);
+        int[] answer = new int[arr.size()];
+        for(int i = 0; i < arr.size(); i++){
+            answer[i] = arr.get(i).y;
+        }
+        return answer;
+    }
+}
