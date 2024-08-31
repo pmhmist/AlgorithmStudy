@@ -1,0 +1,20 @@
+import java.util.*;
+
+class Solution {
+    public int solution(int[] nums) {
+        int answer = 0;
+        int len = nums.length;
+        int sz = len/2;
+        Set<Integer> set = new HashSet<>();
+        for(int i = 0; i < len; i++){
+            set.add(nums[i]);
+        }
+        
+        for(int nxt : set){
+            answer++;
+            if(answer == sz) break;
+        }
+        
+        return answer;
+    }
+}
