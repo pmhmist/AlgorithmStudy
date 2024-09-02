@@ -1,0 +1,95 @@
+import java.util.*;
+
+class Solution {
+    public static int enemy;
+    public static int[] base;
+    public static int[] arr;
+    public static int[] arr2;
+    
+    public static void solve(int cur, int cnt, int end){
+        
+        if(cnt == end){
+            int tmp1 = 0;
+            int tmp2 = 0;
+            for(int i = 0; i < 11; i++){
+                if(arr[i] <= base[i]){
+                    if(base[i] == 0) continue;
+                    tmp1 += 10-i;
+                }
+                else{
+                    tmp2 += 10-i;
+                }
+            }
+            
+            if(tmp2 - tmp1 < 0) return;
+            
+            if(enemy < tmp2 - tmp1){
+                enemy = tmp2 - tmp1;
+                for(int i = 0; i < 11; i++){
+                    arr2[i] = arr[i];
+                }
+
+            }
+            else if(enemy == tmp2 - tmp1){
+                boolean judge = false;
+                for(int i = 10; i >= 0; i--){
+                    if(arr2[i] < arr[i]){
+                        judge = true;
+                        break;
+                    }
+                    else if(arr2[i] > arr[i]){
+                        break;
+                    }
+                }
+
+                if(judge){
+                    for(int i = 0; i < 11; i++){
+                        arr2[i] = arr[i];
+                    }
+                    System.out.println();
+                }
+            }
+            
+            return;
+        }
+        
+        
+        for(int i = cur; i <= 10; i++){
+            int diff = base[i] + 1;
+            for(int j = 0; j <= diff; j++){
+                if(cnt + j <= end){
+                    arr[i] = j;
+                    solve(i+1,cnt + j,end);
+                    arr[i] = 0;
+                }
+            }
+        }
+        
+    }
+    
+    public int[] solution(int n, int[] info) {
+        enemy = Integer.MIN_VALUE;
+        base = new int[11];
+        arr = new int[11];
+        arr2 = new int[11];
+        
+        for(int i = 0; i < 11; i++){
+            base[i] = info[i];
+        }
+        
+        solve(0,0,n);
+        
+        int[] answer;
+        if(enemy <= 0){
+            answer = new int[1];
+            answer[0] = -1;
+        }
+        else{
+            answer = new int[11];
+            for(int i = 0; i < 11; i++){
+                answer[i] = arr2[i];
+            }
+        }
+        return answer;
+    }
+}

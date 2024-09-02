@@ -1,0 +1,47 @@
+import java.util.*;
+
+class Solution {
+    static boolean[] vis;
+    
+    public int solution(int[] cards) {
+        int answer = 0;
+        int len = cards.length;
+        for(int i = 0; i < len; i++){
+            vis = new boolean[len];
+            int idx = i;
+            int ck1 = 0;
+            int ck2 = 0;
+            while(true){
+                vis[idx] = true;
+                int nidx = cards[idx]-1;
+                ck1++;
+                if(vis[nidx]) break;
+                else idx = nidx;
+            }
+            
+            Queue<Integer> q = new ArrayDeque<>();
+            for(int j = i + 1; j < len; j++){
+                if(vis[j]) continue;
+                int tmp = 0;
+                int idx2 = j;
+                while(true){
+                    vis[idx2] = true;
+                    q.offer(idx2);
+                    int nidx2 = cards[idx2]-1;
+                    tmp++;
+                    if(vis[nidx2]) break;
+                    else idx2 = nidx2;
+                    
+                }
+                if(ck2 < tmp) ck2 = tmp;
+                while(!q.isEmpty()){
+                    vis[q.peek()] = false;
+                    q.poll();
+                }
+            }
+            
+            if(answer < ck1 * ck2) answer = ck1 * ck2;
+        }
+        return answer;
+    }
+}

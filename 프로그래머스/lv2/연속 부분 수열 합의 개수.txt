@@ -1,0 +1,36 @@
+import java.util.*;
+
+class Solution {
+    public int solution(int[] elements) {
+        int answer = 0;
+        int len = elements.length;
+        int[] arr = new int[len*2];
+        Set<Integer> set = new HashSet<>();
+        for(int i = 0; i < len; i++){
+            arr[i] = elements[i];
+            arr[i+len] = elements[i];
+        }
+        
+        for(int ck = 0; ck < len; ck++){
+            int left = 0;
+            int right = ck;
+            int sum = 0;
+            for(int i = 0; i <= right; i++){
+                sum += arr[i];
+            }
+            set.add(sum);
+            while(true){
+                sum -= arr[left];
+                left++;
+                right++;
+                sum += arr[right];
+                set.add(sum);
+                if(left == len) break;
+            }
+        }
+        
+        
+        answer = set.size();
+        return answer;
+    }
+}

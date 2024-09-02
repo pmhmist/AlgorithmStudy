@@ -1,0 +1,43 @@
+import java.util.*;
+
+class Solution {
+    public int solution(int[] order) {
+        int answer = 0;
+        Stack<Integer> stack = new Stack<>();
+        boolean[] fin = new boolean[order.length+1];
+        for(int i = 0; i < order.length; i++){
+            int nxt = order[i];
+            if(stack.isEmpty()){
+                for(int j = i+1; j < nxt; j++){
+                    if(fin[j]) continue;
+                    stack.add(j);
+                }
+                answer++;
+                fin[nxt] = true;
+            }
+            else{
+                if(nxt == stack.peek()){
+                    answer++;
+                    fin[nxt] = true;
+                    stack.pop();
+                }
+                else{
+                    if(nxt < stack.peek()){
+                        break;
+                    }
+                    else{
+                        int st = stack.peek()+1;
+                        for(int j = st; j <  nxt; j++){
+                            if(fin[j]) continue;
+                            stack.add(j);
+                        }
+                        answer++;
+                        fin[nxt] = true;
+                    }
+                }
+            }
+        }
+        
+        return answer;
+    }
+}
