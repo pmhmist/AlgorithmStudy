@@ -1,0 +1,49 @@
+import java.util.*;
+
+class Solution {
+    public double[] solution(int k, int[][] ranges) {
+        int len = ranges.length;
+        ArrayList<Integer> arr = new ArrayList<>();
+        double[] answer = new double[len];
+        int base = k;
+        while(true){
+            arr.add(base);
+            if(base == 1) break;
+            
+            if(base%2 == 0) base = base/2;
+            else base = base*3 + 1;
+        }
+        int sz = arr.size()-1;
+        double[] sum = new double[arr.size()];
+        for(int i = 1; i <= sz; i++){
+            int x1 = arr.get(i-1);
+            int x2 = arr.get(i);
+            
+            double cal = ((double)(x1+x2)/2);
+            sum[i] = sum[i-1] + cal;
+        }
+        
+        for(int turn = 0; turn < len; turn++){
+            int x1 = ranges[turn][0];
+            int x2 = ranges[turn][1];
+            x2 = sz + x2;
+            
+            if(x1 > sz){
+                answer[turn] = -1.0;
+                continue;
+            }
+            if(x2 < 0){
+                answer[turn] = -1.0;
+                continue;
+            }
+            
+            if(x1 > x2) answer[turn] = -1.0;
+            else{
+                answer[turn] = sum[x2] - sum[x1];
+            }
+            
+        }
+        
+        return answer;
+    }
+}
