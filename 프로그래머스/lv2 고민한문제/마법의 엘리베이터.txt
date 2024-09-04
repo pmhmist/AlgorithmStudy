@@ -1,0 +1,31 @@
+import java.util.*;
+
+class Solution {
+    public int solution(int storey) {
+        int answer = 0;
+        while(storey != 0){
+            int ck = storey % 10;
+            storey /= 10;
+            if(ck < 5){
+                answer += ck;
+            }
+            else if(ck == 5){
+                int judge = storey%10;
+                answer += 5;
+                if(judge >= 5){
+                    storey++;
+                }
+                
+            }
+            else{
+                answer += 10-ck;
+                storey++;
+            }
+            
+            
+            
+        }
+        
+        return answer;
+    }
+}

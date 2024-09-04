@@ -1,0 +1,81 @@
+import java.util.*;
+
+class Solution {
+    
+    public static class Pair implements Comparable<Pair>{
+        String name;
+        int start;
+        int playtime;
+        
+        Pair(String name, int start, int playtime){
+            this.name = name;
+            this.start = start;
+            this.playtime = playtime;
+        }
+        
+        @Override
+        public int compareTo(Pair p){
+            return this.start - p.start;
+        }
+        
+    }
+    
+    public String[] solution(String[][] plans) {
+        String[] answer = new String[plans.length];
+        ArrayList<Pair> arr = new ArrayList<>();
+        ArrayList<String> complete = new ArrayList<>();
+        Stack<Pair> stack = new Stack<>();
+        for(int i = 0; i < plans.length; i++){
+            String name = plans[i][0];
+            String[] tmp = plans[i][1].split(":");
+            int start = Integer.valueOf(tmp[0])*60 + Integer.valueOf(tmp[1]);
+            int playtime = Integer.valueOf(plans[i][2]);
+            arr.add(new Pair(name,start,playtime));
+        }
+        
+        Collections.sort(arr);
+        for(int i = 0; i < arr.size()-1; i++){
+            Pair p = arr.get(i);
+            int cur = p.start + p.playtime;
+            int nxt = arr.get(i+1).start;
+            
+            if(cur <= nxt){
+                complete.add(p.name);
+                int res = nxt - cur;
+                while(!stack.isEmpty()){
+                    Pair tmp = stack.peek();
+                    if(tmp.playtime <= res){
+                        res -= tmp.playtime;
+                        complete.add(tmp.name);
+                        stack.pop();
+                    }
+                    else{
+                        tmp.playtime -= res;
+                        stack.pop();
+                        stack.push(tmp);
+                        break;
+                    }
+                }
+                
+            }
+            else{
+                p.playtime = cur - nxt;
+                stack.push(p);
+            }
+            
+        }
+        
+        complete.add(arr.get(arr.size()-1).name);
+        while(!stack.isEmpty()){
+            complete.add(stack.peek().name);
+            stack.pop();
+        }
+        
+        for(int i = 0; i < complete.size(); i++){
+            answer[i] = complete.get(i);
+        }
+        
+        
+        return answer;
+    }
+}

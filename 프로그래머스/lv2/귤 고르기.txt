@@ -1,0 +1,32 @@
+import java.util.*;
+class Solution {
+    public int solution(int k, int[] tangerine) {
+        int answer = 0;
+        Map<Integer,Integer> map = new HashMap<>();
+        for(int i = 0; i < tangerine.length; i++){
+            int ck = tangerine[i];
+            
+            if(map.containsKey(ck)){
+                map.put(ck,map.get(ck)+1);
+            }
+            else{
+                map.put(ck,1);
+            }
+            
+        }
+        ArrayList<Integer> arr = new ArrayList<>();
+        for(int nxt : map.keySet()){
+            arr.add(map.get(nxt));
+        }
+        
+        Collections.sort(arr,Collections.reverseOrder());
+        for(int i = 0; i < arr.size(); i++){
+            if(k <= 0) break;
+            k -= arr.get(i);
+            answer++;
+        }
+        
+        
+        return answer;
+    }
+}

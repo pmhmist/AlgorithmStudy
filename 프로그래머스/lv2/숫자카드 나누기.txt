@@ -1,0 +1,43 @@
+import java.util.*;
+class Solution {
+    
+    public static int gcd(int a, int b){
+        if(b == 0){
+            return a;
+        }
+        int c = a%b;
+        return gcd(b,c);
+    }
+    
+    public int solution(int[] arrayA, int[] arrayB) {
+        int answer = 0;
+        int ck1 = arrayA[0];
+        int ck2 = arrayB[0];
+        
+        for(int i = 1; i < arrayA.length; i++){
+            ck1 = gcd(ck1,arrayA[i]);
+        }
+        
+        for(int i = 1; i < arrayB.length; i++){
+            ck2 = gcd(ck2,arrayB[i]);
+        }
+        
+        boolean judge1 = true;
+        boolean judge2 = true;
+        
+        for(int i = 0; i < arrayA.length; i++){
+            if(arrayB[i] % ck1 == 0) judge1 = false;
+            if(arrayA[i] % ck2 == 0) judge2 = false;
+        }
+        
+        if(judge1){
+            answer = Math.max(answer,ck1);
+        }
+        
+        if(judge2){
+            answer = Math.max(answer,ck2);
+        }
+        
+        return answer;
+    }
+}
