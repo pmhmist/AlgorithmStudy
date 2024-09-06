@@ -1,0 +1,24 @@
+import java.util.*;
+class Solution {
+    public int solution(int n, long l, long r) {
+        int answer = 0;
+        long ck = (long)Math.pow(5,n);
+        for(long i = l; i <= r; i++){
+            boolean judge = true;
+            long tmp = ck;
+            while(true){
+                long tmp2 = tmp/5;
+                if(i%tmp > tmp2*2 && i%tmp <= tmp2*3){
+                    judge = false;
+                    break;
+                }
+                tmp = tmp/5;
+                if(tmp==1) break; 
+            }
+            
+            if(judge) answer++;
+        }
+        
+        return answer;
+    }
+}

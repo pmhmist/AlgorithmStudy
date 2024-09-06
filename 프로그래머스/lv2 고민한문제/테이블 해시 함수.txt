@@ -1,0 +1,72 @@
+import java.util.*;
+
+class Solution {
+    
+    public static class Pair implements Comparable<Pair> {
+        int x;
+        int y;
+        int z;
+        
+        Pair(int x, int y ,int z){
+            this.x = x;
+            this.y = y;
+            this.z = z;
+        }
+        
+        @Override
+        public int compareTo(Pair p){
+            if(this.y == p.y){
+                return p.x - this.x;
+            }
+            else{
+                return this.y - p.y;
+            }
+        }
+        
+    }
+    
+    public int solution(int[][] data, int col, int row_begin, int row_end) {
+        int answer = 0;
+        int len = data.length;
+        int sz = data[0].length;
+        col--;
+        
+        Pair[] arr = new Pair[len];
+        for(int i = 0; i < len; i++){
+            arr[i] = new Pair(data[i][0], data[i][col], i);
+        }
+        Arrays.sort(arr);
+        
+        int[][] base = new int[len][sz];
+        for(int i = 0; i < len; i++){
+            int idx = arr[i].z;
+            for(int j = 0; j < sz; j++){
+                base[i][j] = data[idx][j];
+            }
+        }
+        
+        
+        int ck = 0;
+        row_begin--;
+        row_end--;
+        
+        for(int i = row_begin; i <= row_end; i++){
+            if(i == row_begin){
+                for(int j = 0; j < sz; j++){
+                    ck += base[i][j]%(i+1);
+                }
+            }
+            else{
+                int tmp = 0;
+                for(int j = 0; j < sz; j++){
+                    tmp += base[i][j]%(i+1);
+                }
+                ck = ck ^ tmp;
+            }
+        }
+        
+        
+        answer = ck;
+        return answer;
+    }
+}
