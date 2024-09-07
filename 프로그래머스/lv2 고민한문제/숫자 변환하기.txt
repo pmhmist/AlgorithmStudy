@@ -1,0 +1,54 @@
+import java.util.*;
+
+class Solution {
+    
+    public static class Pair{
+        int x;
+        int y;
+        
+        Pair(int x, int y){
+            this.x = x;
+            this.y = y;
+        }
+    }
+    
+    public int solution(int x, int y, int n) {
+        int answer = 0;
+        Queue<Pair> q = new ArrayDeque<>();
+        q.offer(new Pair(x,0));
+        boolean judge = false;
+        boolean[] vis = new boolean[1000005];
+        vis[x] = true;
+        
+        while(!q.isEmpty()){
+            int curx = q.peek().x;
+            int cnt = q.peek().y;
+            q.poll();
+            
+            if(curx == y){
+                judge = true;
+                answer = cnt;
+                break;
+            }
+            
+            if(curx + n <= y && !vis[curx+n]){
+                q.offer(new Pair(curx+n,cnt+1));
+                vis[curx+n] = true;
+            }
+            
+            if(curx * 2 <= y && !vis[curx * 2]){
+                q.offer(new Pair(curx*2,cnt+1));
+                vis[curx*2] = true;
+            }
+
+            if(curx * 3 <= y && !vis[curx * 3]){
+                q.offer(new Pair(curx*3,cnt+1));
+                vis[curx*3] = true;
+            }
+            
+        }
+        
+        if(!judge) answer = -1;
+        return answer;
+    }
+}

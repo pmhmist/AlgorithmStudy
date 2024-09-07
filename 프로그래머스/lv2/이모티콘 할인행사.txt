@@ -1,0 +1,64 @@
+import java.util.*;
+class Solution {
+    static int[] order;
+    static int join = 0;
+    static int price = 0;
+    
+    public static void solve(int cur, int ed, int[][] users, int[] emoticons){
+        if(cur == ed){
+            int tmpjoin = 0;
+            int tmpprice = 0;
+            for(int i = 0; i < users.length; i++){
+                int tmp = 0;
+                int per = users[i][0];
+                
+                if(per <= 10) per = 1;
+                else if(per > 10 && per <= 20) per = 2;
+                else if(per > 20 & per <= 30) per = 3;
+                else if(per > 30) per = 4;
+                
+                for(int j = 0; j < ed; j++){
+                    if(order[j] < per) continue;
+                    tmp += emoticons[j] - (emoticons[j]/100 * (order[j]*10));
+                }
+                
+                if(tmp >= users[i][1]){
+                    tmpjoin++;
+                }
+                else{
+                    tmpprice += tmp;
+                }
+            }
+            
+            if(join < tmpjoin){
+                join = tmpjoin;
+                price = tmpprice;
+            }
+            else if(join == tmpjoin){
+                if(price < tmpprice){
+                    join = tmpjoin;
+                    price = tmpprice;
+                }
+            }
+            
+            return;
+        }
+        
+        for(int i = 1; i <= 4; i++){
+            order[cur] = i;
+            solve(cur+1,ed,users,emoticons);
+        }
+    }
+    
+    public int[] solution(int[][] users, int[] emoticons) {
+        int[] answer = new int[2];
+        int len = emoticons.length;
+        order = new int[len];
+        
+        solve(0,len,users,emoticons);
+        
+        answer[0] = join;
+        answer[1] = price;
+        return answer;
+    }
+}
