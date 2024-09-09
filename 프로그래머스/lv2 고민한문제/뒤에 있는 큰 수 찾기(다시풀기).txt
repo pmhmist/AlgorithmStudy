@@ -1,0 +1,42 @@
+import java.util.*;
+
+class Solution {
+    
+    public static class Pair{
+        int x;
+        int y;
+        
+        Pair(int x, int y){
+            this.x = x;
+            this.y = y;
+        }
+    }
+    
+    public int[] solution(int[] numbers) {
+        int len = numbers.length;
+        int[] answer = new int[len];
+        Arrays.fill(answer,-1);
+        Stack<Pair> s = new Stack<>();
+        
+        for(int i = 0; i < len; i++){
+            if(s.isEmpty()){
+                s.push(new Pair(numbers[i],i));
+            }
+            else{
+                int cur = numbers[i];
+                while(!s.isEmpty()){
+                    int top = s.peek().x;
+                    if(top >= cur) break;
+                    answer[s.peek().y] = cur;
+                    s.pop();
+                }
+                s.push(new Pair(numbers[i],i));
+            }
+            
+        }
+        
+        
+        
+        return answer;
+    }
+}
