@@ -1,0 +1,43 @@
+import java.util.*;
+
+class Solution {
+        
+    public long solution(int cap, int n, int[] deliveries, int[] pickups) {
+        long answer = 0;
+        
+        int ck1 = 0;
+        int ck2 = 0;
+        
+        for(int i = n-1; i >= 0; i--){
+            
+            ck1 += deliveries[i];
+            ck2 += pickups[i];
+            
+            int cnt1 = ck1 / cap;
+            int cnt2 = ck2 / cap;
+            
+            if(ck1%cap != 0) cnt1++;
+            if(ck2%cap != 0) cnt2++;
+            
+            int cal = 0;
+            
+            if(ck1 > 0){
+                cal = Math.max(cal,cnt1);
+            }
+            
+            if(ck2 > 0){
+                cal = Math.max(cal,cnt2);
+            }
+            
+            answer += 2*(i+1)*cal;
+            
+            ck1 -= cap*cal;
+            ck2 -= cap*cal;
+            
+        }
+        
+        
+        
+        return answer;
+    }
+}
