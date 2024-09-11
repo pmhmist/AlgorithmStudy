@@ -1,0 +1,81 @@
+import java.util.*;
+
+class Solution {
+    
+    static int[] dx = {-1,0,1,0};
+    static int[] dy = {0,1,0,-1};
+    
+    public static class Pair{
+        int x;
+        int y;
+        
+        Pair(int x, int y){
+            this.x = x;
+            this.y = y;
+        }
+    }
+    
+    public int[] solution(String[] maps) {
+        ArrayList<Integer> arr = new ArrayList<>();
+        int n = maps.length;
+        int m = maps[0].length();
+        int[][] board = new int[n][m];
+        
+        for(int i = 0; i < n; i++){
+            String tmp = maps[i];
+            for(int j = 0; j < m; j++){
+                if(tmp.charAt(j) == 'X') continue;
+                else{
+                    board[i][j] = tmp.charAt(j) - '0';
+                }
+            }
+        }
+        
+        boolean[][] vis = new boolean[n][m];
+        
+        for(int i = 0; i < n; i++){
+            for(int j = 0; j < m; j++){
+                if(vis[i][j]) continue;
+                if(board[i][j] == 0) continue;
+                
+                Queue<Pair> q = new ArrayDeque<>();
+                vis[i][j] = true;
+                q.offer(new Pair(i,j));
+                int val = 0;
+                while(!q.isEmpty()){
+                    int x = q.peek().x;
+                    int y = q.peek().y;
+                    q.poll();
+                    val += board[x][y];
+                    
+                    for(int dir = 0; dir < 4; dir++){
+                        int nx = x + dx[dir];
+                        int ny = y + dy[dir];
+                        
+                        if(nx < 0 || nx >= n || ny < 0 || ny >= m) continue;
+                        if(vis[nx][ny] || board[nx][ny] == 0) continue;
+                        vis[nx][ny] = true;
+                        q.offer(new Pair(nx,ny));
+                    }
+                    
+                }
+                arr.add(val);
+            }
+        }
+                
+        
+        int[] answer;
+        if(arr.size() == 0){
+            answer = new int[1];
+            answer[0] = -1;
+        }
+        else{
+            Collections.sort(arr);
+            answer = new int[arr.size()];
+            for(int i = 0; i < arr.size(); i++){
+                answer[i] = arr.get(i);
+            }   
+        }
+        return answer;
+    }
+}
