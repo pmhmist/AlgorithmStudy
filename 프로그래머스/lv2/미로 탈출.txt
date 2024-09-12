@@ -1,0 +1,94 @@
+import java.util.*;
+
+class Solution {
+    
+    public static class Pair{
+        int x;
+        int y;
+        
+        Pair(int x,int y){
+            this.x = x;
+            this.y = y;
+        }
+    }
+    
+    static int[] dx = {-1,0,1,0};
+    static int[] dy = {0,1,0,-1};
+    static int[][] vis;
+    static int x1,y1,x2,y2,x3,y3,n,m;
+    static int[][] board;
+        
+    public int solution(String[] maps) {
+        int answer = 0;
+        
+        n = maps.length;
+        m = maps[0].length();
+        board = new int[n][m];
+        
+        for(int i = 0; i < n; i++){
+            String tmp = maps[i];
+            for(int j = 0; j < m; j++)
+            {
+                if(tmp.charAt(j) == 'S'){
+                    x1 = i;
+                    y1 = j;
+                }
+                else if(tmp.charAt(j) == 'L'){
+                    x2 = i;
+                    y2 = j;
+                }
+                else if(tmp.charAt(j) == 'E'){
+                    x3 = i;
+                    y3 = j;
+                }
+                else if(tmp.charAt(j) == 'X'){
+                    board[i][j] = -1;
+                }
+            }
+        }
+        boolean judge = true;
+        
+        int ck1 = solve(x1,y1,x2,y2);
+        int ck2 = solve(x2,y2,x3,y3);
+        
+        if(ck1 == -1 || ck2 == -1) judge = false;
+        if(judge){
+            answer = ck1 + ck2;
+        }
+        else{
+            answer = -1;   
+        }
+        
+    
+        return answer;
+    }
+    
+    public static int solve(int x1, int y1, int x2, int y2){
+        vis = new int[n][m];
+        Queue<Pair> q = new ArrayDeque<>();
+        q.offer(new Pair(x1,y1));
+        vis[x1][y1] = 1;
+        
+        while(!q.isEmpty()){
+            int x = q.peek().x;
+            int y = q.peek().y;
+            if(x == x2 && y == y2) break;
+            q.poll();
+            
+            for(int dir = 0; dir < 4; dir++){
+                int nx = x + dx[dir];
+                int ny = y + dy[dir];
+                
+                if(nx < 0 || nx >= n || ny < 0 || ny >= m) continue;
+                if(board[nx][ny] == -1)continue;
+                if(vis[nx][ny] != 0) continue;
+                vis[nx][ny] = vis[x][y]+1;
+                q.offer(new Pair(nx,ny));
+            }
+        }
+        
+        int dist = vis[x2][y2]-1;
+        return dist;
+    }
+    
+}

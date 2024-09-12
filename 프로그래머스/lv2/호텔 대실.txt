@@ -1,0 +1,65 @@
+import java.util.*;
+class Solution {
+    
+    public static class Pair implements Comparable<Pair>{
+        int x;
+        int y;
+        
+        Pair(int x, int y){
+            this.x = x;
+            this.y = y;
+        }
+        
+        @Override
+        public int compareTo(Pair p){
+            if(this.x == p.x){
+                return this.y - p.y;
+            }
+            else{
+                return this.x - p.x;
+            }
+        }
+    }
+    
+    public int solution(String[][] book_time) {
+        int answer = 0;
+        ArrayList<Pair> arr = new ArrayList<>();
+        
+        for(int i = 0; i < book_time.length; i++){
+            String[] sam1 = book_time[i][0].split(":");
+            String[] sam2 = book_time[i][1].split(":");
+            
+            int x = 60*Integer.valueOf(sam1[0]) + Integer.valueOf(sam1[1]);
+            int y = 60*Integer.valueOf(sam2[0]) + Integer.valueOf(sam2[1]);
+            arr.add(new Pair(x,y));
+            
+        }
+        
+        Collections.sort(arr);
+        PriorityQueue<Integer> pq = new PriorityQueue<>();
+        for(int i = 0; i < arr.size(); i++){
+            int st = arr.get(i).x;
+            int nxt = arr.get(i).y + 10;
+            
+            if(pq.isEmpty()){
+                pq.offer(nxt);
+            }
+            else{
+                if(pq.peek() <= st){
+                    pq.poll();
+                    pq.offer(nxt);
+                }
+                else{
+                    pq.offer(nxt);
+                }
+            }
+            
+            if(answer < pq.size()){
+                answer = pq.size();
+            }
+        }
+        
+        
+        return answer;
+    }
+}
