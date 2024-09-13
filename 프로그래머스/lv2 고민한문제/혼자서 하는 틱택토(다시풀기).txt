@@ -1,0 +1,137 @@
+import java.util.*;
+class Solution {
+    
+    static int[] dx = {-1,-1,-1,0,0,1,1,1};
+    static int[] dy = {-1,0,1,-1,1,-1,0,1};
+    static ArrayList<Pair> arr;
+    static boolean[] vis;
+    static int[] order;
+    static boolean judge = false;
+    
+    public static class Pair{
+        int x;
+        int y;
+        int z;
+        
+        Pair(int x, int y, int z){
+            this.x = x;
+            this.y = y;
+            this.z = z;
+        }
+        
+    }
+    
+    public static void solve(int depth, int tot){
+        
+        if(depth == tot){
+            int[][] ck = new int[3][3];
+            boolean stop = false;
+            boolean right = true;
+            
+            for(int turn = 0; turn < tot; turn++){
+                int x = arr.get(order[turn]).x;
+                int y = arr.get(order[turn]).y;
+                ck[x][y] = arr.get(order[turn]).z;
+                
+                for(int i = 0; i < 3; i++){
+                    for(int j = 0; j < 3; j++){
+                        if(ck[i][j] != 0){
+                            for(int dir = 0; dir < 8; dir++){
+                                int num = 1;
+                                
+                                int nx = i + dx[dir];
+                                int ny = j + dy[dir];
+                                if(nx < 0 || nx >= 3 || ny < 0 || ny >= 3) continue;
+                                
+                                if(ck[nx][ny] == ck[i][j]) num++;
+                                
+                                int nx2 = i + 2*dx[dir];
+                                int ny2 = j + 2*dy[dir];
+                                if(nx2 < 0 || nx2 >= 3 || ny2 < 0 || ny2 >= 3) continue;
+                                
+                                if(ck[nx2][ny2] == ck[i][j]) num++;
+                                
+                                if(num == 3){
+                                    stop = true;
+                                    break;
+                                }
+                                
+                            }
+                        }
+                        if(stop) break;
+                     }
+                    if(stop) break;
+                }
+                
+                
+                if(stop){
+                    right = false;
+                    if(turn == tot-1) right = true;
+                    break;
+                }
+            }
+            
+            if(right) judge = true;
+            return;
+        }
+        
+        for(int i = 0; i < tot; i++){
+            if(vis[i]) continue;
+            if(depth % 2 == 0){
+                if(arr.get(i).z != 1) continue;
+            }
+            else if (depth % 2 == 1){
+                if(arr.get(i).z != 2) continue;
+            }
+            vis[i] = true;
+            order[depth] = i;
+            solve(depth+1,tot);
+            vis[i] = false;
+        }
+        
+        
+    }
+    
+    public int solution(String[] board) {
+        int answer = -1;
+        char[][] base = new char[3][3];
+        arr = new ArrayList<>();
+        
+        int num1 = 0;
+        int num2 = 0;
+        
+        for(int i = 0; i < 3; i++){
+            String tmp = board[i];
+            for(int j = 0; j < 3; j++){
+                base[i][j] = tmp.charAt(j);
+                if(base[i][j] == 'O'){
+                    num1++;
+                    arr.add(new Pair(i,j,1));
+                } 
+                else if(base[i][j] == 'X'){
+                    num2++;
+                    arr.add(new Pair(i,j,2));
+                } 
+            }
+        }
+        
+        judge = false;
+        if(num1 < num2) answer = 0;
+        else{
+            if(num1 - num2 >= 2) answer = 0;
+            else{
+                int tot = num1 + num2;
+                vis = new boolean[tot];
+                order = new int[tot];
+                solve(0,tot);
+            }
+        }
+        
+        if(judge) answer = 1;
+        else answer = 0;
+        
+        return answer;
+        
+    }
+    
+}
