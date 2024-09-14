@@ -1,0 +1,104 @@
+import java.util.*;
+class Solution {
+    static int[] base;
+    static int ans;
+    public static void solve(int cur, int ed, int[] picks, String[] minerals){
+        if(cur == ed){
+            int idx = -1;
+            boolean stop = false;
+            int tmp = 0;
+            
+            for(int i = 0; i < ed; i++){
+                if(stop) break;
+                if(base[i] == 0){
+                    int cnt = 0;
+                    while(true){
+                        cnt++;
+                        if(cnt > 5) break;
+                        idx++;
+                        if(idx == minerals.length){
+                            stop = true;
+                            break;
+                        }
+                        tmp += 1;
+                    }
+                }
+                else if(base[i] == 1){
+                    int cnt = 0;
+                    while(true){
+                        cnt++;
+                        if(cnt > 5) break;
+                        idx++;
+                        if(idx == minerals.length){
+                            stop = true;
+                            break;
+                        }
+                        if(minerals[idx].equals("diamond")){
+                            tmp += 5;
+                        }
+                        else{
+                            tmp += 1;
+                        }
+                    }
+
+                }
+                else{
+                    int cnt = 0;
+                    while(true){
+                        cnt++;
+                        if(cnt > 5) break;
+                        idx++;
+                        if(idx == minerals.length){
+                            stop = true;
+                            break;
+                        }
+                        if(minerals[idx].equals("diamond")){
+                            tmp += 25;
+                        }
+                        else if(minerals[idx].equals("iron")){
+                            tmp += 5;
+                        }
+                        else{
+                            tmp += 1;
+                        }
+                    }
+                    
+                }
+            }
+            
+            if(tmp < ans){
+                ans = tmp;
+            }
+            
+            return;
+        }
+        
+        for(int i = 0; i < 3; i++){
+            if(picks[i] <= 0) continue;
+            base[cur] = i;
+            picks[i]--;
+            solve(cur+1,ed,picks,minerals);
+            picks[i]++;
+        }
+    }
+    
+    public int solution(int[] picks, String[] minerals) {
+        int answer = 0;
+        int len = minerals.length;
+        
+        int sz1 = len / 5;
+        if(len%5 != 0) sz1++;
+        int sz2 = 0;
+        for(int i = 0; i < 3; i++){
+            sz2 += picks[i];
+        }
+        
+        int ed = Math.min(sz1,sz2);
+        base = new int[ed];
+        ans = Integer.MAX_VALUE;
+        solve(0,ed,picks,minerals);
+        answer = ans;
+        
+        return answer;
+    }
+}
