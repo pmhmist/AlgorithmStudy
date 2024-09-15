@@ -1,0 +1,97 @@
+import java.util.*;
+class Solution {
+    
+    static int[] dx = {-1,0,1,0};
+    static int[] dy = {0,1,0,-1};
+    static int n,m;
+    static char[][] base;
+    static boolean[][][] vis;
+    
+    public static class Pair{
+        int x;
+        int y;
+        int z;
+        
+        Pair(int x, int y, int z){
+            this.x = x;
+            this.y = y;
+            this.z = z;
+        }
+    }
+    
+    public int solution(String[] board) {
+        int answer = 0;
+        
+        n = board.length;
+        m = board[0].length();
+        base = new char[n][m];
+        vis = new boolean[n][m][4];
+        
+        int sx = 0;
+        int sy = 0;
+        int ex = 0;
+        int ey = 0;
+        
+        for(int i = 0; i < n; i++){
+            String tmp = board[i];
+            for(int j = 0; j < m; j++){
+                base[i][j] = tmp.charAt(j);
+                if(base[i][j] == 'R'){
+                    sx = i; sy = j;
+                }
+                
+                if(base[i][j] == 'G'){
+                    ex = i;
+                    ey = j;
+                }
+            }
+        }
+        
+        Queue<Pair> q = new ArrayDeque<>();
+        q.offer(new Pair(sx,sy,0));
+        boolean judge = false;
+        
+        while(!q.isEmpty()){
+            int curx = q.peek().x;
+            int cury = q.peek().y;
+            int curz = q.peek().z;
+            if(curx == ex && cury == ey){
+                judge = true;
+                answer = curz;
+                break;
+            }
+            q.poll();
+            
+            for(int dir = 0; dir < 4; dir++){
+                if(vis[curx][cury][dir]) continue;
+                vis[curx][cury][dir] = true;
+                boolean right = true;
+                int px = curx;
+                int py = cury;
+                while(true){
+                    int nx = px + dx[dir];
+                    int ny = py + dy[dir];
+                    if(nx < 0 || nx >= n || ny < 0 || ny >= m) break;
+                    if(base[nx][ny] == 'D') break; 
+                    if(vis[nx][ny][dir]){
+                        right = false;
+                        break;
+                    }
+                    vis[nx][ny][dir]  = true;
+                    px = nx;
+                    py = ny;
+                }
+                
+                if(right){
+                    q.offer(new Pair(px,py,curz+1));
+                }
+                
+            }
+            
+        }
+        
+        if(!judge) answer = -1;
+        
+        return answer;
+    }
+}

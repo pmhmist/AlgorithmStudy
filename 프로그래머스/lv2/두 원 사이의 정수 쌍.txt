@@ -1,0 +1,35 @@
+import java.util.*;
+
+class Solution {
+    public long solution(int r1, int r2) {
+        long answer = 0;
+        long l1 = (long)r2;
+        long l2 = (long)r1;
+        
+        long ck1 = l1 * l1;
+        long ck2 = l2 * l2;
+        
+        
+        long tmp = 0;
+        for(long i = 0; i <= l1; i++){
+            long cal1 = ck1 - i*i;
+            long cal2 = ck2 - i*i;
+            
+            if(cal2 <= 0){
+                long sq1 = (long)Math.sqrt(cal1);
+                tmp += sq1 + 1;
+            }
+            else{
+                long sq1 = (long)Math.sqrt(cal1);
+                long sq2 = (long)Math.sqrt(cal2);
+                tmp += sq1 - sq2 + 1;
+                if(sq2 * sq2 != cal2) tmp--;
+            }
+        }
+        
+        answer = tmp*4;
+        answer -= (l1 - l2 + 1)*4;
+        
+        return answer;
+    }
+}
