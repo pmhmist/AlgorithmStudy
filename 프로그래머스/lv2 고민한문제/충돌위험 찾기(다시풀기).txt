@@ -1,0 +1,107 @@
+import java.util.*;
+
+class Solution {
+        
+    public static class Pair{
+        int x;
+        int y;
+        
+        Pair(int x, int y){
+            this.x = x;
+            this.y = y;
+        }
+        
+    }
+    
+    public int solution(int[][] points, int[][] routes) {
+        int answer = 0;
+        int[][] block = new int[100][100];
+        Map<Integer,Set<Integer>> map = new HashMap<>();
+        Map<Integer,Set<Integer>> sv = new HashMap<>();
+        
+        for(int i = 0 ; i < 105*105; i++){
+            map.put(i,new HashSet<>());
+            sv.put(i,new HashSet<>());
+        }
+                    
+        for(int turn = 0; turn < routes.length; turn++){
+            int time = 1;
+            for(int go = 0; go < routes[0].length - 1; go++){
+                int start = routes[turn][go] - 1;
+                int end = routes[turn][go+1] - 1;
+
+                int sx = points[start][0] - 1;
+                int sy = points[start][1] - 1;
+                int ex = points[end][0] - 1;
+                int ey = points[end][1] - 1;
+                
+                if(go == 0){
+                    int idx = 100*sx + sy;
+                    if(map.get(idx).contains(time)){
+                        sv.get(idx).add(time);
+                    }
+                    else{
+                        map.get(idx).add(time);
+                    }
+                }
+                
+                while(true){
+                    if(sx == ex) break;
+                    
+                    if(sx < ex){
+                        sx++;
+                        time++;
+                    }
+                    else{
+                        sx--;
+                        time++;
+                    }
+                    
+                    int idx = 100*sx + sy;
+                    if(map.get(idx).contains(time)){
+                         sv.get(idx).add(time);
+                    }
+                    else{
+                        map.get(idx).add(time);
+                    }
+                }
+                
+                
+                while(true){
+                    if(sy == ey) break;
+                    
+                    if(sy < ey){
+                        sy++;
+                        time++;
+                    }
+                    else{
+                        sy--;
+                        time++;
+                    }
+                    
+                    int idx = 100*sx + sy;
+                    if(map.get(idx).contains(time)){
+                         sv.get(idx).add(time);
+                    }
+                    else{
+                        map.get(idx).add(time);
+                    }
+                    
+                }
+                
+            }
+        }
+        
+        
+        
+        for(int i = 0; i < 100; i++){
+            for(int j = 0; j <100; j++){
+                int idx = 100*i + j;
+                answer += sv.get(idx).size();
+            }
+        }
+        
+        
+        return answer;
+    }
+}
