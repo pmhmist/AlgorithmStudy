@@ -1,0 +1,70 @@
+import java.util.*;
+
+class Solution {
+    
+    public static int solve(int x1, int x2, int y1, int y2){
+        return (x1-x2)*(x1-x2) + (y1-y2)*(y1-y2);
+    }
+    
+    public int[] solution(int m, int n, int startX, int startY, int[][] balls) {
+        int len = balls.length;
+        int[] answer = new int[len];
+        
+        for(int turn = 0; turn < len; turn++){
+            int endX = balls[turn][0];
+            int endY = balls[turn][1];
+            
+            int tmp = Integer.MAX_VALUE;
+            
+            int endY1 = n + (n - endY);
+            int endY2 = -endY;
+            
+            
+            if(endY1 != endY){
+                boolean judge = true;
+                if(startX == endX && endY > startY) judge = false;
+                if(judge){
+                    int cal = solve(startX,endX,startY,endY1);
+                    tmp = Math.min(tmp,cal);
+                }
+            }
+            
+            if(endY2 != endY){
+                boolean judge = true;
+                if(startX == endX && endY < startY) judge = false;
+                if(judge){
+                    int cal = solve(startX,endX,startY,endY2);
+                    tmp = Math.min(tmp,cal);
+                }
+            }
+            
+            int endX1 = m + (m - endX);
+            int endX2 = -endX;
+            
+            
+            if(endX1 != endX){
+                boolean judge = true;
+                if(startY == endY && endX > startX) judge = false;
+                if(judge){
+                    int cal = solve(startX,endX1,startY,endY);
+                    tmp = Math.min(tmp,cal);
+                }
+            }
+            
+            if(endX2 != endX){
+                boolean judge = true;
+                if(startY == endY && endX < startX) judge = false;
+                if(judge){
+                    int cal = solve(startX,endX2,startY,endY);
+                    tmp = Math.min(tmp,cal);
+                }
+            }
+            
+            answer[turn] = tmp;
+        }
+        
+        
+        
+        return answer;
+    }
+}

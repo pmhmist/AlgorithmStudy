@@ -1,0 +1,116 @@
+내가 푼 풀이
+import java.util.*;
+class Solution {
+    
+    public static class Pair implements Comparable<Pair>{
+        int x;
+        int y;
+        
+        Pair(int x, int y){
+            this.x = x;
+            this.y = y;
+        }
+        
+        @Override
+        public int compareTo(Pair p){
+            return this.y - p.y;
+        }
+    }
+    
+    public int solution(int[][] targets) {
+        int answer = 0;
+        int n = targets.length;
+        
+        ArrayList<Pair> arr = new ArrayList<>();
+        for(int i = 0; i < n; i++){
+            arr.add(new Pair(targets[i][0],targets[i][1]));
+        }
+        Collections.sort(arr);
+        
+        double px = -1;
+        double py = -1;
+        
+        for(int i = 0; i < n; i++){
+            int x = arr.get(i).x;
+            int y = arr.get(i).y;
+            
+            double nx = (double)x + 0.5;
+            double ny = (double)y - 0.5;
+            
+            if(px == -1 && py == -1){
+                answer++;
+                px = nx;
+                py = ny;
+            }
+            else{
+                if(py < nx){
+                    answer++;
+                    px = nx;
+                    py = ny;
+                }
+            }
+            
+        }
+        
+        return answer;
+    }
+}
+
+=====================================
+최적화된 풀이
+import java.util.*;
+class Solution {
+    
+    public static class Pair implements Comparable<Pair>{
+        int x;
+        int y;
+        
+        Pair(int x, int y){
+            this.x = x;
+            this.y = y;
+        }
+        
+        @Override
+        public int compareTo(Pair p){
+            return this.y - p.y;
+        }
+    }
+    
+    public int solution(int[][] targets) {
+        int answer = 0;
+        int n = targets.length;
+        
+        ArrayList<Pair> arr = new ArrayList<>();
+        for(int i = 0; i < n; i++){
+            arr.add(new Pair(targets[i][0],targets[i][1]));
+        }
+        Collections.sort(arr);
+        
+        int py = -1;
+        
+        for(int i = 0; i < n; i++){
+            int x = arr.get(i).x;
+            int y = arr.get(i).y;
+            
+            if(py <= x){
+                answer++;
+                py = y;
+            }
+            
+        }
+        
+        return answer;
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
