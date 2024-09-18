@@ -1,0 +1,88 @@
+import java.util.*;
+
+class Solution {
+    
+    public static class Pair implements Comparable<Pair>{
+        int x;
+        int y;
+        
+        Pair(int x, int y){
+            this.x = x;
+            this.y = y;
+        }
+        
+        @Override
+        public int compareTo(Pair p){
+            if(this.x == p.x){
+                return p.y - this.y;
+            }
+            return this.x - p.x;
+        }
+    }
+    
+    public int solution(int n, int[][] data) {
+        int answer = 0;
+        int len = data.length;
+        
+        ArrayList<Pair> arr = new ArrayList<>();
+        for(int i = 0; i < len; i++){
+            arr.add(new Pair(data[i][0], data[i][1]));
+        }
+        
+        Collections.sort(arr);
+        for(int i = 0; i < len; i++){
+            Pair cur = arr.get(i);
+            int tmp1 = Integer.MAX_VALUE;
+            int tmp2 = Integer.MIN_VALUE;
+            Stack<Pair> stack = new Stack<>();
+            int px = -1;
+            for(int j = i+1; j < len; j++){
+                Pair nxt = arr.get(j);
+                if(cur.x == nxt.x) continue;
+                if(cur.y == nxt.y) continue;
+                
+                if(px == -1) px = nxt.x;
+                else{
+                    if(px != nxt.x){
+                        while(!stack.isEmpty()){
+                            int nx = stack.peek().x;
+                            int ny = stack.peek().y;
+                            stack.pop();
+                            if(ny >= tmp2){
+                                tmp2 = ny;
+                                answer++;
+                            }
+                        }
+                        px = nxt.x;
+                    }
+                }
+                
+                
+                if(cur.y < nxt.y){
+                    if(nxt.y <= tmp1){
+                        tmp1 = nxt.y;
+                        answer++;
+                    }
+                }
+                else if(cur.y > nxt.y){
+                    stack.push(new Pair(nxt.x,nxt.y));
+                }
+            }
+            
+            while(!stack.isEmpty()){
+                int nx = stack.peek().x;
+                int ny = stack.peek().y;
+                stack.pop();
+                if(ny >= tmp2){
+                    tmp2 = ny;
+                    answer++;
+                }
+            }
+        }
+        
+        
+        
+        return answer;
+        
+    }
+}

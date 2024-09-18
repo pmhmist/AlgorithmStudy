@@ -1,0 +1,68 @@
+import java.util.*;
+
+class Solution {
+    
+    public static class Pair implements Comparable<Pair>{
+        int x;
+        int y;
+        
+        Pair(int x, int y){
+            this.x = x;
+            this.y = y;
+        }
+        
+        @Override
+        public int compareTo(Pair p){
+            return p.y - this.y;
+        }
+    }
+    
+    public int[] solution(String[] genres, int[] plays) {
+        Map<String,Integer> base = new HashMap<>();
+        Map<Integer,String> base2 = new HashMap<>();
+        Map<String, ArrayList<Pair>> list = new HashMap<>();
+        ArrayList<Integer> ans = new ArrayList<>();
+        
+        int len = genres.length;
+        for(int i = 0; i < len; i++){
+            if(base.containsKey(genres[i])){
+                base.put(genres[i],base.get(genres[i]) + plays[i]);
+                ArrayList<Pair> tmp = list.get(genres[i]);
+                tmp.add(new Pair(i,plays[i]));
+                list.put(genres[i],tmp);
+            }
+            else{
+                base.put(genres[i],plays[i]);
+                ArrayList<Pair> tmp = new ArrayList<>();
+                tmp.add(new Pair(i,plays[i]));
+                list.put(genres[i],tmp);
+            }
+        }
+        
+        ArrayList<Integer> total = new ArrayList<>();
+        for(String key : base.keySet()){
+            total.add(base.get(key));
+            base2.put(base.get(key),key);
+        }
+        
+        Collections.sort(total,Collections.reverseOrder());
+        
+        for(int i = 0; i < total.size(); i++){
+            String key = base2.get(total.get(i));
+            ArrayList<Pair> tmp = list.get(key);
+            Collections.sort(tmp);
+            
+            int sz = Math.min(tmp.size(),2);
+            for(int j = 0; j < sz; j++){
+                ans.add(tmp.get(j).x);
+            }
+        }
+        
+        
+        int[] answer = new int[ans.size()];
+        for(int i = 0; i < ans.size(); i++){
+            answer[i] = ans.get(i);
+        }
+        return answer;
+    }
+}
