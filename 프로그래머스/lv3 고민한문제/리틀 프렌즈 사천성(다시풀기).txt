@@ -1,0 +1,110 @@
+import java.util.*;
+
+class Solution {
+    
+    public static class Pair{
+        int x;
+        int y;
+        
+        Pair(int x, int y){
+            this.x = x;
+            this.y = y;
+        }
+    }
+    
+    public static boolean solve1(int x1, int y1, int x2, int y2, char ck, char[][] base){
+        int o1 = Math.min(x1,x2);
+        int o2 = Math.max(x1,x2);
+        
+        int t1 = Math.min(y1,y2);
+        int t2 = Math.max(y1,y2);
+        
+        for(int i = o1; i <= o2; i++){
+            if(base[i][y1] == '.' || base[i][y1] == ck) continue;
+            else return false;
+        }
+        
+        for(int i = t1; i <= t2; i++){
+            if(base[x2][i] == '.' || base[x2][i] == ck) continue;
+            else return false;
+        }
+        
+        return true;
+        
+    }
+    
+    public static boolean solve2(int x1, int y1, int x2, int y2, char ck, char[][] base){
+        int o1 = Math.min(y1,y2);
+        int o2 = Math.max(y1,y2);
+        
+        int t1 = Math.min(x1,x2);
+        int t2 = Math.max(x1,x2);
+        
+        for(int i = o1; i <= o2; i++){
+            if(base[x1][i] == '.' || base[x1][i] == ck) continue;
+            else return false;
+        }
+        
+        for(int i = t1; i <= t2; i++){
+            if(base[i][y2] == '.' || base[i][y2] == ck) continue;
+            else return false;
+        }
+        
+        return true;
+    }
+    
+    public String solution(int m, int n, String[] board) {
+        String answer = "";
+        char[][] base = new char[m][n];
+        ArrayList<Pair>[] arr = new ArrayList[26];
+        ArrayList<Character> order = new ArrayList<>();
+        for(int i = 0; i < 26; i++){
+            arr[i] = new ArrayList<>();
+        }
+        
+        for(int i = 0; i < m; i++){
+            for(int j = 0; j < n; j++){
+                base[i][j] = board[i].charAt(j);
+                if(base[i][j] != '.' && base[i][j] != '*'){
+                    if(arr[base[i][j]-'A'].size() == 0){
+                        order.add(base[i][j]);
+                    }
+                    arr[base[i][j]-'A'].add(new Pair(i,j));
+                }
+            }
+        }
+        
+        Collections.sort(order);
+        
+        int idx = 0;
+        while(order.size() != 0){
+            char cur = order.get(idx);
+            int x1 = arr[cur-'A'].get(0).x;
+            int y1 = arr[cur-'A'].get(0).y;
+            int x2 = arr[cur-'A'].get(1).x;
+            int y2 = arr[cur-'A'].get(1).y;
+            
+            boolean judge1 = solve1(x1,y1,x2,y2,cur,base);
+            boolean judge2 = solve2(x1,y1,x2,y2,cur,base);
+            
+            if(judge1 || judge2){
+                answer += base[x1][y1];
+                base[x1][y1] = '.';
+                base[x2][y2] = '.';
+                order.remove(idx);
+                idx = 0;
+            }
+            else{
+                idx++;
+                if(idx == order.size()){
+                    answer = "IMPOSSIBLE";
+                    break;
+                }
+            }
+            
+        }
+        
+        
+        return answer;
+    }
+}
