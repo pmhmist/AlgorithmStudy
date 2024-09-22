@@ -1,0 +1,79 @@
+import java.util.*;
+class Solution {
+    
+    public static class Pair1 implements Comparable<Pair1>{
+        int x;
+        int y;
+        
+        Pair1(int x, int y) {
+            this.x = x;
+            this.y = y;
+        }
+        
+        @Override
+        public int compareTo(Pair1 p){
+            return this.x - p.x;
+        }
+        
+    }
+    
+    public static class Pair2 implements Comparable<Pair2>{
+        int x;
+        int y;
+        
+        Pair2(int x, int y) {
+            this.x = x;
+            this.y = y;
+        }
+        
+        @Override
+        public int compareTo(Pair2 p){
+            return this.y - p.y;
+        }
+        
+    }
+             
+             
+    public int solution(int[][] jobs) {
+        int answer = 0;
+        int len = jobs.length;
+        
+        ArrayList<Pair1> arr = new ArrayList<>();
+        for(int i = 0; i < len; i++){
+            arr.add(new Pair1(jobs[i][0],jobs[i][1]));
+        }
+        
+        Collections.sort(arr);
+        
+        PriorityQueue<Pair2> pq = new PriorityQueue<>();
+        
+        int cur = 0;
+        int cnt = 0;
+        int idx = 0;
+        int sum = 0;
+        
+        while(cnt < len){
+            
+            while(idx < len && arr.get(idx).x <= cur){
+                pq.add(new Pair2(arr.get(idx).x,arr.get(idx).y));
+                idx++;
+            }
+            
+            if(pq.isEmpty()){
+                cur = arr.get(idx).x;
+            }
+            else{
+                int x = pq.peek().x;
+                int y = pq.peek().y;
+                sum += (cur-x) + y;
+                cur = cur + y;
+                pq.poll();
+                cnt++;
+            }
+            
+        }
+        
+        answer = sum/len;
+        return answer;
+    }
+}
