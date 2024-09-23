@@ -1,0 +1,40 @@
+import java.util.*;
+
+class Solution {
+    
+    public static class Pair implements Comparable<Pair>{
+        int x;
+        int y;
+        
+        Pair(int x, int y){
+            this.x = x;
+            this.y = y;
+        }
+        
+        @Override
+        public int compareTo(Pair p){
+            return this.y - p.y;
+        }
+    }
+    
+    public int solution(int[][] routes) {
+        int answer = 0;
+        int len = routes.length;
+        ArrayList<Pair> arr = new ArrayList<>();
+        for(int i = 0; i < len; i++){
+            arr.add(new Pair(routes[i][0],routes[i][1]));
+        }
+        
+        Collections.sort(arr);
+        int cur = Integer.MIN_VALUE;
+        
+        for(int i = 0; i < len; i++){
+            if(cur < arr.get(i).x){
+                cur = arr.get(i).y;
+                answer++;
+            }
+        }
+        
+        return answer;
+    }
+}
