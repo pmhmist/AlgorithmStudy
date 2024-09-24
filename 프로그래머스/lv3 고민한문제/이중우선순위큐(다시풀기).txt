@@ -1,0 +1,48 @@
+import java.util.*;
+
+class Solution {
+    public int[] solution(String[] operations) throws Exception{
+        int[] answer = new int[2];
+        TreeMap<Integer,Integer> m = new TreeMap<>();
+        for(int i = 0; i < operations.length; i++){
+            String[] base = operations[i].split(" ");
+            
+            if(base[0].equals("I")){
+                int cal = Integer.valueOf(base[1]);
+                m.put(cal,m.getOrDefault(cal,0)+1);
+            }
+            else{
+                int order = Integer.valueOf(base[1]);
+                if(m.size() == 0) continue;
+                if(order == -1){
+                    int ck = m.firstKey();
+                    if(m.get(ck) == 1){
+                        m.remove(ck);
+                    }
+                    else{
+                        m.put(ck,m.get(ck)-1);
+                    }
+                }
+                else{
+                    int ck = m.lastKey();
+                        if(m.get(ck) == 1){
+                        m.remove(ck);
+                    }
+                    else{
+                        m.put(ck,m.get(ck)-1);
+                    }
+                }
+                
+            }
+            
+        }
+        
+        if(m.size() != 0){
+            answer[0] = m.lastKey();
+            answer[1] = m.firstKey();
+        }
+        
+        
+        return answer;
+    }
+}

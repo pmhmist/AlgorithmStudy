@@ -1,0 +1,46 @@
+import java.util.*;
+class Solution {
+    public int solution(String[] friends, String[] gifts) {
+        int answer = 0;
+        int len = friends.length;
+        int mapnum = 0;
+        
+        int[][] board = new int[len][len];
+        int[] giftscore = new int[len];
+        
+        Map<String,Integer> m = new HashMap<>();
+        for(int i = 0; i < len; i++){
+            m.put(friends[i],mapnum);
+            mapnum++;
+        }
+        
+        for(int i = 0; i < gifts.length; i++){
+            String[] tmp = gifts[i].split(" ");
+            int x = m.get(tmp[0]);
+            int y = m.get(tmp[1]);
+            board[x][y] += 1;
+            
+            giftscore[x] += 1;
+            giftscore[y] -= 1;
+        }
+        
+        for(int i = 0; i < len; i++){
+            int tmp = 0; // i가 받을 선물
+            for(int j = 0; j < len; j++){
+                if(i == j) continue;
+                
+                int num1 = board[i][j];
+                int num2 = board[j][i];
+                
+                if(num1 > num2) tmp++;
+                else if(num1 == num2){
+                    if(giftscore[i] > giftscore[j]) tmp++;
+                }
+            }
+            answer = Math.max(answer,tmp);
+        }
+        
+        
+        return answer;
+    }
+}
