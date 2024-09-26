@@ -1,0 +1,32 @@
+import java.util.*;
+
+class Solution {
+    public int solution(int n, int[][] computers) {
+        int answer = 0;
+        boolean[] vis = new boolean[n];
+        
+        for(int turn = 0; turn < n; turn++){
+            if(!vis[turn]){
+                answer ++;
+                Queue<Integer> q = new ArrayDeque<>();
+                q.offer(turn);
+                vis[turn] = true;
+                while(!q.isEmpty()){
+                    int cur = q.peek();
+                    q.poll();
+                    for(int i = 0; i < n; i++){
+                        if(computers[cur][i] == 0) continue;
+                        if(vis[i]) continue;
+                        vis[i] = true;
+                        q.offer(i);
+                    }
+                    
+                }
+                
+            }
+            
+        }
+        
+        return answer;
+    }
+}

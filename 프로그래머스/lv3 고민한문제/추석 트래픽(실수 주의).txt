@@ -1,0 +1,48 @@
+import java.util.*;
+
+class Solution {
+    
+    public static class Pair {
+        long x;
+        long y;
+        
+        Pair(long x, long y){
+            this.x = x;
+            this.y = y;
+        }
+    
+    }
+    
+    public int solution(String[] lines) {
+        int answer = 0;
+        ArrayList<Pair> arr = new ArrayList<>();
+        
+        for(int turn = 0; turn < lines.length; turn++){
+            String[] base = lines[turn].split(" ");
+            String[] time = base[1].split(":");
+            long hour = Long.valueOf(time[0]);
+            long min = Long.valueOf(time[1]);
+            long sec = (long)(Double.valueOf(time[2])*1000);
+            
+            StringBuilder sb = new StringBuilder(base[2]);
+            int len = base[2].length();
+            sb.deleteCharAt(len-1);
+            long work = (long)(Double.valueOf(sb.toString())*1000);
+            
+            long cur = (hour*3600 + min*60)*1000 + sec; // 시간 계산 주의
+            arr.add(new Pair(cur-work+1,cur));
+        }
+        
+        for(int i = 0; i < arr.size(); i++){
+            int tmp = 1;
+            long base = arr.get(i).y;
+            for(int j = i+1; j < arr.size(); j++){
+                if(base + 1000 > arr.get(j).x) tmp++;
+            }
+            if(answer < tmp) answer = tmp;
+        }
+        
+        
+        return answer;
+    }
+}
