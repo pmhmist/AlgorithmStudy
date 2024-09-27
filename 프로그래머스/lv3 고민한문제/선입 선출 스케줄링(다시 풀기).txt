@@ -1,0 +1,52 @@
+import java.util.*;
+
+class Solution {
+    
+    public int solution(int n, int[] cores) {
+        int answer = 0;
+        int len = cores.length;
+        if(n <= len){
+            return n;   
+        }
+        
+        n -= len;
+        
+        int left = 1;
+        int right = 600000000;
+        long num = 0;
+        int sv = 0;
+        
+        while(left <= right){
+            int mid = (left + right) / 2;
+            long tmp = 0;
+            for(int i = 0; i < len; i++){
+                tmp += mid/cores[i];
+            }
+
+            if(tmp >= n){
+                sv = mid;
+                num = tmp;
+                right = mid-1;
+            }
+            else{
+                left = mid+1;
+            }
+        }
+        
+        //(1차 실패) 반드시 나눠 떨어진다는 보장이 없다...
+        num -= n;
+        for(int i = len - 1; i >= 0; i--){
+            if(sv%cores[i] == 0){
+                if(num == 0){
+                    answer = i+1;
+                    break;
+                }
+                num--;
+            }
+        }
+        
+        
+        
+        return answer;
+    }
+}
