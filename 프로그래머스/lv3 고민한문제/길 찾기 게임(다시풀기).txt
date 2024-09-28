@@ -1,0 +1,82 @@
+import java.util.*;
+
+class Solution {
+    
+    public class Node implements Comparable<Node>{
+        int x;
+        int y;
+        int val;
+        Node left;
+        Node right;
+        
+        public Node(int x, int y, int val, Node left, Node right){
+            this.x = x;
+            this.y = y;
+            this.val = val;
+            this.left = left;
+            this.right = right;
+        }
+        
+        @Override
+        public int compareTo(Node n){
+            if(this.y == n.y) return this.y - n.y;
+            return n.y - this.y;
+        }
+    }
+    
+    public static void pushNode(Node parent, Node child){
+        if(parent.x > child.x){
+            if(parent.left == null) parent.left = child;
+            else pushNode(parent.left,child);
+        }
+        else{
+            if(parent.right == null) parent.right = child;
+            else pushNode(parent.right,child);
+        }
+    }
+    
+    public static void preorder(Node cur){
+        answer[0][idx++] = cur.val;
+        if(cur.left != null){
+            preorder(cur.left);
+        }
+        if(cur.right != null){
+            preorder(cur.right);
+        }
+        
+    }
+    
+    public static void postorder(Node cur){
+        if(cur.left != null){
+            postorder(cur.left);
+        }
+        if(cur.right != null){
+            postorder(cur.right);
+        }
+         answer[1][idx++] = cur.val;
+    }
+    
+    static int[][] answer;
+    static int idx = 0;
+        
+    public int[][] solution(int[][] nodeinfo) {
+        int len = nodeinfo.length;
+        answer = new int[2][len];
+        Node[] node = new Node[len];
+        for(int i = 0; i < len; i++){
+            node[i] = new Node(nodeinfo[i][0],nodeinfo[i][1],i+1,null, null);
+        }
+        Arrays.sort(node);
+        
+        Node root = node[0];
+        for(int i = 1; i < len; i++){
+            pushNode(root,node[i]);
+        }
+        
+        preorder(root);
+        idx = 0;
+        postorder(root);
+        
+        return answer;
+    }
+}

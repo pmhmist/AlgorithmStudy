@@ -1,0 +1,50 @@
+import java.util.*;
+
+class Solution {
+    
+    public static class Pair{
+        String x;
+        int y;
+        
+        Pair(String x, int y){
+            this.x = x;
+            this.y = y;
+        }
+    }
+    
+    public int solution(String begin, String target, String[] words) {
+        int answer = 0;
+        int len = words.length;
+        boolean[] vis = new boolean[len];
+        Queue<Pair> q = new ArrayDeque<>();
+        q.offer(new Pair(begin,0));
+        
+        while(!q.isEmpty()){
+            String x = q.peek().x;
+            int y = q.peek().y;
+            if(x.equals(target)){
+                answer = y;
+                break;
+            }
+            q.poll();
+            
+            for(int i = 0; i < len; i++){
+                if(vis[i]) continue;
+                String nxt = words[i];
+                int cnt = 0;
+                for(int j = 0; j < nxt.length(); j++){
+                    if(x.charAt(j) != nxt.charAt(j)) cnt++;
+                }
+                
+                if(cnt == 1){
+                    vis[i] = true;
+                    q.offer(new Pair(nxt,y+1));
+                }
+            }
+            
+        }
+        
+        
+        return answer;
+    }
+}
