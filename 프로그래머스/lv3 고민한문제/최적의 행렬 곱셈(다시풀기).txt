@@ -1,0 +1,39 @@
+https://youngyin.tistory.com/155 => 블로그 풀이 참고
+https://dev-note-97.tistory.com/264 -> 블로그 풀이 참고
+
+import java.util.*;
+
+class Solution {
+    public int solution(int[][] matrix_sizes) {
+        
+        // 주어진 행렬의 순서는 바뀌지 않는다.
+        int answer = 0;
+        int len = matrix_sizes.length;
+        
+        //[a][b] -> a번쨰부터 b행렬까지 연산의 최솟값
+        int[][] dp = new int[len][len];
+        for(int i = 0; i < len; i++){
+            for(int j = 0; j < len; j++){
+                if(i < j) dp[i][j] = 1_000_000_00;
+            }
+        }
+        
+        for(int i = 1; i < len; i++){
+            for(int j = 0; j < len-i; j++){
+                int l = j;
+                int r = j+i;
+                
+                for(int k = l; k < r; k++){
+                    int fx = matrix_sizes[l][0];
+                    int fy = matrix_sizes[k][1];
+                    int fz = matrix_sizes[r][1];
+                    dp[l][r] = Math.min(dp[l][r], dp[l][k] + dp[k+1][r] + (fx*fy*fz));
+                }
+            }
+        }
+        
+        answer = dp[0][len-1];
+        
+        return answer;
+    }
+}

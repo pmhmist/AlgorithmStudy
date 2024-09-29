@@ -1,0 +1,47 @@
+import java.util.*;
+
+class Solution {
+    
+    public int solution(int n, int[][] edge) {
+        int answer = 0;
+        ArrayList<Integer>[] board = new ArrayList[n+1];
+        for(int i = 0; i <= n; i++){
+            board[i] = new ArrayList<>();
+        }
+        
+        for(int i = 0; i < edge.length; i++){
+            board[edge[i][0]].add(edge[i][1]);
+            board[edge[i][1]].add(edge[i][0]);
+        }
+        
+        int[] vis = new int[n+1];
+        Arrays.fill(vis,-1);
+        vis[1] = 0;
+        Queue<Integer> q = new ArrayDeque<>();
+        q.offer(1);
+        
+        while(!q.isEmpty()){
+            int cur = q.peek();
+            q.poll();
+            
+            for(int nxt : board[cur]){
+                if(vis[nxt] != -1) continue;
+                vis[nxt] = vis[cur] + 1;
+                q.offer(nxt);
+            }
+        }
+        
+        int mx = 0;
+        for(int i = 0; i <= n; i++){
+            if(vis[i] > mx) mx = vis[i];
+        }
+        
+        if(mx != 0){
+            for(int i = 0; i <= n; i++){
+                if(vis[i] == mx) answer++;
+            }
+        }
+        
+        return answer;
+    }
+}
