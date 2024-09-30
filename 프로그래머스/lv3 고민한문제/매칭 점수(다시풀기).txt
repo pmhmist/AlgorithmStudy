@@ -1,0 +1,81 @@
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+class Solution {
+    
+    public static class Node{
+        String name;
+        
+        int outer;
+        
+        int basicscore;
+        
+        List<String> linkpage;
+        
+        double score;
+    }
+    
+    public int solution(String word, String[] pages) {
+        int answer = 0;
+        word = word.toLowerCase();
+        int pagelen = pages.length;
+        
+        Node[] nodes = new Node[pagelen];
+        List<String>[] datas = new List[pagelen];
+        Matcher mt = null;
+        for(int i = 0; i < pagelen; i++){
+            pages[i] = pages[i].toLowerCase();
+            datas[i] = new ArrayList<>();
+            nodes[i] = new Node();
+            
+            mt= Pattern.compile("(<meta property=\"og:url\" content=\"https://(\\S*)\")").matcher(pages[i]);
+            while(mt.find()){
+                String name = mt.group(2).trim();
+                nodes[i].name = name;
+            }
+            
+            int basicscore = 0;
+            mt = Pattern.compile("(?<=[^a-zA-Z])("+word+")[^a-zA-Z]").matcher(pages[i]);
+            while(mt.find()){
+                basicscore++;
+            }
+            nodes[i].basicscore = basicscore;
+            
+            mt = Pattern.compile("<a href=\"(\\S*)//(\\S*)\"").matcher(pages[i]);
+            while(mt.find()){
+                String nxt = mt.group(2).trim();
+                datas[i].add(nxt);
+            }
+            nodes[i].linkpage = datas[i];
+            nodes[i].outer = datas[i].size();
+        }
+        
+        // 외부 링크 계산
+        for(int i = 0; i < pagelen; i++){
+            
+            for(String nxt : nodes[i].linkpage){
+                
+                for(int j = 0; j < pagelen; j++){
+                    if(i == j) continue;
+                    if(nxt.equals(nodes[j].name)){
+                         nodes[j].score += (double)nodes[i].basicscore/nodes[i].outer;
+                    }
+                }
+                
+            }
+            
+            
+        }
+                
+        double ck = 0;
+        for(int i = 0; i < pagelen; i++){
+            double tmp = nodes[i].score + nodes[i].basicscore;
+            if(ck < tmp){
+                ck = tmp;
+                answer = i;
+            }
+        }
+        
+        return answer;
+    }
+}
