@@ -1,0 +1,92 @@
+import java.util.*;
+
+class Solution {
+    public static boolean[] vis;
+    public static int[] permu;
+    public static int[][] rotateWeak;
+    
+    public static boolean finish;
+    public static int ck;
+    public static int len;
+    public static int weaklen;
+    public static int distlen;
+    
+    public int solution(int n, int[] weak, int[] dist) {
+        int answer = 0;
+        ck = 0;
+        
+        len = n;
+        weaklen = weak.length;
+        distlen = dist.length;
+        permu = new int[distlen];
+        vis = new boolean[distlen];
+        
+        rotateWeak = new int[weaklen][weaklen];
+        int idx = 0;
+        for(int i = 0; i < weaklen; i++){
+            idx = i;
+            for(int j = 0; j < weaklen; j++){
+                if(j + idx < weaklen) rotateWeak[i][j] = weak[j + idx];
+                else rotateWeak[i][j] = weak[j + idx - weaklen] + len;
+            }
+        }
+        
+        for(int i = 1; i <= distlen; i++){
+            ck = i;
+            permu = new int[ck];
+            solve(0,weak,dist);
+            if(finish) break;
+        }
+
+        answer = -1;
+        if(finish) answer = ck;
+        
+        return answer;
+    }
+    
+    public static boolean isFinish(boolean[] sv){
+        for(boolean nxt : sv){
+            if(!nxt) return false;
+        }
+        return true;
+    }
+    
+    public static void solve(int depth,int[] weak, int[] dist){
+        if(depth == ck){
+            for(int i = 0; i < weaklen; i++){
+                boolean[] sv = new boolean[weaklen]; 
+                int idx = 0;
+                int start = 0;
+                while(idx != ck){
+                    int x = start;
+                    int val = permu[idx];
+                    idx++;
+                    
+                    for(int j = start; j < weaklen; j++){
+                        if(!(rotateWeak[i][x] <= rotateWeak[i][j] && rotateWeak[i][j] <= rotateWeak[i][x] + val)) break;
+                        sv[j] = true;
+                        start++;
+                    }
+                    
+                }
+                
+                if(isFinish(sv)){
+                    finish = true;
+                }
+                
+                
+                
+            }
+            
+            return;
+        }
+        
+        for(int i = 0; i < distlen; i++){
+            if(vis[i]) continue;
+            vis[i] = true;
+            permu[depth] = dist[i];
+            solve(depth+1,weak,dist);
+            vis[i] = false;
+        }
+    }
+}
