@@ -1,0 +1,131 @@
+import java.util.*;
+
+class Solution {
+    
+    static boolean[][] boardk;
+    static boolean[][] boardb;
+    
+    public int[][] solution(int n, int[][] build_frame) {
+        
+        boardk = new boolean[n+3][n+3];
+        boardb = new boolean[n+3][n+3];
+        int cnt = 0;
+        
+        for(int turn = 0; turn < build_frame.length; turn++){
+            int x = build_frame[turn][0] + 1;
+            int y = build_frame[turn][1] + 1;
+            int a = build_frame[turn][2];
+            int b = build_frame[turn][3];
+            
+            if(a == 0){ // 기둥
+                if(b == 0){ // 삭제
+                    boolean judge = true;
+                    boardk[x][y] = false;
+                    cnt--;
+                    
+                    for(int i = 1; i <= n+1; i++){
+                        for(int j = 1; j <= n+1; j++){
+                            if(boardk[i][j]){
+                                if(!ckboardk(i,j)){
+                                    judge = false;
+                                    break;
+                                }
+                            }
+                            
+                            if(boardb[i][j]){
+                                if(!ckboardb(i,j)){
+                                    judge = false;
+                                    break;
+                                }
+                            }
+                        }
+                        if(!judge) break;
+                    }
+                    
+                    if(!judge){
+                        boardk[x][y] = true;
+                        cnt++;
+                    }
+                    
+                }
+                else{ // 설치
+                    if(ckboardk(x,y)){
+                        boardk[x][y] = true;
+                        cnt++;
+                    }
+                }
+            }
+            else{ // 보
+                if(b == 0){ // 삭제
+                    
+                    boolean judge = true;
+                    boardb[x][y] = false;
+                    cnt--;
+                    
+                    for(int i = 1; i <= n+1; i++){
+                        for(int j = 1; j <= n+1; j++){
+                            if(boardk[i][j]){
+                                if(!ckboardk(i,j)){
+                                    judge = false;
+                                    break;
+                                }
+                            }
+                            
+                            if(boardb[i][j]){
+                                if(!ckboardb(i,j)){
+                                    judge = false;
+                                    break;
+                                }
+                            }
+                        }
+                        if(!judge) break;
+                    }
+                    
+                    if(!judge){
+                        boardb[x][y] = true;
+                        cnt++;
+                    }
+                
+                }
+                else{ // 설치
+                    if(ckboardb(x,y)){
+                        boardb[x][y] = true;
+                        cnt++;
+                    }
+                }
+            }
+            
+        }
+        
+        int[][] answer = new int[cnt][3];
+        int idx = 0;
+        for(int i = 1; i <= n+1; i++){
+            for(int j = 1; j <= n+1; j++){
+                if(boardk[i][j]){
+                    answer[idx][0] = i-1;
+                    answer[idx][1] = j-1;
+                    answer[idx][2] = 0;
+                    idx++;
+                }
+                
+                if(boardb[i][j]){
+                    answer[idx][0] = i-1;
+                    answer[idx][1] = j-1;
+                    answer[idx][2] = 1;
+                    idx++;
+                }
+            }
+        }
+        
+        return answer;
+    }
+    
+    boolean ckboardk(int x, int y){
+        return y == 1 || boardk[x][y-1] || boardb[x-1][y] || boardb[x][y];
+    }
+    
+    boolean ckboardb(int x, int y){
+       return boardk[x][y-1] || boardk[x+1][y-1] || (boardb[x-1][y] && boardb[x+1][y]);
+    }
+    
+}
