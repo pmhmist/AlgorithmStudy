@@ -1,0 +1,49 @@
+import java.util.*;
+
+class Solution {
+    String[] user;
+    String[] ban;
+    HashSet<HashSet<String>>  sv;
+    
+    public void solve(HashSet<String> set, int depth){
+        if(depth == ban.length){
+            sv.add(set);
+            return;
+        }
+        
+        for(int i = 0; i < user.length; i++){
+            if(set.contains(user[i])) continue;
+            
+            String cur = user[i];
+            String nxt = ban[depth];
+            if(cur.length() != nxt.length()) continue;
+            
+            int cnt = 0;
+            for(int j = 0; j < cur.length(); j++){
+                if(nxt.charAt(j) == '*') cnt++;
+                else if(cur.charAt(j) == nxt.charAt(j)) cnt++;
+            }
+            
+            if(cnt == cur.length()){
+                set.add(cur);
+                solve(new HashSet<>(set),depth+1);
+                set.remove(cur);
+            }
+            
+        }
+        
+    }
+    
+    public int solution(String[] user_id, String[] banned_id) {
+        user = user_id;
+        ban = banned_id;
+        sv = new HashSet<>();
+        
+        solve(new HashSet<>(),0);
+        
+        int answer = sv.size();
+        
+        return answer;
+    }
+    
+}
