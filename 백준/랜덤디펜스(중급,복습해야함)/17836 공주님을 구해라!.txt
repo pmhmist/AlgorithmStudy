@@ -1,0 +1,92 @@
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.*;
+
+public class Main
+{
+
+    public static class Pair{
+        int x;
+        int y;
+        Pair (int x, int y){
+            this.x = x;
+            this.y = y;
+        }
+    }
+
+    static int[] dx = {-1,0,1,0};
+    static int[] dy = {0,1,0,-1};
+
+    public static void main(String[] args) throws Exception{
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st = new StringTokenizer(br.readLine());
+
+        int n = Integer.parseInt(st.nextToken());
+        int m = Integer.parseInt(st.nextToken());
+        int t = Integer.parseInt(st.nextToken());
+
+        int[][] board = new int[n][m];
+
+        int sx = 0;
+        int sy = 0;
+
+        int tx = 0;
+        int ty = 0;
+
+
+        for(int i = 0; i < n; i++){
+            st = new StringTokenizer(br.readLine());
+            for(int j = 0; j < m; j++){
+                board[i][j] = Integer.parseInt(st.nextToken());
+                if(board[i][j] == 2){
+                    tx = i;
+                    ty = j;
+                }
+            }
+        }
+
+        Queue<Pair> q = new ArrayDeque<>();
+        int[][] vis = new int[n][m];
+        q.offer(new Pair(sx,sy));
+
+        for(int i = 0; i < n; i++){
+            for(int j = 0; j < m; j++){
+                vis[i][j] = -1;
+            }
+        }
+        vis[sx][sy] = 0;
+        while(!q.isEmpty()) {
+            int x = q.peek().x;
+            int y = q.peek().y;
+            q.poll();
+
+            for (int dir = 0; dir < 4; dir++) {
+                int nx = x + dx[dir];
+                int ny = y + dy[dir];
+                if (nx < 0 || nx >= n || ny < 0 || ny >= m) continue;
+                if (vis[nx][ny] != -1) continue;
+                if (board[nx][ny] == 1) continue;
+                vis[nx][ny] = vis[x][y] + 1;
+                q.offer(new Pair(nx, ny));
+            }
+        }
+
+        boolean judge = true;
+        int ans = Integer.MAX_VALUE;
+
+        int cal = vis[n-1][m-1];
+        if(cal == -1) cal = Integer.MAX_VALUE;
+        if(vis[tx][ty] != -1){
+            int cal2 = vis[tx][ty];
+            cal2 += Math.abs(n-1-tx) + Math.abs(m-1-ty);
+            cal = Math.min(cal,cal2);
+        }
+        if(cal > t) judge = false;
+        ans = cal;
+
+        if(!judge) System.out.println("Fail");
+        else{
+            System.out.println(ans);
+        }
+    }
+}
