@@ -1,0 +1,163 @@
+import java.util.*;
+
+class Solution {
+    
+    public static class Pair{
+        int x1;
+        int y1;
+        int x2;
+        int y2;
+        int state;
+        int time;
+        
+        Pair(int x1, int y1, int x2 ,int y2, int state, int time){
+            this.x1 = x1;
+            this.y1 = y1;
+            this.x2 = x2;
+            this.y2 = y2;
+            this.state = state;
+            this.time = time;
+        }
+    }
+    
+    static int[] dx = {-1,0,1,0};
+    static int[] dy = {0,1,0,-1};
+    
+    
+    public int solution(int[][] board) {
+        int answer = -1;
+        int n = board.length;
+        
+        boolean[][][] vis = new boolean[n][n][4];
+        
+        Queue<Pair> q = new ArrayDeque<>();
+        vis[0][0][0] = true;
+        q.offer(new Pair(0,0,0,1,0,0));
+        
+        while(!q.isEmpty()){
+            int x1 = q.peek().x1;
+            int y1 = q.peek().y1;
+            int x2 = q.peek().x2;
+            int y2 = q.peek().y2;
+            int state = q.peek().state;
+            int time = q.peek().time;
+            
+            
+            if(x1 == n-1 && y1 == n-1){
+                answer = time;
+                break;
+            }
+            
+            if(x2 == n-1 && y2 == n-1){
+                answer = time;
+                break;
+            }
+            
+            q.poll();
+            
+            for(int dir = 0; dir < 4; dir++){
+                int nx1 = x1;
+                int ny1 = y1;
+                int nx2 = x2;
+                int ny2 = y2;
+                
+                if(dir == 0 || dir == 2){
+                    nx1 = x1 + dx[dir];
+                    nx2 = x2 + dx[dir];
+                }
+                else{
+                    ny1 = y1 + dy[dir];
+                    ny2 = y2 + dy[dir];
+                }
+                
+                if(nx1 < 0 || nx1 >= n || ny1 < 0 || ny1 >= n) continue;
+                if(nx2 < 0 || nx2 >= n || ny2 < 0 || ny2 >= n) continue;
+                if(board[nx1][ny1] == 1) continue;
+                if(board[nx2][ny2] == 1) continue;
+                if(vis[nx1][ny1][state]) continue;
+                vis[nx1][ny1][state] = true;
+                q.offer(new Pair(nx1,ny1,nx2,ny2,state,time+1));
+            }
+            
+            if(state == 0){
+                for(int dir = 0; dir < 4; dir += 2){
+                    int nx = x1 + dx[dir];
+                    int ny = y1 + dy[dir];
+                    
+                    if(nx < 0 || nx >= n || ny < 0 || ny >= n) continue;
+                    if(board[nx][ny] == 1 || board[nx][y2] == 1) continue;
+                    if(dir == 0){
+                        if(vis[nx][ny][1]) continue;
+                        vis[nx][ny][1] = true;
+                        q.offer(new Pair(nx,ny,x1,y1,1,time+1));
+                    }
+                    else{
+                        if(vis[x1][y1][1]) continue;
+                        vis[x1][y1][1] = true;
+                        q.offer(new Pair(x1,y1,nx,ny,1,time+1));
+                    }
+                }
+                
+                for(int dir = 0; dir < 4; dir += 2){
+                    int nx = x2 + dx[dir];
+                    int ny = y2 + dy[dir];
+                    
+                    if(nx < 0 || nx >= n || ny < 0 || ny >= n) continue;
+                    if(board[nx][ny] == 1 || board[nx][y1] == 1) continue;
+                    if(dir == 0){
+                        if(vis[nx][ny][1]) continue;
+                        vis[nx][ny][1] = true;
+                        q.offer(new Pair(nx,ny,x2,y2,1,time+1));
+                    }
+                    else{
+                        if(vis[x2][y2][1]) continue;
+                        vis[x2][y2][1] = true;
+                        q.offer(new Pair(x2,y2,nx,ny,1,time+1));
+                    }
+                }
+                
+            }
+            else{
+                for(int dir = 1; dir < 4; dir+= 2){
+                    int nx = x1 + dx[dir];
+                    int ny = y1 + dy[dir];
+                    
+                    if(nx < 0 || nx >= n || ny < 0 || ny >= n) continue;
+                    if(board[nx][ny] == 1 || board[x2][ny] == 1) continue;
+                    if(dir == 1){
+                        if(vis[x1][y1][0]) continue;
+                        vis[x1][y1][0] = true;
+                        q.offer(new Pair(x1,y1,nx,ny,0,time+1));
+                    }
+                    else{
+                        if(vis[nx][ny][0]) continue;
+                        vis[nx][ny][0] = true;
+                        q.offer(new Pair(nx,ny,x1,y1,0,time+1));
+                    }
+                }
+                
+                for(int dir = 1; dir < 4; dir += 2){
+                    int nx = x2 + dx[dir];
+                    int ny = y2 + dy[dir];
+                    
+                    if(nx < 0 || nx >= n || ny < 0 || ny >= n) continue;
+                    if(board[nx][ny] == 1 || board[x1][ny] == 1) continue;
+                    if(dir == 1){
+                        if(vis[x2][y2][0]) continue;
+                        vis[x2][y2][0] = true;
+                        q.offer(new Pair(x2,y2,nx,ny,0,time+1));
+                    }
+                    else{
+                        if(vis[nx][ny][0]) continue;
+                        vis[nx][ny][0] = true;
+                        q.offer(new Pair(nx,ny,x2,y2,0,time+1));
+                    }
+                }
+            }
+            
+        }
+        
+        
+        return answer;
+    }
+}
