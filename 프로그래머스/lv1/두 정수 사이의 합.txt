@@ -1,0 +1,13 @@
+import java.util.*;
+
+class Solution {
+    public long solution(int a, int b) {
+        long answer = 0;
+        int left = Math.min(a,b);
+        int right = Math.max(a,b);
+        for(long i = left; i <= right; i++){
+            answer += i;
+        }
+        return answer;
+    }
+}

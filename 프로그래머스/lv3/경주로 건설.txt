@@ -1,0 +1,113 @@
+import java.util.*;
+
+class Solution {
+    
+    static int[] dx = {-1,0,1,0};
+    static int[] dy = {0,1,0,-1};
+    
+    static int[][][] vis;
+    
+    static int mx;
+    static int n;
+    
+    public static class Pair{
+        int x;
+        int y;
+        int z;
+        
+        Pair(int x, int y, int z){
+            this.x = x;
+            this.y = y;
+            this.z = z;
+        }
+        
+    }
+    
+    public int solution(int[][] board) {
+        n = board.length;
+        
+        vis = new int[n][n][4];
+        mx = Integer.MAX_VALUE;
+        // 직선 100원 코너 500원
+        Pair p1 = new Pair(0,0,1);
+        Pair p2 = new Pair(0,0,2);
+        int answer = mx;
+        
+        initvis();
+        solve(p1,board);
+        for(int i = 0; i < 4; i++){
+            answer = Math.min(answer,vis[n-1][n-1][i]);
+        }
+        
+        initvis();
+        solve(p2,board);
+        for(int i = 0; i < 4; i++){
+            answer = Math.min(answer,vis[n-1][n-1][i]);
+        }
+        
+        answer -= 100;
+        
+        return answer;
+    }
+    
+    public static void solve(Pair start, int[][] board){
+        vis[0][0][start.z] = 100;
+        Queue<Pair> q = new ArrayDeque<>();
+        q.offer(start);
+        
+        while(!q.isEmpty()){
+            int x = q.peek().x;
+            int y = q.peek().y;
+            int z = q.peek().z;
+            
+            q.poll();
+            
+            for(int dir = 0; dir < 4; dir++){
+                int nx = x + dx[dir];
+                int ny = y + dy[dir];
+                if(nx < 0 || nx >= n || ny < 0 || ny >= n) continue;
+                if(board[nx][ny] == 1) continue;
+
+                if(z == 0){
+                    if(dir == 2) continue;
+                }
+                if(z == 1){
+                    if(dir == 3) continue;
+                }
+                if(z == 2){
+                    if(dir == 0) continue;
+                }
+                if(z == 3){
+                    if(dir == 1) continue;
+                }
+
+                if(dir == z){
+                    if(vis[nx][ny][dir] > vis[x][y][z] + 100){
+                        vis[nx][ny][dir] = vis[x][y][z] + 100;
+                        q.offer(new Pair(nx,ny,dir));
+                    }
+                }
+                else{
+                    if(vis[x][y][dir] > vis[x][y][z] + 500){
+                        vis[x][y][dir] = vis[x][y][z] + 500;
+                        q.offer(new Pair(x,y,dir));
+                    }
+
+                }
+            }
+            
+        }
+        
+    }
+    
+    public static void initvis(){
+        for(int i = 0; i < n; i++){
+            for(int j = 0; j < n; j++){
+                for(int k = 0; k < 4; k++){
+                    vis[i][j][k] = mx;
+                }
+            }
+        }
+    }
+    
+}
