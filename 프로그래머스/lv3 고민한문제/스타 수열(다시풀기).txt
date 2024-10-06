@@ -1,0 +1,30 @@
+import java.util.*;
+
+class Solution {
+        
+    public int solution(int[] a) {
+        int answer = -1;
+        int len = a.length;
+        int[] cnt = new int[len];
+        
+        for(int i = 0; i < len; i++){
+            cnt[a[i]] += 1;
+        }
+        int num = 0;
+        for(int i = 0; i < len; i++){
+            if(cnt[i] <= num) continue;
+            
+            int ck = 0;
+            for(int j = 0; j < len-1; j++){
+                if(a[j] != a[j+1] && (i == a[j] || i == a[j+1])){
+                    ck++;
+                    j++;
+                }
+            }
+            if(num < ck) num = ck;
+        }
+        
+        answer = 2 * num;
+        return answer;
+    }
+}
