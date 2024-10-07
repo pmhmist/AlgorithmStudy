@@ -1,0 +1,91 @@
+import java.util.*;
+
+class Solution {
+    public String solution(String play_time, String adv_time, String[] logs) {
+        String answer = "";
+        String[] baseptime = play_time.split(":");
+        int tot = calTime(baseptime[0],baseptime[1],baseptime[2]);
+        
+        String[] baseadvtime = adv_time.split(":");
+        int advtime = calTime(baseadvtime[0],baseadvtime[1],baseadvtime[2]);
+        
+        long[] arr = new long[4_000_000];
+        long[] arr2 = new long[4_000_000];
+        
+        for(int i = 0; i < logs.length; i++){
+            String[] logptime = logs[i].split("-");
+            String[] starttime = logptime[0].split(":");
+            String[] endtime = logptime[1].split(":");
+            
+            int start = calTime(starttime[0],starttime[1],starttime[2]);
+            int end = calTime(endtime[0],endtime[1],endtime[2]);
+            arr[start] += 1;
+            arr[end] -= 1;
+            
+        }
+        
+        long tmp = 0;
+        for(int i = 0; i <= tot; i++){
+            tmp += arr[i];
+            arr2[i] = tmp;
+        }
+        
+        int left = 0;
+        int right = 0;
+        int ans = 0;
+        long cnt = -1;
+        long cur = 0;
+        while(right <= tot){
+            if(right - left < advtime){
+                cur += arr2[right];
+                right++;
+            }
+            else{
+                if(cnt < cur){
+                    cnt = cur;
+                    ans = left;
+                }
+                
+                cur -= arr2[left];
+                cur += arr2[right];
+                left++;
+                right++;
+                
+            }
+        }
+        
+        int a = ans / 3600;
+        int b = (ans%3600)/60;
+        int c = (ans%3600)%60;
+        
+        StringBuilder sb = new StringBuilder();
+        if(a < 10){
+            sb.append(0).append(a).append(":");
+        }
+        else{
+            sb.append(a).append(":");
+        }
+        
+        if(b < 10){
+            sb.append(0).append(b).append(":");
+        }
+        else{
+            sb.append(b).append(":");
+        }
+        
+        if(c < 10){
+            sb.append(0).append(c);
+        }
+        else{
+            sb.append(c);
+        }
+        
+        answer = sb.toString();
+        
+        return answer;
+    }
+    
+    public static int calTime(String x, String y, String z){
+        return Integer.valueOf(x) * 3600 + Integer.valueOf(y)*60 + Integer.valueOf(z);
+    }
+}
