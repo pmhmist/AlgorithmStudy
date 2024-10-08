@@ -1,0 +1,179 @@
+import java.util.*;
+
+class Solution {
+    static int[][] base;
+    static Pair[][] pos;
+    static int[] permu;
+    static boolean[] permuvis;
+    static int sr;
+    static int sc;
+    static int mx;
+    static int total;
+    
+    static int[] dx = {-1,0,1,0};
+    static int[] dy = {0,1,0,-1};
+    
+    public static class Pair{
+        int x;
+        int y;
+        
+        Pair(int x, int y){
+            this.x = x;
+            this.y = y;
+        }
+    }
+    
+    public static class Triple{
+        int x;
+        int y;
+        int z;
+        
+        Triple(int x, int y, int z){
+            this.x = x;
+            this.y = y;
+            this.z = z;
+        }
+    }
+    
+    public static void perm(int cur){
+        if(cur == mx){
+            solve(sr,sc,0,0);
+            return;
+        }
+        
+        for(int i = 0; i < mx; i++){
+            if(permuvis[i]) continue;
+            permuvis[i] = true;
+            permu[cur] = i+1;
+            perm(cur+1);
+            permuvis[i] = false;
+        }
+    }
+    
+    public static int BFS(int x, int y, int gx, int gy){
+        int tmpscore = 0;
+        Queue<Triple> q = new ArrayDeque<>();
+        boolean[][] vis = new boolean[4][4];
+        vis[x][y] = true;
+        q.offer(new Triple(x,y,0));
+
+        while(!q.isEmpty()){
+            int cx = q.peek().x;
+            int cy = q.peek().y;
+            int cz = q.peek().z;
+
+            q.poll();
+            if(cx == gx && cy == gy){
+                tmpscore += cz + 1;
+                break;
+            }
+
+            for(int dir = 0; dir < 4; dir++){
+                int nx = cx + dx[dir];
+                int ny = cy + dy[dir];
+
+                if(nx < 0 || nx >= 4 || ny < 0 || ny >= 4) continue;
+
+                if(!vis[nx][ny]){ // 일반 이동
+                    q.offer(new Triple(nx,ny,cz+1));
+                    vis[nx][ny] = true;
+                }
+                
+                int nx2 = cx;
+                int ny2 = cy;
+
+                while(true){
+                    int tx = nx2 + dx[dir];
+                    int ty = ny2 + dy[dir];
+                    
+                    if(tx < 0 || tx >= 4 || ty < 0 || ty >= 4) break;
+                    nx2 = tx;
+                    ny2 = ty;
+                    if(base[nx2][ny2] != 0) break;
+                }
+
+                if(!vis[nx2][ny2]){ // 특수 이동
+                    q.offer(new Triple(nx2,ny2,cz+1));
+                    vis[nx2][ny2] = true;
+                }
+
+            }
+
+        }
+        
+        return tmpscore;
+    }
+    
+    public static void solve(int x, int y, int turn, int score){
+        if(turn == mx){
+            if(score < total){
+                total = score;
+            }
+            return;
+        }
+        for(int rot = 0; rot < 2; rot++){
+            int sx1, sy1, sx2, sy2;
+            if(rot == 0){
+                sx1 = pos[permu[turn]][0].x;
+                sy1 = pos[permu[turn]][0].y;
+                sx2 = pos[permu[turn]][1].x;
+                sy2 = pos[permu[turn]][1].y;
+            }
+            else{
+                sx1 = pos[permu[turn]][1].x;
+                sy1 = pos[permu[turn]][1].y;
+                sx2 = pos[permu[turn]][0].x;
+                sy2 = pos[permu[turn]][0].y;
+            }
+            int tmpscore = score;
+            tmpscore += BFS(x,y,sx1,sy1);
+            tmpscore += BFS(sx1,sy1,sx2,sy2);
+            
+            base[sx1][sy1] = 0;
+            base[sx2][sy2] = 0;
+            
+            solve(sx2,sy2,turn+1,tmpscore);
+            
+            base[sx1][sy1] = permu[turn];
+            base[sx2][sy2] = permu[turn];
+        }
+        
+    }
+    
+    public int solution(int[][] board, int r, int c) {
+        int answer = 0;
+        mx = -1;
+        base = board;
+        sr = r;
+        sc = c;
+        total = Integer.MAX_VALUE;
+        
+        pos = new Pair[7][2];
+        for(int i = 0; i < 7; i++){
+            for(int j = 0; j < 2; j++) pos[i][j] = new Pair(-1,-1);
+        }
+        
+        for(int i = 0; i < 4; i++){
+            for(int j = 0; j < 4; j++){
+                if(board[i][j] != 0){
+                    if(pos[board[i][j]][0].x == -1){
+                        pos[board[i][j]][0] = new Pair(i,j);
+                    }
+                    else{
+                         pos[board[i][j]][1] = new Pair(i,j);
+                    }
+                }
+                
+                if(mx < board[i][j]) mx = board[i][j];
+            }
+        }
+        
+        permu = new int[mx];
+        permuvis = new boolean[mx];
+        
+        perm(0);
+        
+        answer = total;
+        return answer;
+    }
+}
