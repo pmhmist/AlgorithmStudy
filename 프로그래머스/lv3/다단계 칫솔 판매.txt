@@ -1,0 +1,51 @@
+import java.util.*;
+
+class Solution {
+    public int[] solution(String[] enroll, String[] referral, String[] seller, int[] amount) {
+        
+        Map<String,Integer> m = new HashMap<>();
+        m.put("-",0);
+        for(int i = 0; i < enroll.length; i++){
+            m.put(enroll[i],i+1);
+        }
+        
+        int len = enroll.length + 1;
+        int[] ans = new int[len];
+        ArrayList<Integer>[] arr = new ArrayList[len];
+        for(int i = 0; i < len; i++){
+            arr[i] = new ArrayList<>();
+        }
+        
+        for(int i = 0; i < enroll.length; i++){
+            int a = m.get(enroll[i]);
+            int b = m.get(referral[i]);
+            arr[a].add(b);
+        }
+        
+        for(int turn = 0; turn < seller.length; turn++){
+            int idx = m.get(seller[turn]);
+            int cost = amount[turn]*100;
+            
+            while(true){
+                if(arr[idx].size() == 0){
+                    ans[idx] += cost;
+                    break;
+                }
+                else{
+                    int diff = cost/10;
+                    ans[idx] += cost-diff;
+                    cost = diff;
+                    idx = arr[idx].get(0);
+                }
+                
+            }
+            
+        }
+        int[] answer = new int[enroll.length];
+        for(int i = 0; i < answer.length; i++){
+            answer[i] = ans[i+1];
+        }
+        
+        return answer;
+    }
+}
