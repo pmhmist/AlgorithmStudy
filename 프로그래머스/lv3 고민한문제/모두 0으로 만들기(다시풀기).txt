@@ -1,0 +1,60 @@
+// 향상된 for문 사용하면 힙 메모리를 많이 잡아먹는다.
+
+import java.util.*;
+
+class Solution {
+    static ArrayList<Integer>[] arr;
+    static long[] base;
+    static boolean[] vis;
+    static long total;
+    
+    public static long solve(int cur){
+        long sum = 0;
+        for(int i = 0; i < arr[cur].size(); i++){
+            int nxt = arr[cur].get(i);
+            if(vis[nxt]) continue;
+            vis[nxt] = true;
+            long tmp = solve(nxt);
+            sum += tmp;
+            total += Math.abs(tmp);
+        }
+        base[cur] = base[cur] + sum;
+        return base[cur];
+    }
+    
+    public long solution(int[] a, int[][] edges) {
+        long answer = -2;
+        total = 0;
+        
+        base = new long[a.length];
+        vis = new boolean[a.length];
+        for(int i = 0; i < a.length; i++){
+            base[i] = (long)a[i];
+        }
+        
+        arr = new ArrayList[a.length];
+        for(int i = 0; i < a.length; i++){
+            arr[i] = new ArrayList<>();
+        }
+        for(int i = 0; i < edges.length; i++){
+            int x = edges[i][0];
+            int y = edges[i][1];
+            arr[x].add(y);
+            arr[y].add(x);
+        }
+        
+        // 0번 노드를 임의로 루트라고 가정
+        vis[0] = true;
+        long sum = solve(0);
+        
+        if(sum == 0){
+            answer = total;
+        }
+        else{
+            answer = -1;
+        }
+        
+        
+        return answer;
+    }
+}
