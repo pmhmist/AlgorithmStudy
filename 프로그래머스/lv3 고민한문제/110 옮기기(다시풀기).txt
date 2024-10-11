@@ -1,0 +1,76 @@
+import java.util.*;
+
+class Solution {
+    public String[] solution(String[] s) {
+        String[] answer = new String[s.length];
+        for (int i = 0; i < s.length; i++) {
+            if (s[i].length() <= 3) answer[i] = s[i];
+            else {
+                StringBuilder base = new StringBuilder(s[i]);
+                int cnt = 0;
+                Stack<Character> stack = new Stack<>();
+                for(int j = 0; j < base.length(); j++){
+                    char c = base.charAt(j);
+                    if(stack.size() > 1){
+                        char b = stack.pop();
+                        char a = stack.pop();
+                        
+                        if(a == '1' && b == '1' && c == '0'){
+                            cnt++;
+                        }
+                        else{
+                            stack.push(a);
+                            stack.push(b);
+                            stack.push(c);
+                        }
+                    }
+                    else{
+                        stack.push(c);
+                    }
+                    
+                }
+                
+                StringBuilder sb = new StringBuilder();
+                Stack<Character> stack2 = new Stack<>();
+                
+                while(!stack.isEmpty()){
+                    stack2.push(stack.pop());
+                }
+                
+                while(!stack2.isEmpty()){
+                    sb.append(stack2.pop());
+                }
+                
+                
+                String tmp = sb.toString();
+                
+                int len = tmp.length();
+                int idx = -1;
+                for(int j = len-1; j >= 0; j--){
+                    if(tmp.charAt(j) == '0'){
+                        idx = j;
+                        break;
+                    }
+                }
+                
+                StringBuilder sb1 = new StringBuilder();
+                StringBuilder sb2 = new StringBuilder();
+                for(int j = 0; j < len; j++){
+                    if(j > idx){
+                        sb2.append(tmp.charAt(j));
+                    }
+                    else{
+                        sb1.append(tmp.charAt(j));
+                    }
+                }
+
+                for(int j = 0; j < cnt; j++){
+                    sb1.append("110");
+                }
+                answer[i] = sb1.append(sb2).toString();
+
+            }
+        }
+        return answer;
+    }
+}
