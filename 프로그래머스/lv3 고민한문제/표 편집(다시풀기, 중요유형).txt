@@ -1,0 +1,86 @@
+import java.util.*;
+
+class Solution {
+    public static class Node{
+        boolean isDelete;
+        Node left;
+        Node right;
+    }
+    public String solution(int n, int k, String[] cmd) {
+        Node[] arr = new Node[n+1];
+        
+        arr[0] = new Node();
+        for(int i = 1; i < n; i++){
+            arr[i] = new Node();
+            arr[i].left = arr[i-1];
+            arr[i-1].right = arr[i];
+        }
+        
+        Node cur = arr[k];
+        Stack<Node> stack = new Stack<>();
+        
+        for(int i = 0; i < cmd.length; i++){
+            String[] order = cmd[i].split(" ");
+            if(order[0].equals("U")){
+                int mv = Integer.valueOf(order[1]);
+                
+                for(int j = 0; j < mv; j++){
+                    cur = cur.left;
+                }
+            }
+            else if(order[0].equals("D")){
+                int mv = Integer.valueOf(order[1]);
+                
+                for(int j = 0; j < mv; j++){
+                    cur = cur.right;
+                }
+            }
+            else if(order[0].equals("C")){
+                stack.push(cur);
+                cur.isDelete = true;
+                
+                Node prev = cur.left;
+                Node nxt = cur.right;
+                
+                if(prev != null){
+                    prev.right = nxt;
+                }
+                
+                if(nxt != null){
+                    nxt.left = prev;
+                    cur = nxt;
+                }
+                else{
+                    cur = prev;
+                }
+            }
+            else{
+                Node sv = stack.pop();
+                sv.isDelete = false;
+                
+                Node prev = sv.left;
+                Node nxt = sv.right;
+                
+                if(prev != null){
+                    prev.right = sv;
+                }
+                
+                if(nxt != null){
+                    nxt.left = sv;
+                }
+                
+            }
+        }
+        
+        StringBuilder sb = new StringBuilder();
+        for(int i = 0; i < n; i++){
+            if(arr[i].isDelete){
+                sb.append("X");
+            }
+            else sb.append("O");
+        }
+        
+        String answer = sb.toString();
+        return answer;
+    }
+}
