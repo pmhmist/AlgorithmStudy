@@ -1,0 +1,44 @@
+import java.util.*;
+
+class Solution {
+    public int solution(int[] H) {
+        Stack<Integer> s = new Stack<>();
+        int ans = 0;
+        for(int i = 0; i < H.length; i++){
+            if(s.isEmpty()){
+                s.push(H[i]);
+            }
+            else{
+                int prev = s.peek();
+                if(prev < H[i]){
+                    s.add(H[i]);
+                }
+                else if(prev == H[i]){
+                    continue;
+                }
+                else{
+                    boolean ck = false;
+
+                    while(!s.isEmpty()){
+                        int tmp = s.peek();
+                        if(tmp > H[i]){
+                            ans++;
+                            s.pop();
+                        }
+                        else{
+                            if(tmp == H[i]) ck =true;
+                            break;
+                        }
+                    }
+
+                    if(!ck) s.add(H[i]);
+                }
+
+            }
+        }
+
+        ans += s.size();
+
+        return ans;
+    }
+}
