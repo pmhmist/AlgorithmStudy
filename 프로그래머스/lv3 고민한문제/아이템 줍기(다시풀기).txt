@@ -1,0 +1,79 @@
+import java.util.*;
+
+class Solution {
+    public static class Pair{
+        int x;
+        int y;
+        
+        Pair(int x, int y){
+            this.x = x;
+            this.y = y;
+        }
+    }
+    
+    static int[] dx = {-1,0,1,0};
+    static int[] dy = {0,1,0,-1};
+    
+    public int solution(int[][] rectangle, int characterX, int characterY, int itemX, int itemY) {
+        int answer = 0;
+        int[][] board = new int[105][105];
+        
+        for(int turn = 0; turn < rectangle.length; turn++){
+            int x1 = rectangle[turn][0]*2;
+            int y1 = rectangle[turn][1]*2;
+            int x2 = rectangle[turn][2]*2;
+            int y2 = rectangle[turn][3]*2;
+            
+            for(int i = y1; i <= y2; i++){
+                for(int j = x1; j <= x2; j++){
+                    if(j == x1 || j == x2 || i == y1 || i == y2){
+                        if(board[i][j] != 2){
+                            board[i][j] = 1;
+                        }
+                    }
+                    else{
+                        board[i][j] = 2;
+                    }
+                }
+            }
+            
+        }
+        
+        int sx = characterX*2;
+        int sy = characterY*2;
+        int gx = itemX*2;
+        int gy = itemY*2;
+        
+        Queue<Pair> q = new ArrayDeque<>();
+        int[][] vis = new int[105][105];
+        vis[sy][sx] = 1;
+        q.offer(new Pair(sy,sx));
+        
+        while(!q.isEmpty()){
+            int x = q.peek().x;
+            int y = q.peek().y;
+            
+            if(x == gy && y == gx) break;
+            
+            q.poll();
+            
+            for(int dir = 0; dir < 4; dir++){
+                int nx = x + dx[dir];
+                int ny = y + dy[dir];
+                
+                if(nx < 0 || nx >= 105 || ny < 0 || ny >= 105) continue;
+                if(board[nx][ny] != 1) continue;
+                if(vis[nx][ny] != 0) continue;
+                
+                vis[nx][ny] = vis[x][y] + 1;
+                q.offer(new Pair(nx,ny));
+            }
+            
+        }
+
+        vis[gx][gy]--;
+        answer = vis[gy][gx]/2;
+        
+        return answer;
+    }
+}
