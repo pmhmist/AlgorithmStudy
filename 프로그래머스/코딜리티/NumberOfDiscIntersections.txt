@@ -1,0 +1,38 @@
+import java.util.*;
+
+class Solution {
+
+    public int solution(int[] A) {
+        // Implement your solution here
+        int ans = 0;
+        int len = A.length;
+
+        long[] left = new long[len];
+        long[] right = new long[len];
+
+        for(int i = 0; i < len; i++){
+            left[i] = i - (long)A[i];
+            right[i] = i + (long)A[i]; 
+        }
+
+        Arrays.sort(left);
+        Arrays.sort(right);
+
+        int idx = 0;
+        int cnt = 0;
+        
+        for(long cur : left){
+
+            while(cur > right[idx]){
+                --cnt;
+                ++idx;
+            }
+
+            ans += cnt;
+            cnt++;
+            if(ans > 10000000) return -1;
+        }
+
+        return ans;
+    }
+}
