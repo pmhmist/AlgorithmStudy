@@ -1,0 +1,34 @@
+import java.util.*;
+
+class Solution {
+    public int[] solution(int[] A) {
+        int[] answer = new int[A.length];
+        int[] ck = new int[100005];
+
+        for(int i = 0; i < A.length; i++){
+            ck[A[i]]++;
+        }
+
+        for(int i = 0; i < A.length; i++){
+            int cnt = 0;
+            for(int j = 1; j*j <= A[i]; j++){
+                if(A[i]%j == 0){
+                    int idx1 = j;
+                    int idx2 = A[i]/j;
+
+                    if(idx1 == idx2){
+                        cnt += ck[idx1];
+                    }
+                    else{
+                        cnt += ck[idx1];
+                        cnt += ck[idx2];
+                    }
+                }
+            }
+            answer[i] = A.length - cnt;
+        }
+
+
+        return answer;
+    }
+}
