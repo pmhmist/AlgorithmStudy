@@ -1,0 +1,163 @@
+import java.util.*;
+
+class Solution {
+    
+    public static class Pair{
+        int x;
+        int y;
+        
+        Pair(int x, int y){
+            this.x = x;
+            this.y = y;
+        }
+    }
+    
+    static int[] dx = {-1,0,1,0};
+    static int[] dy = {0,1,0,-1};
+    
+    static int len;
+    
+    public int solution(int[][] game_board, int[][] table) {
+        int answer = 0;
+        len = game_board.length;
+        boolean[][] vis = new boolean[len][len];
+        
+        int num = 0;
+        ArrayList<Pair>[] arr1 = new ArrayList[3000];
+        for(int i = 0; i < 3000; i++){
+            arr1[i] = new ArrayList<>();
+        }
+        
+        for(int i = 0; i < len; i++){
+            for(int j = 0; j < len; j++){
+                if(!vis[i][j] && table[i][j] == 1){
+                    vis[i][j] = true;
+                    Queue<Pair> q = new ArrayDeque<>();
+                    q.offer(new Pair(i,j));
+                    
+                    while(!q.isEmpty()){
+                        int x = q.peek().x;
+                        int y = q.peek().y;
+                        arr1[num].add(new Pair((x-i),(y-j)));
+                        
+                        q.poll();
+                        
+                        for(int dir = 0; dir < 4; dir++){
+                            int nx = x + dx[dir];
+                            int ny = y + dy[dir];
+                            
+                            if(nx < 0 || nx >= len || ny < 0 || ny >= len) continue;
+                            if(table[nx][ny] != 1 || vis[nx][ny]) continue;
+                            
+                            vis[nx][ny] = true;
+                            q.offer(new Pair(nx,ny));
+                        }
+                        
+                        
+                    }
+                    
+                    num++;
+                }
+            }
+        }
+        
+        boolean[] usedpiece = new boolean[num];
+        
+        for(int rot = 0; rot < 4; rot++){
+            ArrayList<Pair>[] arr2 = new ArrayList[3000];
+            for(int i = 0; i < 3000; i++){
+                arr2[i] = new ArrayList<>();
+            }
+            
+            int tmpnum = 0;
+            vis = new boolean[len][len];
+            Pair[] base = new Pair[3000];
+            for(int i = 0; i < len; i++){
+                for(int j = 0; j < len; j++){
+                    if(!vis[i][j] && game_board[i][j] == 0){
+                        vis[i][j] = true;
+                        Queue<Pair> q = new ArrayDeque<>();
+                        q.offer(new Pair(i,j));
+                        base[tmpnum] = new Pair(i,j);
+                        while(!q.isEmpty()){
+                            int x = q.peek().x;
+                            int y = q.peek().y;
+                            arr2[tmpnum].add(new Pair((x-i),(y-j)));
+
+                            q.poll();
+
+                            for(int dir = 0; dir < 4; dir++){
+                                int nx = x + dx[dir];
+                                int ny = y + dy[dir];
+
+                                if(nx < 0 || nx >= len || ny < 0 || ny >= len) continue;
+                                if(game_board[nx][ny] != 0 || vis[nx][ny]) continue;
+
+                                vis[nx][ny] = true;
+                                q.offer(new Pair(nx,ny));
+                            }
+
+
+                        }
+
+                        tmpnum++;
+                    }
+                    
+                    
+                }
+            }
+            
+            for(int i = 0; i < tmpnum; i++){
+                for(int j = 0; j < num; j++){
+                    if(usedpiece[j]) continue;
+                    if(arr2[i].size() != arr1[j].size()) continue;
+                    
+                    int sz = arr2[i].size();
+                    boolean stop = true;
+                    
+                    for(int k = 0; k < sz; k++){
+                        if(arr2[i].get(k).x != arr1[j].get(k).x) stop = false;
+                        if(arr2[i].get(k).y != arr1[j].get(k).y) stop = false;
+                        
+                        if(!stop) break;
+                    }
+                    
+                    if(stop){
+                        answer += sz;
+                        usedpiece[j] = true;
+                        int sx = base[i].x;
+                        int sy = base[i].y;
+                        for(int k = 0; k < sz; k++){
+                            int nx = sx + arr2[i].get(k).x;
+                            int ny = sy + arr2[i].get(k).y;
+                            
+                            game_board[nx][ny] = 1;
+                        }
+                        break;
+                    }
+                }
+            }
+            
+            
+            int[][] board = new int[len][len];
+            
+            for(int i = 0; i < len; i++){
+                for(int j = 0; j < len; j++){
+                    board[i][j] = game_board[i][j];
+                }
+            }
+            
+            for(int i = 0; i < len; i++){
+                for(int j = 0; j < len; j++){
+                    game_board[i][j] = board[len-j-1][i];
+                }
+            }
+            
+        }
+        
+        
+        
+        return answer;
+        
+    }
+}
