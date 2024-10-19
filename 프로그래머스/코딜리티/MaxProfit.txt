@@ -1,0 +1,7 @@
+카데인 알고리즘 (DP)
+
+localMaximum[i] = max(A[i], A[i] + lacalMaximum[i-1])
+
+슬라이스 최대합 O(N) 만에 구하는 기법 알아두기
+
+https://sustainable-dev.tistory.com/23
