@@ -1,0 +1,107 @@
+import java.util.*;
+
+class Solution {
+    
+    static class Pair {
+        int x;
+        int y;
+        
+        Pair(int x, int y){
+            this.x = x;
+            this.y = y;
+        }
+    }
+    
+    static ArrayList<Pair>[] arr;
+    
+    public int[] solution(int n, int[][] paths, int[] gates, int[] summits) {
+        int[] answer = new int[2];
+        Set<Integer> set = new HashSet<>();
+        Set<Integer> set2 = new HashSet<>();
+        arr = new ArrayList[n+1];
+        
+        int left = 1;
+        int right = 0;
+        
+        Arrays.sort(summits);
+        
+        for(int i = 0; i <= n; i++){
+            arr[i] = new ArrayList<>();
+        }
+        
+        for(int i = 0; i < gates.length; i++){
+            set.add(gates[i]);
+        }
+        
+        for(int i = 0; i < summits.length; i++){
+            set2.add(summits[i]);
+        }
+        
+        for(int i = 0; i < paths.length; i++){
+            int st = paths[i][0];
+            int ed = paths[i][1];
+            int val = paths[i][2];
+            
+            if(right < val) right = val;
+            
+            arr[st].add(new Pair(ed,val));
+            arr[ed].add(new Pair(st,val));
+        }
+        
+        int slen = summits.length;
+        int fmnum = -1;
+        int finten = -1;
+        
+        while(left <= right){
+            int mid = (left + right) / 2;
+            
+            boolean judge = false;
+            int mnum = -1;
+            int inten = -1;
+            
+            for(int i = 0; i < slen; i++){
+                boolean[] vis = new boolean[n+1];
+                Queue<Integer> q = new ArrayDeque<>();
+                vis[summits[i]] = true;
+                q.offer(summits[i]);
+                
+                while(!q.isEmpty()){
+                    int cur = q.peek();
+                    q.poll();
+                    
+                    if(set.contains(cur)){
+                        mnum = summits[i];
+                        inten = mid;
+                        judge = true;
+                        break;
+                    }
+                    
+                    for(Pair nxt : arr[cur]){
+                        if(nxt.y > mid) continue;
+                        if(vis[nxt.x]) continue;
+                        if(set2.contains(nxt.x)) continue;
+                        vis[nxt.x] = true;
+                        q.offer(nxt.x);
+                    }
+                    
+                }
+                
+                if(judge) break;
+            }
+            
+            if(judge){
+                fmnum = mnum;
+                finten = inten;
+                right = mid-1;
+            }
+            else{
+                left = mid+1;
+            }
+        }
+        
+        answer[0] = fmnum;
+        answer[1] = finten;
+        
+        return answer;
+    }
+}
