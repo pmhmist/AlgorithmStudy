@@ -1,0 +1,51 @@
+import java.util.*;
+
+class Solution {
+    public int solution(int alp, int cop, int[][] problems) {
+        int answer = 0;
+        int mxalp = 0;
+        int mxcop = 0;
+        
+        for(int i = 0; i < problems.length; i++){
+            if(mxalp < problems[i][0]) mxalp = problems[i][0];
+            if(mxcop < problems[i][1]) mxcop = problems[i][1];
+        }
+        
+        if(alp >= mxalp && cop >= mxcop) return 0;
+        alp = Math.min(alp,mxalp);
+        cop = Math.min(cop,mxcop);
+        
+        int[][] dp = new int[mxalp+1][mxcop+1];
+        for(int i = 0; i <= mxalp; i++){
+            for(int j = 0; j <= mxcop; j++){
+                dp[i][j] = Integer.MAX_VALUE;
+            }
+        }
+        
+        dp[alp][cop] = 0;
+        
+        for(int i = alp; i <= mxalp; i++){
+            for(int j = cop; j <= mxcop; j++){
+                
+                // 단순 1 증가 
+                if(i+1 <= mxalp) dp[i+1][j] = Math.min(dp[i+1][j],dp[i][j]+1);
+                if(j+1 <= mxcop) dp[i][j+1] = Math.min(dp[i][j+1],dp[i][j]+1);
+                
+                // 선택문제 풀이
+                for(int k = 0; k < problems.length; k++){
+                    int a = problems[k][0];
+                    int b = problems[k][1];
+                    if(a <= i && b <= j){
+                        int idx1 = Math.min(mxalp,i+problems[k][2]);
+                        int idx2 = Math.min(mxcop,j+problems[k][3]);
+                        int time = problems[k][4];
+                        dp[idx1][idx2] = Math.min(dp[idx1][idx2],dp[i][j] + time);
+                    }
+                }
+            }
+        }
+        
+        answer = dp[mxalp][mxcop];
+        return answer;
+    }
+}
