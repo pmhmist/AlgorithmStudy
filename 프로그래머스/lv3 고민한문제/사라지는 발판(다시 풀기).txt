@@ -1,0 +1,55 @@
+import java.util.*;
+
+class Solution {
+    static int n,m;
+    static int[][] base;
+    
+    static int[] dx = {-1,0,1,0};
+    static int[] dy = {0,1,0,-1};
+    
+    public int solve(int curx, int cury, int ox, int oy){
+        int res = 0;
+        
+        if(base[curx][cury] == 0) return 0;
+        
+        for(int dir = 0; dir < 4; dir++){
+            int nx = curx + dx[dir];
+            int ny = cury + dy[dir];
+            
+            if(nx < 0 || nx >= n || ny < 0 || ny >= m) continue;
+            if(base[nx][ny] == 0) continue;
+            
+            base[curx][cury] = 0;
+            int cmp = solve(ox,oy,nx,ny) + 1;
+            base[curx][cury] = 1;
+            
+            if(res%2 == 0 && cmp%2 == 1){
+                res = cmp;
+            }
+            else if(res%2 == 0 && cmp%2 == 0){
+                res = Math.max(res,cmp);
+            }
+            else if(res%2 == 1 && cmp%2 == 1){
+                res = Math.min(res,cmp);
+            }
+        }
+        
+        return res;
+    }
+    
+    public int solution(int[][] board, int[] aloc, int[] bloc) {
+        int answer = -1;
+        n = board.length;
+        m = board[0].length;
+        base = board;
+        
+        int x1 = aloc[0];
+        int y1 = aloc[1];
+        int x2 = bloc[0];
+        int y2 = bloc[1];
+        
+        answer = solve(x1,y1,x2,y2);
+        
+        return answer;
+    }
+}
