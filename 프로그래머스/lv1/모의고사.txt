@@ -1,0 +1,59 @@
+import java.util.*;
+
+class Solution {
+    public int[] solution(int[] answers) {
+        int ck1 = 0;
+        int ck2 = 0;
+        int ck3 = 0;
+        
+        for(int i = 0; i < answers.length; i++){
+            if((i%5) + 1 == answers[i]) ck1++;
+            
+            if(i%2 == 0){
+                if(answers[i] == 2) ck2++;
+            }else{
+                if(i%8 == 1 && answers[i] == 1) ck2++;
+                if(i%8 == 3 && answers[i] == 3) ck2++;
+                if(i%8 == 5 && answers[i] == 4) ck2++;
+                if(i%8 == 7 && answers[i] == 5) ck2++;
+            }
+            
+            if(i%10 == 0 || i%10 == 1){
+                if(answers[i] == 3) ck3++;
+            }
+            if(i%10 == 2 || i%10 == 3){
+                if(answers[i] == 1) ck3++;
+            }
+            if(i%10 == 4 || i%10 == 5){
+                if(answers[i] == 2) ck3++;
+            }
+            if(i%10 == 6 || i%10 == 7){
+                if(answers[i] == 4) ck3++;
+            }
+            if(i%10 == 8 || i%10 == 9){
+                if(answers[i] == 5) ck3++;
+            }
+        }
+        
+        int mx = 0;
+        mx = Math.max(mx,ck1);
+        mx = Math.max(mx,ck2);
+        mx = Math.max(mx,ck3);
+        
+        int sz = 0;
+        int[] tmp = {ck1,ck2,ck3};
+        for(int i = 0; i < 3; i++){
+            if(mx == tmp[i]) sz++;
+        }
+        
+        int[] answer = new int[sz];
+        int idx = 0;
+        for(int i = 0; i < 3; i++){
+            if(mx == tmp[i]){
+                answer[idx++] = i+1;
+            }
+        }
+        
+        return answer;
+    }
+}

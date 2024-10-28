@@ -1,0 +1,43 @@
+1. n이 지나치게 크다 싶으면 이분탐색 의심하기 (10억이 넘어가버리면 dp도 아니다)
+import java.util.*;
+
+class Solution {
+    public long solution(int a, int b, int[] g, int[] s, int[] w, int[] t) {
+        long answer = -1;
+        long left = 0;
+        long right = 2000000000L * 100000L * 2L;
+        int len = g.length;
+        
+        while(left <= right){
+            long mid = (left + right)/2;
+            
+            long mxgold = 0;
+            long mxsilver = 0;
+            long tot = 0;
+            
+            for(int i = 0; i < len; i++){
+                long cnt = mid/(t[i]*2);
+                if(mid%(2*t[i]) >= t[i]) cnt++;
+                
+                long tmpg = Math.min(g[i],w[i]*cnt);
+                long tmps = Math.min(s[i],w[i]*cnt);
+                long tmpt = Math.min(g[i]+s[i],w[i]*cnt);
+                
+                mxgold += tmpg;
+                mxsilver+= tmps;
+                tot += tmpt;
+            }
+            
+            if(a <= mxgold && b <= mxsilver && a+b <= tot){
+                answer = mid;
+                right = mid-1;
+            }
+            else{
+                left = mid + 1;
+            }
+            
+        }
+        
+        return answer;
+    }
+}
