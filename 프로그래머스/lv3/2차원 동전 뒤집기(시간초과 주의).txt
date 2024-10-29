@@ -1,0 +1,77 @@
+import java.util.*;
+
+class Solution {
+    static int[] state;
+    static int[][] board;
+    static int[][] cmp;
+    static int n;
+    static int m;
+    static int ans;
+    
+    public void solve(int depth){
+        if(depth == n){
+            
+            boolean judge = true;
+            int tot = 0;
+            
+            for(int j = 0; j < m; j++){
+                int tmp = board[0][j];
+                if(state[0] == 1) tmp = 1 - tmp;
+                boolean ck = true;
+                if(tmp != cmp[0][j]) ck = false;
+                int cnt = 0;
+                
+                for(int i = 0; i < n; i++){
+                    int sub = board[i][j];
+                    if(state[i] == 1) sub = 1 - sub;
+                    if(ck){
+                        if(sub == cmp[i][j]) cnt++;
+                    }
+                    else{
+                        if(sub != cmp[i][j]) cnt++;
+                    }
+                }
+                
+                if(cnt != n){
+                    judge = false;
+                    break;
+                }
+                else{
+                    if(!ck) tot++;
+                }
+            }
+            
+            if(judge){
+                for(int i = 0; i < n; i++){
+                    if(state[i] == 1) tot++;
+                }
+                if(tot < ans) ans = tot;
+            }
+            
+            return;
+        }
+        
+        for(int i = 0; i < 2; i++){
+            state[depth] = i;
+            solve(depth+1);
+        }
+        
+    }
+    
+    public int solution(int[][] beginning, int[][] target) {
+        int answer = 0;
+        n = beginning.length;
+        m = beginning[0].length;
+        state = new int[n];
+        board = beginning;
+        cmp = target;
+        ans = Integer.MAX_VALUE;
+        
+        solve(0);
+        
+        answer = ans;
+        if(answer == Integer.MAX_VALUE) answer = -1;
+        
+        return answer;
+    }
+}
