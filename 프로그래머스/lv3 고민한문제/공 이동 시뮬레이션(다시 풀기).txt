@@ -1,0 +1,41 @@
+import java.util.*;
+
+class Solution {
+    public long solution(int n, int m, int x, int y, int[][] queries) {
+        long answer = -1;
+        
+        long x1 = x;
+        long y1 = y;
+        long x2 = x;
+        long y2 = y;
+        
+        for(int turn = queries.length-1; turn >= 0; turn--){
+            int command = queries[turn][0];
+            int dx = queries[turn][1];
+            
+            if(command == 0){ // 좌
+                if(y1 != 0) y1 += dx;
+                y2 = Math.min(y2+dx,m-1);
+                if(y1 >= m) return 0;
+            }
+            else if(command == 1){ // 우
+                if(y2 != m-1) y2 -= dx;
+                y1 = Math.max(y1-dx,0);
+                if(y2 < 0) return 0;
+            }
+            else if(command == 2){ // 상
+                if(x1 != 0) x1 += dx;
+                x2 = Math.min(x2+dx,n-1);
+                if(x1 >= n) return 0;
+            }
+            else{ // 하
+                if(x2 != n-1) x2 -= dx;
+                x1 = Math.max(x1-dx,0);
+                if(x2 < 0) return 0;
+            }
+        }
+        
+        answer = (x2-x1+1)*(y2-y1+1);
+        return answer;
+    }
+}
