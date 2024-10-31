@@ -1,0 +1,42 @@
+import java.util.*;
+
+class Solution {
+    public int solution(int n, int[] lost, int[] reserve) {
+        int answer = 0;
+        boolean[] ck = new boolean[n+2];
+        boolean[] sv = new boolean[n+2];
+        Arrays.fill(ck,true);
+        
+        for(int i = 0; i < reserve.length; i++){
+            sv[reserve[i]] = true;
+        }
+        
+        for(int i = 0; i < lost.length; i++){
+            if(sv[lost[i]]){
+                sv[lost[i]] = false;
+            }
+            else{
+                ck[lost[i]] = false;
+            }
+        }
+        
+        for(int i = 1; i <= n; i++){
+            if(!ck[i]){
+                if(sv[i-1]){
+                    sv[i-1] = false;
+                    ck[i] = true;
+                }
+                else if(sv[i+1]){
+                    sv[i+1] = false;
+                    ck[i] = true;
+                }
+            }
+        }
+        
+        for(int i = 1; i <= n; i++){
+            if(ck[i]) answer++;
+        }
+        
+        return answer;
+    }
+}
