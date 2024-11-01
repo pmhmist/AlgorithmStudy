@@ -1,0 +1,73 @@
+import java.util.*;
+
+class Solution {
+    
+    public static class Pair implements Comparable<Pair>{
+        int x;
+        int y;
+        
+        Pair(int x, int y){
+            this.x = x;
+            this.y = y;
+        }
+        
+        @Override
+        public int compareTo(Pair p){
+            if(this.x == p.x){
+                return this.y-p.y;
+            }
+            return p.x - this.x;
+        }
+    }
+    
+    public int solution(int[][] scores) {
+        int answer = 1;
+        int sx = scores[0][0];
+        int sy = scores[0][1];
+        
+        ArrayList<Pair> arr = new ArrayList<>();
+        for(int i = 0; i < scores.length; i++){
+            arr.add(new Pair(scores[i][0],scores[i][1]));
+        }
+        
+        Collections.sort(arr);
+        
+        int px = -1;
+        int py = -1;
+        int ty = -1;
+        
+        for(int i = 0; i < scores.length; i++){
+            int x = arr.get(i).x;
+            int y = arr.get(i).y;
+            
+            boolean ck = true;
+            
+            if(i == 0){
+                px = x;
+                py = y;
+                ty = y;
+            }
+            else{
+                if(px != x){
+                    px = x;
+                    py = ty;
+                }
+                if(y < py) ck = false;
+                
+                if(y > ty) ty = y;
+            }
+            
+            if(ck){
+                if(x+y > sx + sy) answer++;
+            }
+            else{
+                if(x == sx && y == sy){
+                    answer = -1;
+                    break;
+                }
+            }
+        }
+        
+        return answer;
+    }
+}

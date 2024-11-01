@@ -1,0 +1,56 @@
+import java.util.*;
+
+class Solution {
+    
+    public boolean isBinaryTree(String cur){
+        int len = cur.length();
+        int root = len/2;
+        if(root == 0) return true;
+        
+        String left = cur.substring(0,root);
+        String right = cur.substring(root+1,len);
+        
+        if(cur.charAt(root) == '0'){
+            int subroot = root/2;
+            if(left.charAt(subroot) == '1') return false;
+            if(right.charAt(subroot) == '1') return false;
+        }
+        
+        boolean ck1 = true;
+        boolean ck2 = true;
+        
+        ck1 = isBinaryTree(left);
+        ck2 = isBinaryTree(right);
+        
+        return ck1 && ck2;
+        
+    }
+    
+    public int[] solution(long[] numbers) {
+        int[] answer = new int[numbers.length];
+        
+        for(int i = 0; i < numbers.length; i++){
+            String cur = Long.toBinaryString(numbers[i]);
+            
+            int h = 0;
+            while((int)Math.pow(2,h)-1 < cur.length()){
+                h++;
+            }
+            
+            StringBuilder sb = new StringBuilder();
+            while((int)Math.pow(2,h)-1 > cur.length() + sb.length()){
+                sb.append("0");
+            }
+            cur = sb.toString() + cur;
+            
+            if(isBinaryTree(cur)){
+                answer[i] = 1;
+            }
+            else{
+                answer[i] = 0;
+            }
+        }
+        
+        return answer;
+    }
+}
