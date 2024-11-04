@@ -1,0 +1,155 @@
+import java.util.*;
+
+class Solution {
+    
+    static int[] dx = {1,0,0,-1};
+    static int[] dy = {0,-1,1,0};
+    static char[] ds = {'d','l','r','u'};
+    
+    static int[][] dist;
+    static int[][] tmpdist;
+    
+    static String[][] sv1;
+    static String[][] sv2;
+    
+    public static class Pair{
+        int x;
+        int y;
+        String s;
+        
+        Pair(int x, int y, String s){
+            this.x = x;
+            this.y = y;
+            this.s = s;
+        }
+    }
+    
+    public String solution(int n, int m, int x, int y, int r, int c, int k) {
+        String answer = "";
+        boolean possible = true;
+        
+        x -= 1; y -= 1; r -= 1; c -= 1;
+        dist = new int[n][m];
+        sv1 = new String[n][m];
+        
+        for(int i = 0; i < n; i++){
+            for(int j = 0; j < m; j++) dist[i][j] = -1;
+        }
+        
+        Queue<Pair> q = new ArrayDeque<>();
+        q.offer(new Pair(x,y,""));
+        dist[x][y] = 0;
+        sv1[x][y] = "";
+        
+        while(!q.isEmpty()){
+            int curx = q.peek().x;
+            int cury = q.peek().y;
+            StringBuilder curs = new StringBuilder(q.peek().s);
+            
+            q.poll();
+            for(int dir = 0; dir < 4; dir++){
+                int nx = curx + dx[dir];
+                int ny = cury + dy[dir];
+                StringBuilder ns = new StringBuilder(curs).append(ds[dir]);
+                
+                if(nx < 0 || nx >= n || ny < 0 || ny >= m) continue;
+                if(dist[nx][ny] != -1) continue;
+                
+                dist[nx][ny] = dist[curx][cury] + 1;
+                sv1[nx][ny] = ns.toString();
+                q.offer(new Pair(nx,ny,sv1[nx][ny]));
+            }
+        }
+        
+        System.out.println(dist[r][c] + " " + k);
+        
+        if(k >= dist[r][c]){
+            if(dist[r][c] % 2 != k%2) possible = false;
+        }
+        else{
+            possible = false;
+        }
+        
+        if(possible){
+            if(k == dist[r][c]){
+                answer = sv1[r][c];
+            }
+            else{
+                boolean stop = false;
+                
+                for(int i = n-1; i >= 0; i--){
+                    if(stop) break;
+                    for(int j = 0; j < m; j++){
+                        if(stop) break;
+                        tmpdist = new int[n][m];
+                        sv2 = new String[n][m];
+                        
+                        Queue<Pair> q2 = new ArrayDeque<>();
+                        q2.offer(new Pair(i,j,""));
+                        for(int i2 = 0; i2 < n; i2++){
+                            for(int j2 = 0; j2 < m; j2++) tmpdist[i2][j2] = -1;
+                        }
+                        
+                        tmpdist[i][j] = 0;
+                        sv2[i][j] = "";
+                        
+                        while(!q2.isEmpty()){
+                            int curx = q2.peek().x;
+                            int cury = q2.peek().y;
+                            StringBuilder curs = new StringBuilder(q2.peek().s);
+                            q2.poll();
+                            
+                            for(int dir = 0; dir < 4; dir++){
+                                int nx = curx + dx[dir];
+                                int ny = cury + dy[dir];
+                                StringBuilder ns = new StringBuilder(curs).append(ds[dir]);
+
+                                if(nx < 0 || nx >= n || ny < 0 || ny >= m) continue;
+                                if(tmpdist[nx][ny] != -1) continue;
+
+                                tmpdist[nx][ny] = tmpdist[curx][cury] + 1;
+                                sv2[nx][ny] = ns.toString();
+                                q2.offer(new Pair(nx,ny,sv2[nx][ny]));
+                            }
+                        }
+                        
+                        if(dist[i][j] + tmpdist[r][c] <= k){
+                            stop = true;
+                            if(dist[i][j] + tmpdist[r][c] == k){
+                                answer = sv1[i][j] + sv2[r][c];
+                            }
+                            else{
+                                int cnt = (k - (dist[i][j] + tmpdist[r][c])) / 2;
+                                StringBuilder sb = new StringBuilder();
+                                sb.append(sv1[i][j]);
+                                
+                                if(i != n-1){
+                                    for(int z = 0; z < cnt; z++){
+                                        sb.append("du");
+                                    }
+                                }
+                                else{
+                                    if(j == 0){
+                                        for(int z = 0; z < cnt; z++){
+                                            sb.append("rl");
+                                        }
+                                    }
+                                    else{
+                                        for(int z = 0; z < cnt; z++) {
+                                            sb.append("lr");
+                                        }
+                                    }
+                                }
+                                sb.append(sv2[r][c]);
+                                answer = sb.toString();
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        else answer = "impossible";
+        
+        return answer;
+    }
+}
