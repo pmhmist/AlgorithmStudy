@@ -1,0 +1,109 @@
+import java.util.*;
+
+class Solution {
+    
+    static int n = 2505;
+    static int[] group;
+    static String[] values;
+    
+    static int find(int idx){
+        if(idx == group[idx]) return idx;
+        return group[idx] = find(group[idx]);
+    }
+    
+    static void union(int x, int y){
+        x = find(x);
+        y = find(y);
+        
+        if(x == y) return;
+        
+        values[y] = null;
+        group[y] = x;
+    }
+    
+    
+    public String[] solution(String[] commands) {
+        group = new int[n];
+        values = new String[n];
+        ArrayList<String>  ans = new ArrayList<>();
+        
+        for(int i = 0; i < n; i++){
+            group[i] = i;
+        }
+        
+        for(int turn = 0; turn < commands.length; turn++){
+            String[] base = commands[turn].split(" ");
+            if(base[0].equals("UPDATE")){
+                if(base.length == 3){
+                    for(int i = 0; i < n; i++){
+                        if(values[find(i)] != null && values[find(i)].equals(base[1])){
+                            values[find(i)] = base[2];
+                        }
+                    }
+                }
+                else{
+                    int x = Integer.parseInt(base[1]) - 1;
+                    int y = Integer.parseInt(base[2]) - 1;
+                    values[find(x*50 + y)] = base[3];
+                }
+            }
+            else if(base[0].equals("MERGE")){
+                int x1 = Integer.parseInt(base[1]) - 1;
+                int y1 = Integer.parseInt(base[2]) - 1;
+                int x2 = Integer.parseInt(base[3]) - 1;
+                int y2 = Integer.parseInt(base[4]) - 1;
+                
+                int idx1 = x1*50 + y1;
+                int idx2 = x2*50 + y2;
+                
+                if(values[find(idx1)] == null && values[find(idx2)] != null){
+                    int tmp = idx1;
+                    idx1 = idx2;
+                    idx2 = tmp;
+                }
+                
+                union(idx1,idx2);
+
+            }
+            else if(base[0].equals("UNMERGE")){
+                int x1 = Integer.parseInt(base[1]) - 1;
+                int y1 = Integer.parseInt(base[2]) - 1;
+                
+                int root = find(x1*50 + y1);
+                String tmp = values[root];
+                values[root] = null;
+                
+                ArrayList<Integer> cal = new ArrayList<>();
+                for(int i = 0; i < 2500; i++){
+                    if(find(i) == root) cal.add(i);
+                }
+                
+                for(int nxt : cal){
+                    group[nxt] = nxt;
+                }
+                
+                values[x1*50 + y1] = tmp;
+                
+            }
+            else{
+                int x1 = Integer.parseInt(base[1]) - 1;
+                int y1 = Integer.parseInt(base[2]) - 1;
+                
+                if(values[find(x1*50 + y1)] == null){
+                    ans.add("EMPTY");
+                }
+                else{
+                    ans.add(values[find(x1*50 + y1)]);
+                }
+            }
+            
+        }
+        
+        String[] answer = new String[ans.size()];
+        for(int i = 0; i < answer.length; i++){
+            answer[i] = ans.get(i);
+        }
+        
+        return answer;
+    }
+}
