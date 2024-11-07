@@ -1,0 +1,68 @@
+import java.util.*;
+
+class Solution {
+        
+    public int solution(int coin, int[] cards) {
+        int answer = 0;
+        int n = cards.length;
+        
+        Set<Integer> origin = new HashSet<>();
+        Set<Integer> cost = new HashSet<>();
+        
+        for(int i = 0; i < n/3; i++){
+            origin.add(cards[i]);
+        }
+        
+        int idx = n/3;
+        
+        while(true){
+            answer++;
+            if(idx >= n) break;
+            boolean ck = false;
+            
+            cost.add(cards[idx]);
+            cost.add(cards[idx+1]);
+            
+            for(int nxt : origin){
+                if(origin.contains(n+1-nxt)){
+                    origin.remove(nxt);
+                    origin.remove(n+1-nxt);
+                    ck = true;
+                    break;
+                }
+            }
+            
+            if(!ck && coin >= 1){
+                for(int nxt1 : origin){
+                    for(int nxt2 : cost){
+                        if(nxt1 + nxt2 == n+1){
+                            origin.remove(nxt1);
+                            cost.remove(nxt2);
+                            ck = true;
+                            coin -= 1;
+                            break;
+                        }
+                    }
+                    if(ck) break;
+                }
+            }
+            
+            if(!ck && coin >= 2){
+                for(int nxt : cost){
+                    if(cost.contains(n+1-nxt)){
+                        cost.remove(nxt);
+                        cost.remove(n+1-nxt);
+                        ck = true;
+                        coin -= 2;
+                        break;
+                    }
+                }
+            }
+            
+            if(!ck) break;
+            idx += 2;
+        }
+        
+        return answer;
+    }
+}
