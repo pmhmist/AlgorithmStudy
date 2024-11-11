@@ -1,0 +1,85 @@
+import java.util.*;
+
+class Solution {
+    
+    static int[][] base;
+    static int[] sv;
+    static int n;
+    static int ans;
+    
+    static int[] dx = {-1,0,1,0};
+    static int[] dy = {0,1,0,-1};
+    
+    public static void solve(int depth){
+        if(depth == n){
+            int[][] board = new int[n][n];
+            int cnt = 0;
+            
+            for(int i = 0; i < n; i++){
+                for(int j = 0; j < n; j++){
+                    board[i][j] = base[i][j];
+                }
+            }
+            
+            for(int i = 0; i < n; i++){
+                cnt += sv[i];
+                rotate(board,0,i,sv[i]);
+            }
+            
+            for(int i = 1; i < n; i++){
+                for(int j = 0; j < n; j++){
+                    if(board[i-1][j] != 0){
+                        cnt += 4 - board[i-1][j];
+                        rotate(board,i,j,4-board[i-1][j]);
+                    }
+                }
+            }
+            
+            boolean judge = true;
+            for(int i = 0; i < n; i++){
+                for(int j = 0; j < n; j++){
+                    if(board[i][j] != 0) judge = false;
+                }
+            }
+            
+            if(judge){
+                if(cnt < ans) ans = cnt;
+            }
+            
+            return;
+        }
+        
+        for(int i = 0; i < 4; i++){
+            sv[depth] = i;
+            solve(depth+1);
+        }
+        
+    }
+    
+    public static void rotate(int[][] board, int x, int y, int val){
+        if(val == 0) return;
+        board[x][y] = (board[x][y] + val)%4;
+        for(int dir = 0; dir < 4; dir ++){
+            int nx = x + dx[dir];
+            int ny = y + dy[dir];
+            
+            if(nx < 0 || nx >= n || ny < 0 || ny >= n) continue;
+            board[nx][ny] = (board[nx][ny] + val)%4;
+        }
+        
+    }
+    
+    public int solution(int[][] clockHands) {
+        int answer = 0;
+        n = clockHands.length;
+        sv = new int[n];
+        ans = Integer.MAX_VALUE;
+        base = clockHands;
+        
+        solve(0);
+        
+        answer = ans;
+        
+        return answer;
+    }
+}

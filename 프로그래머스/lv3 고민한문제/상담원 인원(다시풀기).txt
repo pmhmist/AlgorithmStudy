@@ -1,0 +1,97 @@
+import java.util.*;
+
+class Solution {
+    
+    public static class Pair{
+        int x;
+        int y;
+        
+        Pair(int x, int y){
+            this.x = x;
+            this.y = y;
+        }
+    }
+    
+    static int[][] svwait;
+    static int[] curnum;
+    
+    // k = 상담유형, n = 멘토의 수
+    public int solution(int k, int n, int[][] reqs) {
+        int answer = 0;
+        
+        List<Pair>[] arr = new ArrayList[k+1];
+        for(int i = 0; i <= k; i++){
+            arr[i] = new ArrayList<>();
+        }
+        
+        for(int[] tmp : reqs){
+            int a = tmp[0];
+            int b = tmp[1];
+            int c = tmp[2];
+            
+            arr[c].add(new Pair(a,b));
+        }
+        
+        svwait = new int[k+1][n+1];
+        curnum = new int[k+1];
+        
+        for(int i = 1; i <= k; i++){
+            curnum[i] += 1;
+        }
+        
+        for(int i = 1; i <= k; i++){
+            
+            if(arr[i].size() == 0) continue;
+            
+            for(int j = 1; j <= n-k+1; j++){
+                PriorityQueue<Integer> pq = new PriorityQueue<>();
+                int cnt = 0;
+                for(Pair nxt : arr[i]){
+                    
+                    if(pq.size() < j){
+                        pq.offer(nxt.x + nxt.y);
+                    }
+                    else{
+                        int top = pq.peek();
+                        pq.poll();                     
+                        if(top >= nxt.x){
+                            cnt += top - nxt.x;
+                            pq.offer(top + nxt.y);
+                        }
+                        else{
+                            pq.offer(nxt.x + nxt.y);
+                        }
+                    }
+                    
+                }
+                svwait[i][j] = cnt;
+            }
+        }
+        
+        int total = n - k;
+        while (total-- > 0){
+            int idx = -1;
+            int cal = -1;
+            
+            for(int i = 1; i <= k; i++){
+                int cur = curnum[i];
+                
+                int prev = svwait[i][cur];
+                int nxt = svwait[i][cur+1];
+                
+                if(prev - nxt > cal){
+                    cal = prev - nxt;
+                    idx = i;
+                }
+            }
+            
+            curnum[idx]++;
+        }
+        
+        for(int i = 1; i <= k; i++){
+            answer += svwait[i][curnum[i]];
+        }
+        
+        return answer;
+    }
+}
