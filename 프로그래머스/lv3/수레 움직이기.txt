@@ -1,0 +1,147 @@
+import java.util.*;
+
+class Solution {
+    
+    static int[][] base;
+    static int ans;
+    static int gx1,gy1,gx2,gy2;
+    static int n,m;
+    
+    static int[] dx = {-1,0,1,0};
+    static int[] dy = {0,1,0,-1};
+    
+    static boolean[][] visred;
+    static boolean[][] visblue;
+    
+    public static class Pair{
+        int x;
+        int y;
+        
+        Pair(int x, int y){
+            this.x = x;
+            this.y = y;
+        }
+    }
+    
+    public static void solve (int x1,int y1, int x2, int y2, int depth){
+        if(x1 == gx1 && x2 == gx2 && y1 == gy1 && y2 == gy2){
+            if(depth < ans) ans = depth;
+            return;
+        }
+        
+        ArrayList<Pair> arr1 = new ArrayList<>();
+        ArrayList<Pair> arr2 = new ArrayList<>();
+        
+        if(!(x1 == gx1 && y1 == gy1)){
+            for(int dir = 0; dir < 4; dir++){
+                int nx = x1 + dx[dir];
+                int ny = y1 + dy[dir];
+                
+                if(nx < 0 || nx >= n || ny < 0 || ny >= m) continue;
+                if(visred[nx][ny]) continue;
+                if(base[nx][ny] == 5) continue;
+                arr1.add(new Pair(nx,ny));
+            }
+        }
+        
+        if(!(x2 == gx2 && y2 == gy2)){
+            for(int dir = 0; dir < 4; dir++){
+                int nx = x2 + dx[dir];
+                int ny = y2 + dy[dir];
+                
+                if(nx < 0 || nx >= n || ny < 0 || ny >= m) continue;
+                if(visblue[nx][ny]) continue;
+                if(base[nx][ny] == 5) continue;
+                arr2.add(new Pair(nx,ny));
+                
+            }
+        }
+        
+        if(arr1.size() == 0){
+            for(int i = 0; i < arr2.size(); i++){
+                int nx2 = arr2.get(i).x;
+                int ny2 = arr2.get(i).y;
+                
+                if(x1 == nx2 && y1 == ny2) continue;
+                visblue[nx2][ny2] = true;
+                solve(x1,y1,nx2,ny2,depth+1);
+                visblue[nx2][ny2] = false;
+            }
+        }
+        else if(arr2.size() == 0){
+            for(int i = 0; i < arr1.size(); i++){
+                int nx1 = arr1.get(i).x;
+                int ny1 = arr1.get(i).y;
+                
+                if(x2 == nx1 && y2 == ny1) continue;
+                visred[nx1][ny1] = true;
+                solve(nx1,ny1,x2,y2,depth+1);
+                visred[nx1][ny1] = false;
+            }
+        }
+        else{
+            for(int i = 0; i < arr1.size(); i++){
+                int nx1 = arr1.get(i).x;
+                int ny1 = arr1.get(i).y;
+                for(int j = 0; j < arr2.size(); j++){
+                    int nx2 = arr2.get(j).x;
+                    int ny2 = arr2.get(j).y;
+
+                    if(nx1 == nx2 && ny1 == ny2) continue;
+                    if(x1 == nx2 && y1 == ny2 && x2 == nx1 && y2 == ny1) continue;
+                    
+                    visred[nx1][ny1] = true;
+                    visblue[nx2][ny2] = true;
+                    solve(nx1,ny1,nx2,ny2,depth+1);
+                    visred[nx1][ny1] = false;
+                    visblue[nx2][ny2] = false;
+                }
+            }
+        }
+        
+    }
+    
+    public int solution(int[][] maze) {
+        int answer = 0;
+        base = maze;
+        ans = Integer.MAX_VALUE;
+        int x1 = 0; int y1 = 0; int x2 = 0; int y2 = 0;
+        gx1 = 0; gy1 = 0; gx2 = 0; gy2 = 0;
+        n = maze.length;
+        m = maze[0].length;
+        
+        visred = new boolean[n][m];
+        visblue = new boolean[n][m];
+        
+        for(int i = 0; i < n; i++){
+            for(int j = 0; j < m; j++){
+                if(maze[i][j] == 1){
+                    x1 = i;
+                    y1 = j;
+                }
+                else if(maze[i][j] == 2){
+                    x2 = i;
+                    y2 = j;
+                }
+                else if(maze[i][j] == 3){
+                    gx1 = i;
+                    gy1 = j;
+                }
+                else if(maze[i][j] == 4){
+                    gx2 = i;
+                    gy2 = j;
+                }
+            }
+        }
+        
+        visred[x1][y1] = true;
+        visblue[x2][y2] = true;
+        
+        solve(x1,y1,x2,y2,0);
+        
+        answer = ans;
+        if(answer == Integer.MAX_VALUE) answer = 0;
+        
+        return answer;
+    }
+}
