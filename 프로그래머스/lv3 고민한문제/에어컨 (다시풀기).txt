@@ -1,0 +1,56 @@
+import java.util.*;
+
+class Solution {
+    public int solution(int temperature, int t1, int t2, int a, int b, int[] onboard) {
+        int answer = 0;
+        int mx = 10000000;
+        int[][] dp = new int[1005][60];
+        
+        temperature += 12;
+        t1 += 12;
+        t2 += 12;
+        
+        for(int i = 0; i < 1005; i++){
+            for(int j = 0; j < 60; j++){
+                dp[i][j] = mx;
+            }
+        }
+        
+        dp[0][temperature] = 0;
+        
+        for (int i = 1; i < onboard.length; i++){
+            for(int j = 0; j < 55; j++){
+                if(onboard[i] == 0 || onboard[i] == 1 && t1 <= j && j <= t2){
+                    // 에어콘 켬 (희망온도 유지 / 변경)
+                    dp[i][j] = Math.min(dp[i][j],dp[i-1][j] + b);
+                    if(j > 0){
+                        dp[i][j] = Math.min(dp[i][j],dp[i-1][j-1] + a);
+                    }
+                    if(j < 55){
+                        dp[i][j] = Math.min(dp[i][j],dp[i-1][j+1] + a);
+                    }
+                    
+                    // 에어콘 끔
+                    if(j == temperature){
+                        dp[i][j] = Math.min(dp[i][j],dp[i-1][j]);
+                    }
+                    
+                    if (j + 1 > temperature && j + 1 < 55){
+                        dp[i][j] = Math.min(dp[i][j],dp[i-1][j+1]);
+                    }
+                    
+                    if(j - 1 < temperature && j - 1 > 0){
+                        dp[i][j] = Math.min(dp[i][j],dp[i-1][j-1]);
+                    }
+                }
+            }
+        }
+        
+        answer = Integer.MAX_VALUE;
+        for(int i = 0; i < 60; i++){
+            answer = Math.min(answer,dp[onboard.length-1][i]);
+        }
+        
+        return answer;
+    }
+}
