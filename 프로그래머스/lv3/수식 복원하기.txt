@@ -1,0 +1,137 @@
+import java.util.*;
+
+class Solution {
+    public String[] solution(String[] expressions) {
+        boolean[] ck = new boolean[10];
+        Arrays.fill(ck,true);
+        ArrayList<Integer> sv = new ArrayList<>();
+        
+        int size = 0;
+        
+        for(int turn = 0; turn < expressions.length; turn++){
+            String[] sam = expressions[turn].split(" ");
+            int x = Integer.valueOf(sam[0]);
+            String oper = sam[1];
+            int y = Integer.valueOf(sam[2]);
+            int z = -1;
+            
+            if(!sam[4].equals("X")){
+                z = Integer.valueOf(sam[4]);
+            }
+            else{
+                size++;
+            }
+            
+            for(int i = 2; i <= 9; i++){
+                if(!ck[i]) continue;
+                int tmpx = x; int tmpy = y; int tmpz = z;
+                int cx = 0; int cy = 0; int cz = 0;
+                int cal = 0;
+                boolean judge = true;
+
+                while(tmpx != 0){
+                    if(tmpx%10 >= i) judge = false;
+                    cx += (tmpx%10)*(int)Math.pow(i,cal);
+                    tmpx /= 10;
+                    cal++;
+                }
+
+                cal = 0;
+                while(tmpy != 0){
+                    if(tmpy%10 >= i) judge = false;
+                    cy += (tmpy%10)*(int)Math.pow(i,cal);
+                    tmpy /= 10;
+                    cal++;
+                }
+                
+                if(z != -1){
+                    cal = 0;
+                    while(tmpz != 0){
+                        if(tmpz%10 >= i) judge = false;
+                        cz += (tmpz%10)*(int)Math.pow(i,cal);
+                        tmpz /= 10;
+                        cal++;
+                    }
+                }
+                
+                if(z != -1){
+                    if(oper.equals("+")){
+                        if(cx + cy != cz) judge = false;
+                    }
+                    else{
+                        if(cx - cy != cz) judge = false;
+                    }
+                }
+                
+                if(!judge){
+                    ck[i] = false;
+                }
+            }
+            
+        }
+        
+        String[] answer = new String[size];
+        int idx = 0;
+        for(int turn = 0; turn < expressions.length; turn++){
+            String[] sam = expressions[turn].split(" ");
+            if(sam[4].equals("X")){
+                int x = Integer.valueOf(sam[0]);
+                String oper = sam[1];
+                int y = Integer.valueOf(sam[2]);
+                Set<String> s = new HashSet<>();
+                int result = 0;
+                
+                for(int i = 2; i <= 9; i++){
+                    if(!ck[i]) continue;
+                    int tmpx = x; int tmpy = y;
+                    int cx = 0; int cy = 0;
+                    int cal = 0;
+                    
+                    while(tmpx != 0){
+                        cx += (tmpx%10)*(int)Math.pow(i,cal);
+                        tmpx /= 10;
+                        cal++;
+                    }
+
+                    cal = 0;
+                    while(tmpy != 0){
+                        cy += (tmpy%10)*(int)Math.pow(i,cal);
+                        tmpy /= 10;
+                        cal++;
+                    }
+                    
+                    int res = 0;
+                    if(oper.equals("+")){
+                        res = cx + cy;
+                    }
+                    else{
+                        res = cx - cy;
+                    }
+                    
+                    StringBuilder sb = new StringBuilder();
+                    if(res == 0) sb.append("0");
+                    while(res != 0){
+                        int b = res%i;
+                        res /= i;
+                        
+                        sb.append(b);
+                    }
+                    
+                    result = Integer.valueOf(sb.reverse().toString());
+                    s.add(sb.toString());
+                }
+                
+                
+                if(s.size() == 1){
+                    answer[idx] = sam[0] + " " + sam[1] + " " + sam[2] + " " + sam[3] + " " + result;
+                }
+                else{
+                    answer[idx] = sam[0] + " " + sam[1] + " " + sam[2] + " " + sam[3] + " " + "?";
+                }
+                idx++;
+            }
+        }
+        
+        return answer;
+    }
+}
