@@ -1,0 +1,74 @@
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.*;
+
+public class Main
+{
+
+    public static void main(String[] args) throws Exception{
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st = new StringTokenizer(br.readLine());
+
+        int n = Integer.parseInt(st.nextToken());
+
+        String sam1 = br.readLine();
+        String sam2 = br.readLine();
+
+        char[] tmp1 = sam1.toCharArray();
+        char[] tmp2 = sam2.toCharArray();
+
+        int[] arr1 = new int[n];
+        int[] arr2 = new int[n];
+        int[] goal = new int[n];
+
+        for (int i = 0; i < n; i++){
+            arr1[i] = tmp1[i] - '0';
+            arr2[i] = tmp1[i] - '0';
+            goal[i] = tmp2[i] - '0';
+        }
+
+        int ans = Integer.MAX_VALUE;
+
+        int cnt1 = 0;
+        int cnt2 = 1;
+
+        boolean ck1 = true;
+        boolean ck2 = true;
+
+        arr2[0] = 1 - arr2[0];
+        arr2[1] = 1 - arr2[1];
+
+        for(int i = 1; i < n; i++){
+            if(arr1[i-1] != goal[i-1]){
+                if(i != n-1){
+                    arr1[i+1] = 1 - arr1[i+1];
+                }
+                arr1[i] = 1 - arr1[i];
+                arr1[i-1] = 1 - arr1[i-1];
+                cnt1++;
+            }
+
+            if(arr2[i-1] != goal[i-1]){
+                if(i != n-1){
+                    arr2[i+1] = 1 - arr2[i+1];
+                }
+                arr2[i] = 1 - arr2[i];
+                arr2[i-1] = 1 - arr2[i-1];
+                cnt2++;
+            }
+        }
+
+
+        for(int i = 0; i < n; i++){
+            if(arr1[i] != goal[i]) ck1 = false;
+            if(arr2[i] != goal[i]) ck2 = false;
+        }
+
+        if(ck1) ans = Math.min(ans,cnt1);
+        if(ck2) ans = Math.min(ans,cnt2);
+
+        if(ans == Integer.MAX_VALUE) ans = -1;
+
+        System.out.println(ans);
+    }
+}
