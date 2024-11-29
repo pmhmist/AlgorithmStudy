@@ -1,0 +1,60 @@
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.*;
+
+public class Main
+{
+
+    public static void main(String[] args) throws Exception {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st = new StringTokenizer(br.readLine());
+        int n = Integer.parseInt(st.nextToken());
+        int[][] arr = new int[2][n+1];
+
+        for(int i = 1; i <= n; i++){
+            arr[0][i] = i;
+            arr[1][i] = Integer.parseInt(br.readLine());
+        }
+
+        boolean[] base = new boolean[n+1];
+        ArrayList<Integer> ans = new ArrayList<>();
+
+        for(int i = 1; i <= n; i++){
+            if(base[i]) continue;
+
+            int start = arr[0][i];
+            int cur = start;
+            boolean[] vis = new boolean[n+1];
+            boolean ck = true;
+            Stack<Integer> s = new Stack<>();
+
+            while(true){
+                if(vis[cur]){
+                    ck = false;
+                    break;
+                }
+                else{
+                    vis[cur] = true;
+                    s.push(cur);
+                    cur = arr[1][cur];
+                    if(cur == start) break;
+                }
+            }
+            if(ck){
+                while(!s.isEmpty()){
+                    int tmp = s.peek();
+                    s.pop();
+                    base[tmp] = true;
+                    ans.add(tmp);
+                }
+            }
+        }
+
+        Collections.sort(ans);
+        System.out.println(ans.size());
+        for(int i = 0; i < ans.size(); i++){
+            System.out.println(ans.get(i));
+        }
+
+    }
+}
