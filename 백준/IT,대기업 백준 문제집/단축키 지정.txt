@@ -1,0 +1,74 @@
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.*;
+
+public class Main
+{
+
+    public static void main(String[] args) throws Exception {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st = new StringTokenizer(br.readLine());
+
+        int n = Integer.parseInt(st.nextToken());
+        Set<Character> s = new HashSet<>();
+
+        for(int i = 0; i < n; i++) {
+            String sam = br.readLine();
+            String sam2 = sam.toLowerCase();
+            StringBuilder ans = new StringBuilder();
+
+            int idx = -1;
+            boolean blank = false;
+            for(int j = 0; j < sam2.length(); j++){
+                char cur = sam2.charAt(j);
+                if(j == 0){
+                    if(cur >= 'a' && cur <= 'z'){
+                        if(!s.contains(cur)){
+                            s.add(cur);
+                            idx = j;
+                            break;
+                        }
+                    }
+                }
+                else{
+                    if(blank){
+                        if(cur >= 'a' && cur <= 'z'){
+                            if(!s.contains(cur)){
+                                s.add(cur);
+                                idx = j;
+                                break;
+                            }
+                        }
+                        blank = false;
+                    }
+                    if(sam.charAt(j) == ' ') blank = true;
+                }
+            }
+
+            if(idx == -1) {
+                for(int j = 0; j < sam2.length(); j++){
+                    char cur = sam2.charAt(j);
+                    if(cur >= 'a' && cur <= 'z'){
+                        if(!s.contains(cur)){
+                            s.add(cur);
+                            idx = j;
+                            break;
+                        }
+                    }
+                }
+            }
+
+            for(int j = 0; j < sam.length(); j++){
+                if(j == idx){
+                    ans.append('[').append(sam.charAt(j)).append(']');
+                }
+                else{
+                    ans.append(sam.charAt(j));
+                }
+            }
+
+            System.out.println(ans);
+        }
+
+    }
+}
