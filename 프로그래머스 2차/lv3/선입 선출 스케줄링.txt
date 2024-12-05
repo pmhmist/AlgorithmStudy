@@ -1,0 +1,72 @@
+import java.util.*;
+
+class Solution {
+    public int solution(int n, int[] cores) {
+        int answer = 0;
+        int len = cores.length;
+        int target = -1;
+        
+        if(n > len) {
+            n -= len;
+            int left = 0;
+            int right = 600000000;
+            
+            while(left <= right) {
+                int mid = (left + right) / 2;
+                
+                long cnt = 0;
+                for(int i = 0; i < len; i++) {
+                    cnt += mid / cores[i];
+                }
+                
+                if(cnt >= n) {
+                    right = mid - 1;
+                    target = mid;
+                } else {
+                    left = mid + 1;
+                }
+                
+            }
+            
+            int tmp = 0;
+            for(int i = 0; i < len; i++){
+                tmp += (target-1) / cores[i];
+            }
+            
+            for(int i = 0; i < len; i++) {
+                if(tmp == n) {
+                    answer = i + 1;
+                    break;
+                }
+                else {
+                    if(target%cores[i] == 0) {
+                        tmp++;
+                        if(tmp == n) {
+                            answer = i + 1;
+                            break;
+                        }
+                    }
+                }
+            }
+            
+        }
+        else {
+            answer = n;
+        }
+        
+        return answer;
+    }
+}
+
+===================================================================
+쉽게 푸는 법이 존재한다.
+            num -= n;
+            for(int i = len - 1; i  >= 0; i--){
+                if(sv % cores[i] == 0){
+                    if(num == 0){
+                        answer = i + 1;
+                        break;
+                    }
+                    num--;
+                }
+            }
