@@ -1,0 +1,53 @@
+import java.util.*;
+
+class Solution {
+    int MOD = 20170805;
+    public int solution(int m, int n, int[][] cityMap) {
+        
+        int answer = 0;
+        int[][][] dp = new int[m+5][n+5][2];
+        dp[0][0][0] = 1;
+        
+        if(cityMap[1][0] != 1) dp[1][0][0] = 1;
+        if(cityMap[0][1] != 1) dp[0][1][1] = 1;
+        
+        for(int i = 0; i < m; i++) {
+            for(int j = 0; j < n; j++) {
+                
+                if(i == 0 && j == 0) continue;
+                if(i == 0 && j == 1) continue;
+                if(i == 1 && j == 0) continue;
+                
+                int cnt1 = 0;
+                int cnt2 = 0;
+                
+                if(cityMap[i][j] != 1) {
+                    if(i != 0) {
+                        if(cityMap[i-1][j] == 0) {
+                            cnt1 += dp[i-1][j][0] + dp[i-1][j][1];
+                        } else {
+                            cnt1 += dp[i-1][j][0];
+                        }
+                    }
+                    if(j != 0) {
+                        if(cityMap[i][j-1] == 0) {
+                            cnt2 += dp[i][j-1][0] + dp[i][j-1][1];
+                        } else {
+                            cnt2 += dp[i][j-1][1];
+                        }
+                    }
+                }
+                
+                cnt1 %= MOD;
+                cnt2 %= MOD;
+                
+                dp[i][j][0] = cnt1;
+                dp[i][j][1] = cnt2;
+            }
+        }
+        
+        answer = (dp[m-1][n-1][0] + dp[m-1][n-1][1]) % MOD;
+        
+        return answer;
+    }
+}
