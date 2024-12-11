@@ -1,0 +1,42 @@
+import java.util.*;
+
+class Solution {
+    public int solution(int sticker[]) {
+        int answer = 0;
+        int n = sticker.length;
+        
+        int[][] dp1 = new int[n][2]; // 시작 부분 뜯고 시작
+        int[][] dp2 = new int[n][2]; // 시작 부분 뜯지 않고 시작
+        
+        for(int i = 0; i < n; i++){
+            if(i == 0){
+                dp1[i][1] = sticker[i];
+            }
+            else{
+                dp1[i][0] = Math.max(dp1[i-1][1],dp1[i-1][0]);
+                dp1[i][1] = dp1[i-1][0] + sticker[i];
+            }
+        }
+        
+        for(int i = 1; i < n; i++){
+            if(i == 1){
+                dp2[i][1] = sticker[i];
+            }
+            else{
+                dp2[i][0] = Math.max(dp2[i-1][0],dp2[i-1][1]);
+                dp2[i][1] = dp2[i-1][0] + sticker[i];
+            }
+            
+        }
+        
+        if(n == 1) answer = sticker[0];
+        else{
+            int cnt1 = Math.max(dp1[n-2][0],dp1[n-2][1]);
+            int cnt2 = Math.max(dp2[n-1][0],dp2[n-1][1]);
+            
+            answer = Math.max(cnt1,cnt2);
+        }
+        
+        return answer;
+    }
+}

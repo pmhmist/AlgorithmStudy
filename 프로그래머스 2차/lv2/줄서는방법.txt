@@ -1,0 +1,52 @@
+import java.util.*;
+
+class Solution {
+    public int[] solution(int n, long k) {
+        
+        int[] answer = new int[n];
+        
+        long[] sv = new long[n];
+        boolean[] vis = new boolean[n];
+        
+        sv[0] = 1;
+        for(int i = 1; i < n; i++){
+            sv[i] = sv[i-1]*i;
+        }
+        
+        long base = k;
+        int idx = 0;
+        
+        for(int i = 0; i < n; i++){
+            long cur = sv[n-1-i];
+            for(int j = 0; j < n; j++){
+                long tmp = cur*j;
+                if(base - tmp <= cur){
+                    int ck = 0;
+                    
+                    for(int z = 0; z < n; z++){
+                        if(vis[z]) continue;
+                        else{
+                            if(ck == j){
+                                vis[z] = true;
+                                answer[idx] = z+1;
+                                break;
+                            }
+                            else{
+                                ck++;
+                            }
+                        }
+                    }
+                    
+                    base -= tmp;
+                    break;
+                }
+            }
+            
+            idx++;
+        }
+        
+        
+        
+        return answer;
+    }
+}
