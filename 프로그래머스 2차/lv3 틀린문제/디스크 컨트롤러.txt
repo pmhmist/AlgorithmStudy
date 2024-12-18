@@ -1,0 +1,58 @@
+import java.util.*;
+
+class Solution {
+    
+    public static class Pair implements Comparable<Pair>{
+        int x;
+        int y;
+        
+        Pair(int x, int y){
+            this.x = x;
+            this.y = y;
+        }
+        
+        @Override
+        public int compareTo(Pair p){
+            return this.x - p.x;
+        }
+    }
+    
+    public int solution(int[][] jobs) {
+        int answer = 0;
+        int len = jobs.length;
+        ArrayList<Pair> arr = new ArrayList<>();
+        
+        for(int i = 0; i < len; i++){
+            arr.add(new Pair(jobs[i][0],jobs[i][1]));
+        }
+        
+        Collections.sort(arr);
+        PriorityQueue<Pair> pq = new PriorityQueue<>();
+        
+        int cnt = 0;
+        int idx = 0;
+        int time = 0;
+        
+        while(cnt < len){
+            while(idx < len && arr.get(idx).x <= time){
+                pq.offer(new Pair(arr.get(idx).y,arr.get(idx).x));
+                idx++;
+            }
+            
+            if(pq.isEmpty()){
+                time = arr.get(idx).x;
+            }
+            else{
+                Pair cur = pq.peek();
+                pq.poll();
+                answer += cur.x + time - cur.y;
+                time += cur.x;
+                cnt++;
+            }
+            
+        }
+        
+        answer /= len;
+        return answer;
+    }
+}

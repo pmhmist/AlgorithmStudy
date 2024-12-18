@@ -1,0 +1,61 @@
+import java.util.*;
+
+class Solution {
+    public String solution(int n, int t, int m, String[] timetable) {
+        
+        String answer = "";
+        int ans = 0;
+        
+        int[] base = new int[1500];
+        int[] base2 = new int[1500];
+        
+        for(int i = 0; i < timetable.length; i++){
+            String[] sam = timetable[i].split(":");
+            int tmp = Integer.valueOf(sam[0])*60 + Integer.valueOf(sam[1]);
+            base[tmp]++;
+        }
+        
+        for(int time = 0; time < 60*24; time++){ // 10^3
+            boolean judge = true;
+            
+            for(int i = 0; i < 1500; i++){ // 10^3
+                base2[i] = base[i];
+            }
+            base2[time]++;
+            
+            int start = 540;
+            boolean stop = false;
+            for(int i = 0; i < n; i++){
+                int ck = start + t*i;
+                int res = m;
+                for(int j = 0; j <= ck; j++){
+                    if(base2[j] == 0) continue;
+                    else{
+                        if(base2[j] < res){
+                            res -= base2[j];
+                            base2[j] = 0;
+                        }
+                        else{
+                            base2[j] -= res;
+                            break;
+                        }
+                    }
+                }
+            }
+            
+            if(base2[time] != 0) judge = false;
+            if(judge) ans = time;
+        }
+        
+        System.out.println(ans);
+        int a = ans/60;
+        int b = ans%60;
+        String sam1 = Integer.toString(a);
+        if(a < 10) sam1 = "0" + sam1;
+        String sam2 = Integer.toString(b);
+        if(b < 10) sam2 = "0" + sam2;
+        
+        answer = sam1 + ":" + sam2;
+        return answer;
+    }
+}
