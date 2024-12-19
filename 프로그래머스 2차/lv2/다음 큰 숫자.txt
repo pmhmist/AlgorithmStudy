@@ -1,0 +1,32 @@
+class Solution {
+    public int solution(int n) {
+        int answer = 0;
+        int ck = 0;
+        int cur = n;
+        
+        while(n != 0){
+            if(n%2 == 1) ck++;
+            n /= 2;
+        }
+        
+        while(true) {
+            cur++;
+            int tmp = 0;
+            int tmp2 = cur;
+            
+            while(tmp2 != 0){
+                if(tmp2 % 2 == 1) tmp++;
+                tmp2 /= 2;
+            }
+            
+            
+            if(ck == tmp){
+                answer = cur;
+                break;  
+            } 
+        }
+        
+        
+        return answer;
+    }
+}

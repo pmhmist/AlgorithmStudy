@@ -1,0 +1,28 @@
+import java.util.*;
+
+class Solution {
+    public int solution(int[] A, int[] B) {
+        int answer = 0;
+        int idx = 0;
+        Arrays.sort(A);
+        Arrays.sort(B);
+        
+        for(int i = 0; i < A.length; i++){
+            while(idx < B.length){
+                if(A[i] < B[idx]){
+                    answer++;
+                    idx++;
+                    break;
+                }
+                else{
+                    idx++;
+                }
+            }
+            
+        }
+        
+        
+        
+        return answer;
+    }
+}
