@@ -1,0 +1,109 @@
+import java.util.*;
+
+class Solution {
+    
+    static int[] dx = {-1,0,1,0};
+    static int[] dy = {0,1,0,-1};
+    static boolean[][] vis;
+    static boolean[][] ck;
+    
+    public static class Pair{
+        int x;
+        int y;
+        
+        Pair(int x, int y){
+            this.x = x;
+            this.y = y;
+        }
+    }
+    
+    public int solution(String[] storage, String[] requests) {
+        int answer = 0;
+        
+        int n = storage.length;
+        int m = storage[0].length();
+        char[][] base = new char[n+2][m+2];
+        
+        for(int i = 0; i < n+2; i++){
+            for(int j = 0; j < m+2; j++) base[i][j] = ' ';
+        }
+        
+        for(int i = 1; i <= n; i++){
+            for(int j = 1; j <= m; j++){
+                base[i][j] = storage[i-1].charAt(j-1);
+            }
+        }
+        
+        for(int order = 0; order < requests.length; order++){
+            if(requests[order].length() == 1){ // 지게차
+                
+                vis = new boolean[n+2][m+2];
+                ck = new boolean[n+2][m+2];
+                
+                Queue<Pair> q = new ArrayDeque<>();
+                q.offer(new Pair(0,0));
+                vis[0][0] = true;
+                while(!q.isEmpty()){
+                    int x = q.peek().x;
+                    int y = q.peek().y;
+                    q.poll();
+                    
+                    for(int dir = 0; dir < 4; dir++){
+                        int nx = x + dx[dir];
+                        int ny = y + dy[dir];
+                        
+                        if(nx < 0 || nx >= n+2 || ny < 0 || ny >= m+2) continue;
+                        if(vis[nx][ny]) continue;
+                        if(base[nx][ny] != ' ') continue;
+                        
+                        vis[nx][ny] = true;
+                        q.offer(new Pair(nx,ny));
+                    }
+                }
+                
+                for(int i = 0; i < n+2; i++){
+                    for(int j = 0; j < m+2; j++){
+                        if(vis[i][j]){
+                            ck[i][j] = true;
+                            for(int dir = 0; dir < 4; dir++){
+                                int nx = i + dx[dir];
+                                int ny = j + dy[dir];
+                                if(nx < 0 || nx >= n+2 || ny < 0 || ny >= m+2) continue;
+                                ck[nx][ny] = true;
+                            }
+                            
+                        }
+                    }
+                }
+                
+                
+                for(int i = 1; i <= n; i++){
+                    for(int j = 1; j <= m; j++){
+                        if(base[i][j] == requests[order].charAt(0) && ck[i][j]){
+                            base[i][j] = ' ';
+                        }
+                        
+                    }
+                }
+            }
+            else{ // 크레인
+                for(int i = 1; i <= n; i++){
+                    for(int j = 1; j <= m; j++){
+                        if(base[i][j] == requests[order].charAt(0)){
+                            base[i][j] = ' ';
+                        }
+                    }
+                }
+            }
+            
+        }
+        
+        for(int i = 1; i <= n; i++){
+            for(int j = 1; j <= m; j++){
+                if(base[i][j] != ' ') answer++;
+            }
+        }
+        
+        return answer;
+    }
+}
