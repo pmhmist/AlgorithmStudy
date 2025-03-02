@@ -1,0 +1,59 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.*;
+
+public class Main {
+
+    public static void main(String[] args) throws IOException {
+
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st = new StringTokenizer(br.readLine());
+
+        int n = Integer.parseInt(st.nextToken());
+        int ans = 0;
+        int[][] dice = new int[n][6];
+        int[] sv = {5,3,4,1,2,0};
+
+        for(int i = 0; i < n; i++){
+            st = new StringTokenizer(br.readLine());
+            for(int j = 0; j < 6; j++){
+                dice[i][j] = Integer.parseInt(st.nextToken());
+            }
+        }
+        
+        // 주사위 개수 : 10000개 이하
+        
+        for(int dir = 0; dir < 6; dir++){
+            int idx1 = dir;
+            int idx2 = sv[dir];
+            int tot = 0;
+
+            for(int i = 0; i < n; i++){
+                int tmp = 0;
+                for(int j = 0; j < 6; j++){
+                    if(j == idx1 || j == idx2) continue;
+                    if(tmp < dice[i][j]) tmp = dice[i][j];
+                }
+                tot += tmp;
+
+                if(i != n-1){
+                    for(int j = 0; j < 6; j++){
+                        if(dice[i][idx2] == dice[i+1][j]){
+                            idx1 = j;
+                            idx2 = sv[idx1];
+                            break;
+                        }
+                    }
+                }
+                else break;
+            }
+
+            if(ans < tot) ans = tot;
+        }
+
+        System.out.println(ans);
+
+
+    }
+}
