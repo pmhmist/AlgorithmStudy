@@ -1,0 +1,103 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.*;
+
+public class Main {
+
+    // 주의 : 다시풀기
+    public static void main(String[] args) throws IOException {
+
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st = new StringTokenizer(br.readLine());
+
+        int n = Integer.parseInt(st.nextToken());
+        String[] arr = new String[n];
+        String[] base = new String[n];
+
+        Map<String,Integer> map = new HashMap<>();
+        int num = 0;
+        for(int i = 0; i < n; i++) {
+            arr[i] = br.readLine();
+            base[i] = arr[i];
+            map.put(arr[i],num);
+            num++;
+        }
+
+        Arrays.sort(arr);
+
+        int mxcnt = -1;
+        int idx1 = -1;
+        int idx2 = -1;
+
+        for(int i = 1; i < arr.length; i++) {
+            String a = arr[i-1];
+            String b = arr[i];
+            int cnt = 0;
+
+            int sz = Math.min(a.length(),b.length());
+            for(int j = 0; j < sz; j++) {
+                if (a.charAt(j) == b.charAt(j)) {
+                    cnt++;
+                } else break;
+            }
+
+            if(mxcnt < cnt){
+                idx1 = map.get(a);
+                idx2 = map.get(b);
+                if(idx2 < idx1){
+                    int tmp = idx1;
+                    idx1 = idx2;
+                    idx2 = tmp;
+                }
+                mxcnt = cnt;
+            }
+            else if(mxcnt == cnt){
+                int tidx1 = map.get(a);
+                int tidx2 = map.get(b);
+
+                if(tidx2 < tidx1){
+                    int tmp = tidx1;
+                    tidx1 = tidx2;
+                    tidx2 = tmp;
+                }
+
+                if(tidx1 < idx1){
+                    idx1 = tidx1;
+                    idx2 = tidx2;
+                }
+                else if(tidx1 == idx1){
+                    if(tidx2 < idx2){
+                        idx1 = tidx1;
+                        idx2 = tidx2;
+                    }
+                }
+
+            }
+
+        }
+
+        for(int i = 0; i < n; i++){
+            if(i == idx1) continue;
+            String nxt = base[i];
+            int sz = Math.min(nxt.length(),base[idx1].length());
+            int cnt = 0;
+            for(int j = 0; j < sz; j++){
+                if(base[idx1].charAt(j) == nxt.charAt(j)){
+                    cnt++;
+                }
+                else break;
+            }
+
+            if(cnt == mxcnt){
+                idx2 = i;
+                break;
+            }
+        }
+
+        System.out.println(base[idx1]);
+        System.out.println(base[idx2]);
+
+
+    }
+}
