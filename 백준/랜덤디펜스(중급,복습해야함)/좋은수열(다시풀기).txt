@@ -1,0 +1,61 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.*;
+
+public class Main {
+
+    static String ans;
+    static int n;
+
+    public static void solve(StringBuilder sam) {
+
+        if(sam.length() == n){
+            if(ans == "!"){
+                ans = sam.toString();
+            }
+            return;
+        }
+
+        if(!ans.equals("!")) return;
+
+        for(int num = 1; num <= 3; num++) {
+            StringBuilder nxt = new StringBuilder(sam);
+            nxt.append(num);
+
+            StringBuilder sb1;
+            StringBuilder sb2 = new StringBuilder();
+            sb2.append(num);
+            boolean ck = true;
+
+            for(int i = sam.length()-1; i >= 0; i--) {
+                sb1 = new StringBuilder();
+                if(i-sb2.length()+1 < 0) break;
+                for(int j = i; j >= i - sb2.length() + 1; j--) {
+                    sb1.insert(0,sam.charAt(j));
+                }
+                if(sb1.toString().equals(sb2.toString())) ck = false;
+                sb2.insert(0,sam.charAt(i));
+                if(!ck) break;
+            }
+
+            if(ck) solve(nxt);
+        }
+    }
+
+    public static void main(String[] args) throws IOException {
+
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st = new StringTokenizer(br.readLine());
+
+        n = Integer.parseInt(st.nextToken());
+        ans = "!";
+        StringBuilder sb = new StringBuilder();
+        sb.append("1");
+
+        solve(sb);
+
+        System.out.println(ans);
+
+    }
+}
