@@ -1,0 +1,77 @@
+import java.util.*;
+
+class Solution {
+    static int n;
+    static int[][][] dp = new int[2][300][300];
+    static int[] num;
+    static char[] oper;
+    static int limit;
+    
+    // top-down 방식
+    public static int solve(int flag, int start, int end) {
+        
+        if(start == end) {
+            return dp[flag][start][end] = num[start];
+        }
+        
+        if(flag == 0 && dp[flag][start][end] != (-1*limit)){ // 최대
+            return dp[flag][start][end];
+        }
+        else if(flag == 1 && dp[flag][start][end] != limit){ // 최소
+            return dp[flag][start][end];
+        }
+        
+        
+        if(flag == 0){// 최대
+            for(int i = start; i < end; i++) {
+                if(oper[i] == '+'){
+                    dp[flag][start][end] = Math.max(dp[flag][start][end], solve(0,start,i) + solve(0,i+1,end));
+                }
+                else {
+                    dp[flag][start][end] = Math.max(dp[flag][start][end], solve(0,start,i) - solve(1,i+1,end));
+                }               
+            }
+            
+        }
+        else{// 최소
+            for(int i = start; i < end; i++) {
+                if(oper[i] == '+'){
+                    dp[flag][start][end] = Math.min(dp[flag][start][end], solve(1,start,i) + solve(1,i+1,end));
+                }
+                else {
+                    dp[flag][start][end] = Math.min(dp[flag][start][end], solve(1,start,i) - solve(0,i+1,end));
+                }   
+            }
+        }
+        
+        
+        return dp[flag][start][end];
+    }
+    
+    public int solution(String arr[]) {       
+        // 값 초기화
+        n = arr.length/2;
+        limit = 1_000_000_00;
+        
+        for(int i = 0; i <= n; i++){
+            for(int j = 0; j <= n; j++){
+                dp[0][i][j] = -1*limit;
+                dp[1][i][j] = limit;
+            }
+        }
+        
+        num = new int[n+1];
+        oper = new char[n];
+        
+        for(int i = 0; i < arr.length; i++){
+            if(i%2 == 0) {
+                num[i/2] = Integer.parseInt(arr[i]);
+            }
+            else {
+                oper[i/2] = arr[i].charAt(0);
+            }
+        }
+        
+        return solve(0,0,n);
+    }
+}
