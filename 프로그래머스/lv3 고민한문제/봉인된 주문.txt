@@ -1,0 +1,55 @@
+import java.util.*;
+
+class Solution {
+    public String solution(long n, String[] bans) {
+        String answer = "";
+        char base = 'a';
+        
+        Map<Character,Long> map1 = new HashMap<>();
+        Map<Long,Character> map2 = new HashMap<>();
+        for(int i = 0; i < 26; i++){
+            map1.put(base,(long)i);
+            map2.put((long)(i+1),base);
+            base++;
+        }
+        
+        Arrays.sort(bans, new Comparator<String>(){
+            @Override
+            public int compare(String s1, String s2) {
+                if(s1.length() == s2.length()){
+                    return s1.compareTo(s2);
+                }
+                return s1.length()-s2.length();
+            }
+        });
+        
+        for(int i = 0; i < bans.length; i++) {
+            String ck = bans[i];
+            long tmp = 0;
+            long cal = 1;
+            for(int j = ck.length()-1; j >= 0; j--) {
+                tmp += cal * (map1.get(ck.charAt(j))+1);
+                cal *= 26;
+            }
+            
+            if(tmp <= n) n++;
+        }
+        
+        StringBuilder ans = new StringBuilder();
+        
+        while(n != 0){
+            long cur = n % 26;
+            n /= 26;
+            if(ans.length() != 0) {
+                if(ans.charAt(ans.length()-1) == 'z') cur--;
+            }
+            
+            if(cur == 0) cur = 26;
+            ans.append(map2.get(cur));
+        }
+        
+        answer = ans.reverse().toString();
+        
+        return answer;
+    }
+}
