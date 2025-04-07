@@ -1,0 +1,61 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.*;
+
+public class Main {
+
+    static int n,m;
+    static int[][] base;
+    static int[][][] dp;
+    static boolean[][] vis;
+    static int ans;
+    static final int MIN = -10000000;
+
+    static int[] dx = {1,0,0};
+    static int[] dy = {0,-1,1};
+
+    public static int solve(int x, int y, int z) {
+        if(x == n-1 && y == m-1) {
+            return base[x][y];
+        }
+
+        if(dp[x][y][z] != MIN) return dp[x][y][z];
+
+        for(int dir = 0; dir < 3; dir++) {
+            int nx = x + dx[dir];
+            int ny = y + dy[dir];
+            if (nx < 0 || nx >= n || ny < 0 || ny >= m) continue;
+            if (vis[nx][ny]) continue;
+            vis[nx][ny] = true;
+            dp[x][y][z] = Math.max(dp[x][y][z], base[x][y] + solve(nx, ny, dir));
+            vis[nx][ny] = false;
+        }
+
+        return dp[x][y][z];
+    }
+
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st = new StringTokenizer(br.readLine());
+
+        n = Integer.parseInt(st.nextToken());
+        m = Integer.parseInt(st.nextToken());
+        base = new int[n][m];
+        dp = new int[n][m][3];
+        vis = new boolean[n][m];
+
+        for (int i = 0; i < n; i++) {
+            st = new StringTokenizer(br.readLine());
+            for(int j = 0; j < m; j++) {
+                base[i][j] = Integer.parseInt(st.nextToken());
+                for(int k = 0; k < 3; k++) dp[i][j][k] = MIN;
+            }
+        }
+        vis[0][0] = true;
+        ans = solve(0,0,0);
+        System.out.println(ans);
+
+
+    }
+}
