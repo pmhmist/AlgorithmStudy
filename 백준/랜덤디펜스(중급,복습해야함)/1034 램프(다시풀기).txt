@@ -1,0 +1,48 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.*;
+
+public class Main {
+
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st = new StringTokenizer(br.readLine());
+
+        int n = Integer.parseInt(st.nextToken());
+        int m = Integer.parseInt(st.nextToken());
+        String[] arr = new String[n];
+
+        for (int i = 0; i < n; i++) {
+            st = new StringTokenizer(br.readLine());
+            arr[i] = st.nextToken();
+        }
+
+        st = new StringTokenizer(br.readLine());
+        int k = Integer.parseInt(st.nextToken());
+
+        int ans = 0;
+
+        for (int i = 0; i < n; i++) {
+            String base = arr[i];
+            int zero = 0;
+            int cnt = 0;
+            for(int j = 0; j < base.length(); j++) {
+                if(base.charAt(j) == '0') zero++;
+            }
+
+            if(zero > k) continue;
+            if((k-zero)%2 != 0) continue;
+
+            for(int j = 0; j < n; j++) {
+                if(arr[j].equals(base)) cnt++;
+            }
+            if(ans < cnt) ans = cnt;
+        }
+
+
+        System.out.println(ans);
+
+
+    }
+}
