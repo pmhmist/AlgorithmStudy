@@ -1,0 +1,51 @@
+import com.sun.security.jgss.GSSUtil;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.*;
+
+class Main {
+
+    public static void main(String[] args) throws Exception {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st = new StringTokenizer(br.readLine());
+        int n = Integer.parseInt(st.nextToken());
+        st = new StringTokenizer(br.readLine());
+        int k = Integer.parseInt(st.nextToken());
+
+        Set<Integer> set = new HashSet<>();
+        st = new StringTokenizer(br.readLine());
+        for (int i = 0; i < n; i++) {
+            set.add(Integer.parseInt(st.nextToken()));
+        }
+        ArrayList<Integer> arr = new ArrayList<>();
+        for (int cur : set) {
+            arr.add(cur);
+        }
+
+        Collections.sort(arr);
+
+        int ans = 0;
+        if (arr.size() > k) {
+            int total = 0;
+            ArrayList<Integer> diff = new ArrayList<>();
+
+            for (int i = 1; i < arr.size(); i++) {
+                int ck = arr.get(i) - arr.get(i-1);
+                total += ck;
+                diff.add(ck);
+            }
+
+            Collections.sort(diff,Collections.reverseOrder());
+
+            for(int i = 0; i < k-1; i++){
+                total -= diff.get(i);
+            }
+
+            ans = total;
+        }
+        System.out.println(ans);
+
+    }
+
+}
