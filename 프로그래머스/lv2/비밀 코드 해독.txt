@@ -1,0 +1,57 @@
+import java.util.*;
+
+class Solution {
+    
+    static int mx;
+    static int m;
+    static int[] ck;
+    static int[] sv;
+    static int[][] cmplist;
+    static int num;
+    
+    public static void solve(int idx, int start) {
+        if (idx == 5) {
+            boolean judge = true;
+            for (int i = 0; i < m; i++) {
+                int tmp = 0;
+                
+                for (int i2 = 0; i2 < 5; i2++) {
+                    for (int j2 = 0; j2 < 5; j2++) {
+                        if(sv[i2] == cmplist[i][j2]) {
+                            tmp++;
+                            break;
+                        }
+                    }
+                }
+                
+                if(tmp != ck[i]) {
+                    judge = false;
+                    break;
+                }
+            }
+            
+            if(judge) num++;
+            return;
+        }
+        
+        for (int i = start; i <= mx; i++) {
+            sv[idx] = i;
+            solve(idx+1, i+1);
+        }
+        
+    }
+    
+    public int solution(int n, int[][] q, int[] ans) {
+        int answer = 0;
+        mx = n;
+        m = q.length;
+        ck = ans;
+        sv = new int[5];
+        cmplist = q;
+        
+        solve(0,1);
+        
+        answer = num;
+        return answer;
+    }
+}
